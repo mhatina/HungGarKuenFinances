@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/member_item_list_row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/member_layout_icon"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_marginRight="6dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/member_layout_surname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Surname"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/member_layout_first_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:text="FirstName"
+                android:layout_marginTop="-10dp"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <!-- only show when member is behind with his payment -->
+        <ImageView
+            android:id="@+id/member_layout_payment_warning"
+            android:layout_width="@dimen/status_warning_icon"
+            android:layout_height="@dimen/status_warning_icon"
+            android:layout_gravity="center_vertical|end"
+            android:src="@android:drawable/ic_dialog_alert"
+            android:tint="@color/warning_red"
+            android:visibility="invisible"/>
+
+        <!-- @android:drawable/presence_online => member has payed -->
+        <!-- @android:drawable/presence_away => member should pay -->
+        <!-- @android:drawable/presence_offline => inactive member -->
+        <ImageView
+            android:id="@+id/member_layout_payment_status"
+            android:layout_width="@dimen/status_icon"
+            android:layout_height="@dimen/status_icon"
+            android:layout_gravity="center_vertical|end"
+            android:paddingRight="5dp"
+            android:src="@android:drawable/presence_online" />
+
+    </LinearLayout>
+
+    <!-- for future addition of elements (last payment, ..) -->
+
+</LinearLayout>

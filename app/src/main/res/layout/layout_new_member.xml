@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="5dp">
+
+        <ImageButton
+            android:id="@+id/create_new_member_type"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:drawable/screen_background_light_transparent"
+            android:src="@drawable/beginner_icon"
+            android:onClick="showMemberTypePopup"/>
+
+        <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout
+            android:id="@+id/create_new_member_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:hint="@string/new_member_name_hint"
+                android:inputType="textPersonName" />
+        </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout>
+
+        <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout
+            android:id="@+id/create_new_member_surname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:hint="@string/new_member_surname_hint"
+                android:inputType="textPersonName" />
+
+        </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center|left"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/date_of_birth_label"
+                android:layout_weight="1"
+                android:paddingTop="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Joined on:"
+                android:layout_weight="1"
+                android:paddingTop="8dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout
+                    android:id="@+id/create_new_day_of_birth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:hint="@string/new_member_day_hint"
+                        android:inputType="date"
+                        android:maxLength="2" />
+
+                </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout>
+
+                <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout
+                    android:id="@+id/create_new_month_of_birth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:hint="@string/new_member_month_hint"
+                        android:inputType="date"
+                        android:maxLength="2" />
+                </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout>
+
+                <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout
+                    android:id="@+id/create_new_year_of_birth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:hint="@string/new_member_year_hint"
+                        android:inputType="date"
+                        android:maxLength="4" />
+                </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout
+                    android:id="@+id/create_new_day_of_joining"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:hint="@string/new_member_day_hint"
+                        android:inputType="date"
+                        android:maxLength="2" />
+                </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout>
+
+                <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout
+                    android:id="@+id/create_new_month_of_joining"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:hint="@string/new_member_month_hint"
+                        android:inputType="date"
+                        android:maxLength="2" />
+                </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout>
+
+                <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout
+                    android:id="@+id/create_new_year_of_joining"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                <android.support.design.widget.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:hint="@string/new_member_year_hint"
+                    android:inputType="date"
+                    android:maxLength="4" />
+                </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout
+        android:id="@+id/create_new_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:counterEnabled="true"
+        app:counterMaxLength="512">
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top"
+            android:hint="Note"
+            android:lines="4"
+            android:maxLength="512" />
+    </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-25dp"
+        android:textSize="25dp"
+        android:text="@string/create_new_contacts" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/create_new_contact_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/new_contact_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+</LinearLayout>

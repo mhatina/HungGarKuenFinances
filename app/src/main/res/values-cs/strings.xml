@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Hung Gar Kuen</string>
+    <string name="action_settings">Nastavení</string>
+    <string name="action_about">O aplikaci</string>
+    <string name="disconnect">Odpojit</string>
+    <string name="navigation_drawer_close">Zavřít navigační panel</string>
+    <string name="navigation_drawer_members">Členové</string>
+    <string name="navigation_drawer_open">Otevřít navigační panel</string>
+    <string name="navigation_drawer_payments">Platby</string>
+    <string name="navigation_drawer_products">Produkty</string>
+    <string name="navigation_drawer_statistics">Statistika</string>
+    <string name="sing_in">Přihlásit se</string>
+    <string name="signing_in">Přihlašuji…</string>
+    <string name="signed_out">Odhlášen</string>
+    <string name="signed_in_fmt">Přihlášen jako: %s</string>
+    <string name="signed_in">Přihlášen</string>
+    <string name="sign_out">Odhlásit se</string>
+    <string name="date_of_birth_label">Datum narození:</string>
+
+</resources>

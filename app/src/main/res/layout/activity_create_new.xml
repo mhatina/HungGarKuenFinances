@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/create_new_scroll_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:isScrollContainer="true"
+    android:fillViewport="true"
+    android:background="@drawable/lam_ga_hung_kuen_watermark"
+    tools:context=".frontend.activities.CreateNewMemberActivity">
+
+
+</ScrollView>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/navigation_drawer_statistics">
+        <menu>
+            <item
+                android:id="@+id/nav_stats_members"
+                android:title="@string/navigation_drawer_members"
+                android:icon="@drawable/account_circle_black"/>
+            <item
+                android:id="@+id/nav_stats_products"
+                android:title="@string/navigation_drawer_products"
+                android:icon="@drawable/shopping_cart_black"/>
+            <item
+                android:id="@+id/nav_stats_payments"
+                android:title="@string/navigation_drawer_payments"
+                android:icon="@drawable/payment_black"/>
+        </menu>
+    </item>
+
+</menu>

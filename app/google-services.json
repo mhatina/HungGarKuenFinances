@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "126168175263",
+    "project_id": "hung-gar-kuen"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:126168175263:android:1f9fda7b9276e57c",
+        "android_client_info": {
+          "package_name": "cz.brno.holan.jiri.hunggarkuenfinancials"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "126168175263-bv30pvdnimlh4jjdulb5hvvrove3soqo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cz.brno.holan.jiri.hunggarkuenfinancials",
+            "certificate_hash": "D90EA3819142465A116FC64238504C119DE9C372"
+          }
+        },
+        {
+          "client_id": "126168175263-4mihk0re6j4phksu0laumv1lbk3p60u4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIJ5iahep1YoXix8__AqLUPNWcTybSr-Y"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
