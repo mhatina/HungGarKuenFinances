@@ -51,7 +51,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ContactManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ContactsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.NewContactFragment;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 
 public class CreateNewMemberActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 

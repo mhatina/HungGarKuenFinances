@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets;
+package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;

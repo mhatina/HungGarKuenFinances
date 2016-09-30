@@ -39,7 +39,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Contact;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ContactManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.CreateNewMemberActivity;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.widgets.TextInputLayout;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 
 /**
  * Created by mhatina on 25/09/16.
