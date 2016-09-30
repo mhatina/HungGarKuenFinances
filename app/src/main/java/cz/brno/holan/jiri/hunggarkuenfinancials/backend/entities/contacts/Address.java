@@ -9,11 +9,11 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 /**
  * Created by mhatina on 22/09/16.
  */
-public class Phone extends Contact {
-    public static final int ICON_PATH = R.drawable.phone_black;
+public class Address extends Contact {
+    public static final int ICON_PATH = R.drawable.home_black;
 
-    public Phone(String content, String note) {
-        super(content, note);
+    public Address(String contact, String note) {
+        super(contact, note);
     }
 
     @Override
@@ -23,13 +23,13 @@ public class Phone extends Contact {
 
     @Override
     public String getRunDescription() {
-        return "Call " + getContent();
+        return "Show " + getContent();
     }
 
     @Override
     public void run(Context context) {
-        Intent callIntent = new Intent(Intent.ACTION_CALL);
-        callIntent.setData(Uri.parse("tel:" + getContent()));
-        context.startActivity(callIntent);
+        Uri uri = Uri.parse("https://www.google.com/maps/place/" + getContent());
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        context.startActivity(intent);
     }
 }
