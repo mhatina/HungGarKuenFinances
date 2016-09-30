@@ -48,7 +48,7 @@ public class CreateNewMemberActivity extends AppCompatActivity implements View.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new);
-        addViewToActivity(R.layout.layout_new_member);
+        addViewToActivity(R.layout.layout_member_new);
 
         ListView contact_list = (ListView) findViewById(R.id.create_new_contact_list);
         ImageButton type = (ImageButton) findViewById(R.id.create_new_member_type);
@@ -77,38 +77,9 @@ public class CreateNewMemberActivity extends AppCompatActivity implements View.O
             setTitle("New member");
             setImageButtonResource(type, R.drawable.adult_icon);
             contactManager = new ContactManager();
-            contact_list.setAdapter(new ContactsAdapter(this, R.layout.layout_new_contact, contactManager.getContacts()));
+            contact_list.setAdapter(new ContactsAdapter(this, R.layout.layout_contact_new, contactManager.getContacts()));
             setDate(R.id.create_new_day_of_joining, R.id.create_new_month_of_joining, R.id.create_new_year_of_joining, new Date(System.currentTimeMillis()));
         }
-    }
-
-    private void setDate(int day, int month, int year, Date date) {
-        TextInputLayout dayLayout = (TextInputLayout) findViewById(day);
-        TextInputLayout monthLayout = (TextInputLayout) findViewById(month);
-        TextInputLayout yearLayout = (TextInputLayout) findViewById(year);
-
-        setEditTextContent(dayLayout, String.format("%td", date));
-        setEditTextContent(monthLayout, String.format("%tm", date));
-        setEditTextContent(yearLayout, String.format("%tY", date));
-    }
-
-    public void showMemberTypePopup(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
-        MenuInflater inflater = popup.getMenuInflater();
-        popup.setOnMenuItemClickListener(this);
-        inflater.inflate(R.menu.member_type, popup.getMenu());
-
-        try {
-            Field mFieldPopup = popup.getClass().getDeclaredField("mPopup");
-            mFieldPopup.setAccessible(true);
-            MenuPopupHelper mPopup = (MenuPopupHelper) mFieldPopup.get(popup);
-            mPopup.setForceShowIcon(true);
-        } catch (IllegalAccessException e) {
-            return;
-        } catch (NoSuchFieldException e) {
-            return;
-        }
-        popup.show();
     }
 
     @Override
@@ -212,6 +183,25 @@ public class CreateNewMemberActivity extends AppCompatActivity implements View.O
         }
     }
 
+    public void showMemberTypePopup(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        popup.setOnMenuItemClickListener(this);
+        inflater.inflate(R.menu.member_type, popup.getMenu());
+
+        try {
+            Field field = popup.getClass().getDeclaredField("memberPopup");
+            field.setAccessible(true);
+            MenuPopupHelper popupHelper = (MenuPopupHelper) field.get(popup);
+            popupHelper.setForceShowIcon(true);
+        } catch (IllegalAccessException e) {
+            return;
+        } catch (NoSuchFieldException e) {
+            return;
+        }
+        popup.show();
+    }
+
     private void addViewToActivity(int layoutId) {
         View view = getLayoutInflater().inflate(layoutId, null);
         ScrollView parent = (ScrollView) findViewById(R.id.create_new_scroll_view);
@@ -219,7 +209,7 @@ public class CreateNewMemberActivity extends AppCompatActivity implements View.O
         parent.addView(view);
     }
 
-    public boolean save() {
+    private boolean save() {
         Member member;
         MemberManager manager = MemberManager.getInstance();
 
@@ -320,6 +310,16 @@ public class CreateNewMemberActivity extends AppCompatActivity implements View.O
             result += str_part.substring(0, 1).toUpperCase() + str_part.substring(1).toLowerCase() + " ";
 
         return result.charAt(result.length() - 1) == ' ' ? result.substring(0, result.length() - 1) : result;
+    }
+
+    private void setDate(int day, int month, int year, Date date) {
+        TextInputLayout dayLayout = (TextInputLayout) findViewById(day);
+        TextInputLayout monthLayout = (TextInputLayout) findViewById(month);
+        TextInputLayout yearLayout = (TextInputLayout) findViewById(year);
+
+        setEditTextContent(dayLayout, String.format("%td", date));
+        setEditTextContent(monthLayout, String.format("%tm", date));
+        setEditTextContent(yearLayout, String.format("%tY", date));
     }
 
     @NonNull

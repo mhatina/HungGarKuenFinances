@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Contact;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Home;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Address;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Mail;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Phone;
 
@@ -28,7 +28,7 @@ public class ContactManager {
         switch (type) {
             case R.drawable.home_black:
                 // TODO translate
-                return new Home(contact, note.isEmpty() ? "Home address" : note);
+                return new Address(contact, note.isEmpty() ? "Home address" : note);
             case R.drawable.mail_black:
                 return new Mail(contact, note.isEmpty() ? "Personal mail" : note);
             case R.drawable.phone_black:

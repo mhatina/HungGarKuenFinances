@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Address;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Contact;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.Payment;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Mail;
@@ -51,8 +52,9 @@ public class Member {
         this.contactManager = new ContactManager();
 
         // TODO remove
-        contactManager.addContact(new Phone("+421 111 222 333", "Mobile"));
+        contactManager.addContact(new Phone("+421 908 862 822", "Mobile"));
         contactManager.addContact(new Mail("mail@work.co", "Work mail"));
+        contactManager.addContact(new Address("Purkynova 50, Brno", "Home address"));
     }
 
     @Override

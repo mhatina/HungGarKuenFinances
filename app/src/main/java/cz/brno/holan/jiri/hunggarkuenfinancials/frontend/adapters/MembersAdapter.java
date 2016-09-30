@@ -75,8 +75,8 @@ public class MembersAdapter extends ArrayAdapter<Member> {
     }
 
     private void setPaymentStatusIcons(ViewHolder viewHolder, int paymentStatus, boolean showWarning) {
-        viewHolder.payment_warning.setVisibility(showWarning ? View.VISIBLE : View.INVISIBLE);
-        viewHolder.payment_status.setImageResource(paymentStatus);
+        viewHolder.paymentWarning.setVisibility(showWarning ? View.VISIBLE : View.INVISIBLE);
+        viewHolder.paymentStatus.setImageResource(paymentStatus);
     }
 
     @Override
@@ -88,15 +88,15 @@ public class MembersAdapter extends ArrayAdapter<Member> {
         public TextView firstName;
         public TextView surname;
         public ImageView icon;
-        public ImageView payment_status;
-        public ImageView payment_warning;
+        public ImageView paymentStatus;
+        public ImageView paymentWarning;
 
         ViewHolder(View view) {
             firstName = (TextView) view.findViewById(R.id.member_layout_first_name);
             surname = (TextView) view.findViewById(R.id.member_layout_surname);
             icon = (ImageView) view.findViewById(R.id.member_layout_icon);
-            payment_status = (ImageView) view.findViewById(R.id.member_layout_payment_status);
-            payment_warning = (ImageView) view.findViewById(R.id.member_layout_payment_warning);
+            paymentStatus = (ImageView) view.findViewById(R.id.member_layout_payment_status);
+            paymentWarning = (ImageView) view.findViewById(R.id.member_layout_payment_warning);
         }
     }
 }

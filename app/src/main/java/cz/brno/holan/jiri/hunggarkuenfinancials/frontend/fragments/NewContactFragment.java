@@ -40,7 +40,7 @@ public class NewContactFragment extends DialogFragment implements View.OnClickLi
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
-        View view = inflater.inflate(R.layout.layout_new_contact, null);
+        View view = inflater.inflate(R.layout.layout_contact_new, null);
         contact_content = (TextInputLayout) view.findViewById(R.id.new_contact_content);
         contact_note = (TextInputLayout) view.findViewById(R.id.new_contact_note);
         contact_type = (ImageButton) view.findViewById(R.id.new_contact_type);
@@ -120,10 +120,10 @@ public class NewContactFragment extends DialogFragment implements View.OnClickLi
         inflater.inflate(R.menu.contact_type, popup.getMenu());
 
         try {
-            Field mFieldPopup = popup.getClass().getDeclaredField("mPopup");
-            mFieldPopup.setAccessible(true);
-            MenuPopupHelper mPopup = (MenuPopupHelper) mFieldPopup.get(popup);
-            mPopup.setForceShowIcon(true);
+            Field field = popup.getClass().getDeclaredField("contactPopup");
+            field.setAccessible(true);
+            MenuPopupHelper popupHelper = (MenuPopupHelper) field.get(popup);
+            popupHelper.setForceShowIcon(true);
         } catch (IllegalAccessException e) {
             return;
         } catch (NoSuchFieldException e) {
@@ -140,10 +140,7 @@ public class NewContactFragment extends DialogFragment implements View.OnClickLi
 
         if (contact_content.getEditText().getText().toString().isEmpty()) {
             contact_content.setError("This field is required.");
-            contact_content.setErrorEnabled(true);
             return false;
-        } else {
-            contact_content.setErrorEnabled(false);
         }
 
         contact = ContactManager.createContact((int) contact_type.getTag(), contact_content.getEditText().getText().toString(), contact_note_string);
