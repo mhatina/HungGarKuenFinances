@@ -13,6 +13,7 @@ import android.widget.TextView;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.MemberListOnItemClickListener;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.SlidingTabLayout;
 
 /**
@@ -66,6 +67,7 @@ public class SlidingTabsFragment extends Fragment {
                                     R.layout.layout_member,
                                     MemberManager.getInstance().getMembers())
                     );
+                    listView.setOnItemClickListener(new MemberListOnItemClickListener(listView, getActivity().getFragmentManager()));
                     container.addView(listView);
                     registerForContextMenu(listView);
                     return listView;

@@ -25,20 +25,20 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.MemberDetailDialog;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.SlidingTabsFragment;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.provider.SearchProvider;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener
-        , View.OnClickListener{
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String SIGNED_IN_AS = "signed_in_as";
+    public static final int MEMBER_CONTEXT_GROUP_ID = 0;
 
     private String TAG = "MainActivity";
 
@@ -91,8 +91,6 @@ public class MainActivity extends AppCompatActivity
         initFloatingActionButton();
         initDrawer(toolbar);
         initNavigationView();
-
-        getMemberListView().setOnClickListener(this);
     }
 
     @Override
@@ -208,6 +206,7 @@ public class MainActivity extends AppCompatActivity
         mContextMenuMember = (Member) memberList.getItemAtPosition(adapterMenuInfo.position);
         menu.setHeaderTitle(mContextMenuMember.getFirstName() + " " + mContextMenuMember.getSurname());
 
+        menu.removeGroup(MemberDetailDialog.MEMBER_DETAIL_CONTEXT_GROUP_ID);
         menu.add(0, v.getId(), 0, "Edit");
         menu.add(0, v.getId(), 0, "Delete");
     }
@@ -215,7 +214,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getTitle().equals("Edit")) {
-            Toast.makeText(this, "edit", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, CreateNewMemberActivity.class);
             intent.putExtra(CreateNewMemberActivity.CREATE_EDIT_ENTITY, mContextMenuMember.getId());
             startActivityForResult(intent, 1);
@@ -243,11 +241,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public void onContextMenuClosed(Menu menu) {
-        super.onContextMenuClosed(menu);
-    }
-
     private ListView getMemberListView() {
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         View view = viewPager.getChildAt(0);
@@ -268,13 +261,6 @@ public class MainActivity extends AppCompatActivity
                             viewPager.getContext(),
                             R.layout.layout_member,
                             MemberManager.getInstance().getMembers(split[0], split.length > 1 ? split[1] : null)));
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.member_item_list_row) {
-
-        }
     }
 
     private class OnSearchTextListener implements SearchView.OnQueryTextListener {
