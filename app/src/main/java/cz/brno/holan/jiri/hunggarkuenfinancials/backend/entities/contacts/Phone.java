@@ -44,6 +44,11 @@ public class Phone extends Contact {
     }
 
     @Override
+    public String toString() {
+        return "Phone{" + super.toString() + "}";
+    }
+
+    @Override
     public void run(Context context) {
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:" + getContent()));

@@ -44,6 +44,11 @@ public class Mail extends Contact {
     }
 
     @Override
+    public String toString() {
+        return "Mail{" + super.toString() + "}";
+    }
+
+    @Override
     public void run(Context context) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         Uri data = Uri.parse("mailto:" + getContent());

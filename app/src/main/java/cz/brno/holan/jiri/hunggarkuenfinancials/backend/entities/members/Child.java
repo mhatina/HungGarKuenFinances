@@ -40,4 +40,11 @@ public class Child extends Member {
     public int getIconPath() {
         return ICON_PATH;
     }
+
+    @Override
+    public String toString() {
+        return "Child{" +
+                super.toString() +
+                '}';
+    }
 }

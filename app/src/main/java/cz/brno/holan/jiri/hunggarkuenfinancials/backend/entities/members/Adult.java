@@ -40,4 +40,11 @@ public class Adult extends Member {
     public int getIconPath() {
         return ICON_PATH;
     }
+
+    @Override
+    public String toString() {
+        return "Adult{" +
+                super.toString() +
+                '}';
+    }
 }

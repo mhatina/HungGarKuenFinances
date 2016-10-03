@@ -26,20 +26,20 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.R;
  */
 public abstract class Contact {
     public static final int ICON_PATH = R.drawable.home_black;
-    private String contact;
+    private String content;
     private String note;
 
     public Contact(String contact, String note) {
-        this.contact = contact;
+        this.content = contact;
         this.note = note;
     }
 
     public String getContent() {
-        return contact;
+        return content;
     }
 
-    public void setContact(String contact) {
-        this.contact = contact;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getNote() {
@@ -54,7 +54,15 @@ public abstract class Contact {
         return ICON_PATH;
     }
 
+    @Override
+    public String toString() {
+        return "content='" + content + '\'' +
+                ", note='" + note + '\'';
+    }
+
     public abstract String getRunDescription();
 
     public abstract void run(Context context);
+
+
 }

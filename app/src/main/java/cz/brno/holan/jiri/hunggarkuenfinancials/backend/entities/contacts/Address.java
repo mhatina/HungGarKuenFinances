@@ -27,6 +27,11 @@ public class Address extends Contact {
     }
 
     @Override
+    public String toString() {
+        return "Address{" + super.toString() + "}";
+    }
+
+    @Override
     public void run(Context context) {
         Uri uri = Uri.parse("https://www.google.com/maps/place/" + getContent());
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);

@@ -40,4 +40,11 @@ public class Junior extends Member {
     public int getIconPath() {
         return ICON_PATH;
     }
+
+    @Override
+    public String toString() {
+        return "Junior{" +
+                super.toString() +
+                '}';
+    }
 }

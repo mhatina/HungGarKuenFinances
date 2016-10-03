@@ -186,4 +186,15 @@ public class Member {
     public void setContactManager(ContactManager contactManager) {
         this.contactManager = contactManager;
     }
+
+    @Override
+    public String toString() {
+        return  "firstName='" + firstName + '\'' +
+                ", surname='" + surname + '\'' +
+                ", birthDate=" + birthDate +
+                ", joinedDate=" + joinedDate +
+                ", paidUntil=" + paidUntil +
+                ", note='" + note + '\'' +
+                ", contactManager=" + contactManager.toString();
+    }
 }
