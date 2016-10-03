@@ -29,7 +29,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Junior;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 
 
-public class MemberManager {
+public class MemberManager extends ExportManager {
     private ArrayList<Member> mMembers;
 
     private static MemberManager ourInstance = new MemberManager();
@@ -176,6 +176,16 @@ public class MemberManager {
         }
 
         return null;
+    }
+
+    @Override
+    public String toString() {
+        String exportText = "";
+        for (Member member : mMembers) {
+            exportText += member.toString() + "\n";
+        }
+
+        return exportText;
     }
 
     /**

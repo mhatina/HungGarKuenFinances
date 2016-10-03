@@ -15,10 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities;
+package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products;
 
 /**
- * Created by mhatina on 3/8/16.
+ * Created by mhatina on 01/10/16.
  */
-public class Product {
+public class OneTimeOnly extends Product {
+    public OneTimeOnly(String name, int value) {
+        super(name, value);
+    }
 }
