@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016  Martin Hatina
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -35,8 +34,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@android:drawable/screen_background_light_transparent"
-            android:src="@drawable/beginner_icon"
-            android:onClick="showMemberTypePopup"/>
+            android:onClick="showMemberTypePopup"
+            android:src="@drawable/beginner_icon" />
 
         <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout
             android:id="@+id/create_new_member_name"
@@ -45,11 +44,13 @@
             android:layout_weight="1">
 
             <android.support.design.widget.TextInputEditText
+                android:id="@+id/create_new_member_name_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:hint="@string/new_member_name_hint"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:nextFocusDown="@+id/create_new_member_surname_text" />
         </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
 
         <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout
@@ -59,11 +60,13 @@
             android:layout_weight="1">
 
             <android.support.design.widget.TextInputEditText
+                android:id="@+id/create_new_member_surname_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:hint="@string/new_member_surname_hint"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:nextFocusDown="@+id/create_new_day_of_birth_text" />
 
         </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
     </LinearLayout>
@@ -82,18 +85,18 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/date_of_birth_label"
                 android:layout_weight="1"
-                android:paddingTop="8dp"/>
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:text="@string/date_of_birth_label" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Joined on:"
                 android:layout_weight="1"
-                android:paddingTop="8dp"/>
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:text="Joined on:" />
 
         </LinearLayout>
 
@@ -113,12 +116,14 @@
                     android:layout_weight="1">
 
                     <android.support.design.widget.TextInputEditText
+                        android:id="@+id/create_new_day_of_birth_text"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:hint="@string/new_member_day_hint"
                         android:inputType="date"
-                        android:maxLength="2" />
+                        android:maxLength="2"
+                        android:nextFocusDown="@+id/create_new_month_of_birth_text" />
 
                 </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
 
@@ -129,12 +134,14 @@
                     android:layout_weight="1">
 
                     <android.support.design.widget.TextInputEditText
+                        android:id="@+id/create_new_month_of_birth_text"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:hint="@string/new_member_month_hint"
                         android:inputType="date"
-                        android:maxLength="2" />
+                        android:maxLength="2"
+                        android:nextFocusDown="@+id/create_new_year_of_birth_text" />
                 </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
 
                 <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout
@@ -144,12 +151,14 @@
                     android:layout_weight="1">
 
                     <android.support.design.widget.TextInputEditText
+                        android:id="@+id/create_new_year_of_birth_text"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:hint="@string/new_member_year_hint"
                         android:inputType="date"
-                        android:maxLength="4" />
+                        android:maxLength="4"
+                        android:nextFocusDown="@+id/create_new_day_of_joining_text" />
                 </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
 
             </LinearLayout>
@@ -165,12 +174,14 @@
                     android:layout_weight="1">
 
                     <android.support.design.widget.TextInputEditText
+                        android:id="@+id/create_new_day_of_joining_text"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:hint="@string/new_member_day_hint"
                         android:inputType="date"
-                        android:maxLength="2" />
+                        android:maxLength="2"
+                        android:nextFocusDown="@+id/create_new_month_of_joining_text" />
                 </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
 
                 <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout
@@ -180,12 +191,14 @@
                     android:layout_weight="1">
 
                     <android.support.design.widget.TextInputEditText
+                        android:id="@+id/create_new_month_of_joining_text"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:hint="@string/new_member_month_hint"
                         android:inputType="date"
-                        android:maxLength="2" />
+                        android:maxLength="2"
+                        android:nextFocusDown="@+id/create_new_year_of_joining_text" />
                 </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
 
                 <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout
@@ -194,13 +207,15 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                <android.support.design.widget.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:hint="@string/new_member_year_hint"
-                    android:inputType="date"
-                    android:maxLength="4" />
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/create_new_year_of_joining_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:hint="@string/new_member_year_hint"
+                        android:inputType="date"
+                        android:maxLength="4"
+                        android:nextFocusDown="@+id/create_new_note_text" />
                 </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
             </LinearLayout>
         </LinearLayout>
@@ -215,6 +230,7 @@
         app:counterMaxLength="512">
 
         <android.support.design.widget.TextInputEditText
+            android:id="@+id/create_new_note_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="top"
@@ -227,8 +243,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="-25dp"
-        android:textSize="25dp"
-        android:text="@string/create_new_contacts" />
+        android:text="@string/create_new_contacts"
+        android:textSize="25dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -245,8 +261,8 @@
             android:id="@+id/new_contact_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:text="New" />
 
     </LinearLayout>
 

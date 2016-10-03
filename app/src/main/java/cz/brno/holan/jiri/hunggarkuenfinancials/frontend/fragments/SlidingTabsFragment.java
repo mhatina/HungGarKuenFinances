@@ -31,6 +31,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.MemberListOnItemClickListener;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.SlidingTabManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.SlidingTabLayout;
 
 /**
@@ -57,6 +58,8 @@ public class SlidingTabsFragment extends Fragment {
 
         public static final int NUM_OF_PAGES = 3;
 
+        private SlidingTabManager tabManager = new SlidingTabManager();
+
         @Override
         public int getCount() {
             return NUM_OF_PAGES;
@@ -69,36 +72,12 @@ public class SlidingTabsFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return "Section " + (position + 1);
+            return tabManager.getTabTitle(position);
         }
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            ListView listView;
-
-            switch (position) {
-                case 0:
-                    listView = new ListView(getActivity());
-                    listView.setAdapter(
-                            new MembersAdapter(getContext(),
-                                    R.layout.layout_member,
-                                    MemberManager.getInstance().getMembers())
-                    );
-                    listView.setOnItemClickListener(new MemberListOnItemClickListener(listView, getActivity().getFragmentManager()));
-                    container.addView(listView);
-                    registerForContextMenu(listView);
-                    return listView;
-                default:
-                    View view = getActivity().getLayoutInflater().inflate(R.layout.pager_item,
-                            container, false);
-
-                    container.addView(view);
-
-                    TextView title = (TextView) view.findViewById(R.id.item_title);
-                    title.setText(String.valueOf(position + 1));
-
-                    return view;
-            }
+            return tabManager.getInstance(getActivity(), container, position);
         }
 
         @Override

@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getTitle().equals("Edit")) {
             Intent intent = new Intent(this, CreateNewMemberActivity.class);
-            intent.putExtra(CreateNewMemberActivity.CREATE_EDIT_ENTITY, mContextMenuMember.getId());
+            intent.putExtra(CreateNewMemberActivity.EDIT_ENTITY, mContextMenuMember.getId());
             startActivityForResult(intent, 1);
         } else if (item.getTitle().equals("Delete")) {
             new AlertDialog.Builder(this)

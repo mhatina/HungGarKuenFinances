@@ -21,23 +21,18 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.PopupMenu;
 import android.view.ContextMenu;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ScrollView;
 
 import java.lang.reflect.Field;
 import java.text.ParseException;
@@ -53,50 +48,62 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ContactsAdapte
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.NewContactFragment;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 
-public class CreateNewMemberActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
+public class CreateNewMemberActivity extends CreateNewEntityActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     public static final String TAG = "CreateNewMemberActivity";
-    public static final String CREATE_EDIT_ENTITY = "CREATE_EDIT_ENTITY";
 
     private ContactManager contactManager;
     private Contact contextContact;
 
+    public CreateNewMemberActivity() {
+        super(R.layout.layout_member_new);
+    }
+
+    @Override
+    public void init() {
+        ImageButton type = (ImageButton) findViewById(R.id.create_new_member_type);
+        ListView contact_list = (ListView) findViewById(R.id.create_new_contact_list);
+
+        setTitle("New member");
+
+        setImageButtonResource(type, R.drawable.adult_icon);
+        contactManager = new ContactManager();
+        contact_list.setAdapter(new ContactsAdapter(this, R.layout.layout_contact_new, contactManager.getContacts()));
+        setDate(R.id.create_new_day_of_joining, R.id.create_new_month_of_joining, R.id.create_new_year_of_joining, new Date(System.currentTimeMillis()));
+    }
+
+    @Override
+    public void initForEdit() {
+        ImageButton type = (ImageButton) findViewById(R.id.create_new_member_type);
+        TextInputLayout name = (TextInputLayout) findViewById(R.id.create_new_member_name);
+        TextInputLayout surname = (TextInputLayout) findViewById(R.id.create_new_member_surname);
+        TextInputLayout note = (TextInputLayout) findViewById(R.id.create_new_note);
+        ListView contact_list = (ListView) findViewById(R.id.create_new_contact_list);
+        Member member = MemberManager.getInstance().findMember(getIntent().getLongExtra(EDIT_ENTITY, 0));
+
+        setTitle("Edit member");
+
+        contactManager = member.getContactManager();
+        setImageButtonResource(type, member.getIconPath());
+        setEditTextContent(name, member.getFirstName());
+        setEditTextContent(surname, member.getSurname());
+        setDate(R.id.create_new_day_of_birth, R.id.create_new_month_of_birth, R.id.create_new_year_of_birth, member.getBirthDate());
+        setDate(R.id.create_new_day_of_joining, R.id.create_new_month_of_joining, R.id.create_new_year_of_joining, member.getJoinedDate());
+        setEditTextContent(note, member.getNote());
+        contact_list.setAdapter(new ContactsAdapter(this, R.layout.layout_contact, member.getContactManager().getContacts()));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_new);
-        addViewToActivity(R.layout.layout_member_new);
 
+        TextInputLayout name = (TextInputLayout) findViewById(R.id.create_new_member_name);
         ListView contact_list = (ListView) findViewById(R.id.create_new_contact_list);
-        ImageButton type = (ImageButton) findViewById(R.id.create_new_member_type);
         Button new_contact = (Button) findViewById(R.id.new_contact_button);
+
         new_contact.setOnClickListener(this);
         registerForContextMenu(contact_list);
-
-        if (getIntent().hasExtra(CREATE_EDIT_ENTITY)) {
-            setTitle("Edit member");
-
-            TextInputLayout name = (TextInputLayout) findViewById(R.id.create_new_member_name);
-            TextInputLayout surname = (TextInputLayout) findViewById(R.id.create_new_member_surname);
-            TextInputLayout note = (TextInputLayout) findViewById(R.id.create_new_note);
-
-            Member member = MemberManager.getInstance().findMember(getIntent().getLongExtra(CREATE_EDIT_ENTITY, 0));
-
-            contactManager = member.getContactManager();
-            setImageButtonResource(type, member.getIconPath());
-            setEditTextContent(name, member.getFirstName());
-            setEditTextContent(surname, member.getSurname());
-            setDate(R.id.create_new_day_of_birth, R.id.create_new_month_of_birth, R.id.create_new_year_of_birth, member.getBirthDate());
-            setDate(R.id.create_new_day_of_joining, R.id.create_new_month_of_joining, R.id.create_new_year_of_joining, member.getJoinedDate());
-            setEditTextContent(note, member.getNote());
-            contact_list.setAdapter(new ContactsAdapter(this, R.layout.layout_contact, member.getContactManager().getContacts()));
-        } else {
-            setTitle("New member");
-            setImageButtonResource(type, R.drawable.adult_icon);
-            contactManager = new ContactManager();
-            contact_list.setAdapter(new ContactsAdapter(this, R.layout.layout_contact_new, contactManager.getContacts()));
-            setDate(R.id.create_new_day_of_joining, R.id.create_new_month_of_joining, R.id.create_new_year_of_joining, new Date(System.currentTimeMillis()));
-        }
+        name.requestFocus();
     }
 
     @Override
@@ -137,35 +144,6 @@ public class CreateNewMemberActivity extends AppCompatActivity implements View.O
         }
 
         return true;
-    }
-
-    @Override
-    public void onContextMenuClosed(Menu menu) {
-        super.onContextMenuClosed(menu);
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.create_new, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_save) {
-            save();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-
     }
 
     @Override
@@ -219,14 +197,7 @@ public class CreateNewMemberActivity extends AppCompatActivity implements View.O
         popup.show();
     }
 
-    private void addViewToActivity(int layoutId) {
-        View view = getLayoutInflater().inflate(layoutId, null);
-        ScrollView parent = (ScrollView) findViewById(R.id.create_new_scroll_view);
-        view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
-        parent.addView(view);
-    }
-
-    private boolean save() {
+    public boolean save() {
         Member member;
         MemberManager manager = MemberManager.getInstance();
 
@@ -241,8 +212,8 @@ public class CreateNewMemberActivity extends AppCompatActivity implements View.O
 
         if (name == null || surname == null || birth_date == null || joined_date == null) {
             return false;
-        } else if (getIntent().hasExtra(CREATE_EDIT_ENTITY)) {
-            member = manager.findMember(getIntent().getLongExtra(CREATE_EDIT_ENTITY, 0));
+        } else if (getIntent().hasExtra(EDIT_ENTITY)) {
+            member = manager.findMember(getIntent().getLongExtra(EDIT_ENTITY, 0));
             if (member.getIconPath() != type.getTag()) {
                 Member newMember = manager.createMember((int) type.getTag(), name, surname, birth_date);
                 manager.replaceMember(member, newMember);
@@ -345,8 +316,8 @@ public class CreateNewMemberActivity extends AppCompatActivity implements View.O
     }
 
     @NonNull
-    private String getEditTextContent(TextInputLayout note) {
-        return getEditText(note).getText().toString();
+    private String getEditTextContent(TextInputLayout layout) {
+        return getEditText(layout).getText().toString();
     }
 
     @NonNull

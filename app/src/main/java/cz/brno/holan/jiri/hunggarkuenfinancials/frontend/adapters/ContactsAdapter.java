@@ -81,7 +81,7 @@ public class ContactsAdapter  extends ArrayAdapter<Contact> {
         public ImageView type;
 
         ViewHolder(View view) {
-            contact = (TextView) view.findViewById(R.id.contact);
+            contact = (TextView) view.findViewById(R.id.contact_content);
             note = (TextView) view.findViewById(R.id.contact_note);
             type = (ImageView) view.findViewById(R.id.contact_type);
         }
