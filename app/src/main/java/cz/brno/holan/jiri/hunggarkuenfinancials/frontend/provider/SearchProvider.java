@@ -75,12 +75,12 @@ public class SearchProvider extends ContentProvider {
             if (cursor.getCount() >= limit)
                 break;
 
-            possibleDuplicate1 = indexOfSpace != -1 ? searchMember.getFirstName() : searchMember.getSurname();
-            possibleDuplicate2 = indexOfSpace != -1 ? searchMember.getSurname() : searchMember.getFirstName();
+            possibleDuplicate1 = indexOfSpace != -1 ? searchMember.getName() : searchMember.getSurname();
+            possibleDuplicate2 = indexOfSpace != -1 ? searchMember.getSurname() : searchMember.getName();
 
             if (searchMember.getSurname().toUpperCase().startsWith(firstPartOfQuery) && values.indexOf(possibleDuplicate1) == -1) {
                 addSuggestionToCursor(cursor, values, secondPartOfQuery, possibleDuplicate1);
-            } else if (searchMember.getFirstName().toUpperCase().startsWith(firstPartOfQuery) && values.indexOf(possibleDuplicate2) == -1) {
+            } else if (searchMember.getName().toUpperCase().startsWith(firstPartOfQuery) && values.indexOf(possibleDuplicate2) == -1) {
                 addSuggestionToCursor(cursor, values, secondPartOfQuery, possibleDuplicate2);
             }
         }

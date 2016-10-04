@@ -30,7 +30,6 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 
@@ -79,7 +78,7 @@ public class MemberDetailDialog extends DialogFragment implements MenuItem.OnMen
 
         contactList.setAdapter(new ContactsAdapter(getActivity(), R.layout.layout_contact, member.getContactManager().getContacts()));
         type.setImageResource(member.getIconPath());
-        name.setText(member.getFirstName());
+        name.setText(member.getName());
         surname.setText(member.getSurname());
         setPaymentStatus(member);
 

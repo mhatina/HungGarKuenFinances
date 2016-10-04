@@ -17,6 +17,8 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
+import com.google.firebase.database.DatabaseReference;
+
 import java.util.ArrayList;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
@@ -39,6 +41,17 @@ public class ContactManager {
 
     public void addContact(Contact contact) {
         contacts.add(contact);
+    }
+
+    public void uploadContacts(DatabaseReference reference) {
+        for (Contact contact : contacts) {
+            reference = reference.child("contacts")
+                    .child(contact.getClass().getSimpleName())
+                    .child(String.valueOf(contacts.indexOf(contact)));
+
+            reference.child("content").setValue(contact.getContent());
+            reference.child("note").setValue(contact.getNote());
+        }
     }
 
     public static Contact createContact(int type, String contact, String note) {

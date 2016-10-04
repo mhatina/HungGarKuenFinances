@@ -59,7 +59,7 @@ public class MembersAdapter extends ArrayAdapter<Member> {
         Member member = getItem(position);
 
         if (member != null) {
-            viewHolder.firstName.setText(member.getFirstName());
+            viewHolder.firstName.setText(member.getName());
             viewHolder.surname.setText(member.getSurname());
             viewHolder.icon.setImageResource(member.getIconPath());
 

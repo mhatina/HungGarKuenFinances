@@ -49,6 +49,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.MemberDetailDialog;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.SlidingTabsFragment;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.SlidingTabManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.provider.SearchProvider;
 
 public class MainActivity extends AppCompatActivity
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity
     private Member mContextMenuMember;
 
     public MainActivity() {
-        mMembersManager = MemberManager.getInstance();
+        mMembersManager = MemberManager.getInstance(this);
         mContextMenuMember = null;
     }
 
@@ -221,7 +222,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         mContextMenuMember = (Member) memberList.getItemAtPosition(adapterMenuInfo.position);
-        menu.setHeaderTitle(mContextMenuMember.getFirstName() + " " + mContextMenuMember.getSurname());
+        menu.setHeaderTitle(mContextMenuMember.getName() + " " + mContextMenuMember.getSurname());
 
         menu.removeGroup(MemberDetailDialog.MEMBER_DETAIL_CONTEXT_GROUP_ID);
         menu.add(0, v.getId(), 0, "Edit");
@@ -240,6 +241,7 @@ public class MainActivity extends AppCompatActivity
                     .setMessage("Are you sure you want to delete member?")
                     .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
+                            MemberManager.getInstance().deleteMember(mContextMenuMember);
                             ArrayAdapter<Member> arrayAdapter = (ArrayAdapter<Member>) getMemberListView().getAdapter();
                             arrayAdapter.remove(mContextMenuMember);
                             mContextMenuMember = null;
@@ -258,9 +260,9 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private ListView getMemberListView() {
+    public ListView getMemberListView() {
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        View view = viewPager.getChildAt(0);
+        View view = viewPager.getChildAt(SlidingTabManager.MEMBER_ACTIVITY_INDEX);
         if (view instanceof ListView)
             return (ListView) view;
 
