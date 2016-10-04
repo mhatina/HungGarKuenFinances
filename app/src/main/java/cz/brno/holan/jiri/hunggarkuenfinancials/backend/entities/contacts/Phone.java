@@ -29,6 +29,9 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 public class Phone extends Contact {
     public static final int ICON_PATH = R.drawable.phone_black;
 
+    public Phone() {
+    }
+
     public Phone(String content, String note) {
         super(content, note);
     }

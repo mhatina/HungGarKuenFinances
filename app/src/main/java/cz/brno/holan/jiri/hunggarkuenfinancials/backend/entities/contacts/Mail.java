@@ -29,6 +29,9 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 public class Mail extends Contact {
     public static final int ICON_PATH = R.drawable.mail_black;
 
+    public Mail() {
+    }
+
     public Mail(String contact, String note) {
         super(contact, note);
     }

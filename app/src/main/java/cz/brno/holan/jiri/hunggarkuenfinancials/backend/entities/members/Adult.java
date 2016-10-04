@@ -28,6 +28,9 @@ public class Adult extends Member {
 
     public final int ICON_PATH = R.drawable.adult_icon;
 
+    public Adult() {
+    }
+
     public Adult(long id, String firstName, String surname) {
         super(id, firstName, surname);
     }

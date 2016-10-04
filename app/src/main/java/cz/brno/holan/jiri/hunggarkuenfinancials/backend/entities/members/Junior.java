@@ -28,6 +28,9 @@ public class Junior extends Member {
 
     public final int ICON_PATH = R.drawable.junior_icon;
 
+    public Junior() {
+    }
+
     public Junior(long id, String firstName, String surname) {
         super(id, firstName, surname);
     }

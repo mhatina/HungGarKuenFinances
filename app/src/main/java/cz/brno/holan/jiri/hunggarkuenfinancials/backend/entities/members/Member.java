@@ -41,7 +41,7 @@ public class Member {
     public static final long INACTIVATION_PERIOD = 14 * 24 * 60 * 60 * 1000; // #days * 24h * 60min * 60sec * 1000msec
 
     private Long       id;
-    private String     firstName;
+    private String name;
     private String     surname;
     private Date       birthDate;
     private Date       joinedDate;
@@ -50,22 +50,23 @@ public class Member {
     private String     note;
 
     private ArrayList<Payment> payments;
-    private ContactManager contactManager;
+    private ContactManager contactManager = new ContactManager();
 
-    public Member(long id, String firstName, String surname) {
-        this(id, firstName, surname, new Date(System.currentTimeMillis()));
+    public Member() {
     }
 
-    public Member(long id, String firstName, String surname, Date birthDate) {
+    public Member(long id, String name, String surname) {
+        this(id, name, surname, new Date(System.currentTimeMillis()));
+    }
+
+    public Member(long id, String name, String surname, Date birthDate) {
         this.id = id;
-        this.firstName = firstName;
+        this.name = name;
         this.surname = surname;
         this.paidUntil = new Date(System.currentTimeMillis());
         this.birthDate = birthDate;
         this.joinedDate = new Date(System.currentTimeMillis());
         updateStatus();
-
-        this.contactManager = new ContactManager();
 
         // TODO remove
         contactManager.addContact(new Phone("+421 908 862 822", "Mobile"));
@@ -81,7 +82,7 @@ public class Member {
         Member member = (Member) o;
 
         if (!id.equals(member.id)) return false;
-        if (!firstName.equals(member.firstName)) return false;
+        if (!name.equals(member.name)) return false;
         return surname.equals(member.surname);
 
     }
@@ -89,7 +90,7 @@ public class Member {
     @Override
     public int hashCode() {
         int result = id.hashCode();
-        result = 31 * result + firstName.hashCode();
+        result = 31 * result + name.hashCode();
         result = 31 * result + surname.hashCode();
         return result;
     }
@@ -102,12 +103,12 @@ public class Member {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getSurname() {
@@ -189,7 +190,7 @@ public class Member {
 
     @Override
     public String toString() {
-        return  "firstName='" + firstName + '\'' +
+        return  "name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", birthDate=" + birthDate +
                 ", joinedDate=" + joinedDate +

@@ -12,6 +12,9 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 public class Address extends Contact {
     public static final int ICON_PATH = R.drawable.home_black;
 
+    public Address() {
+    }
+
     public Address(String contact, String note) {
         super(contact, note);
     }

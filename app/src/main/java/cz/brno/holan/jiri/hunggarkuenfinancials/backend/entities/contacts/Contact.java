@@ -29,6 +29,9 @@ public abstract class Contact {
     private String content;
     private String note;
 
+    public Contact() {
+    }
+
     public Contact(String contact, String note) {
         this.content = contact;
         this.note = note;
