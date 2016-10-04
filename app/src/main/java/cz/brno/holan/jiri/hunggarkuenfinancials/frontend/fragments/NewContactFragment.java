@@ -32,6 +32,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.lang.reflect.Field;
 
@@ -45,7 +46,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
  * Created by mhatina on 25/09/16.
  */
 // todo refactor
-public class NewContactFragment extends DialogFragment implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
+public class NewContactFragment extends DialogFragment implements ImageButton.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private ImageButton contact_type;
     private TextInputLayout contact_content;
@@ -137,7 +138,7 @@ public class NewContactFragment extends DialogFragment implements View.OnClickLi
         inflater.inflate(R.menu.contact_type, popup.getMenu());
 
         try {
-            Field field = popup.getClass().getDeclaredField("contactPopup");
+            Field field = popup.getClass().getDeclaredField("mPopup");
             field.setAccessible(true);
             MenuPopupHelper popupHelper = (MenuPopupHelper) field.get(popup);
             popupHelper.setForceShowIcon(true);

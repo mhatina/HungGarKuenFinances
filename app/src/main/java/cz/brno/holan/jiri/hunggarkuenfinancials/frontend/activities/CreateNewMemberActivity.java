@@ -85,7 +85,7 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
 
         contactManager = member.getContactManager();
         setImageButtonResource(type, member.getIconPath());
-        setEditTextContent(name, member.getFirstName());
+        setEditTextContent(name, member.getName());
         setEditTextContent(surname, member.getSurname());
         setDate(R.id.create_new_day_of_birth, R.id.create_new_month_of_birth, R.id.create_new_year_of_birth, member.getBirthDate());
         setDate(R.id.create_new_day_of_joining, R.id.create_new_month_of_joining, R.id.create_new_year_of_joining, member.getJoinedDate());
@@ -100,8 +100,10 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
         TextInputLayout name = (TextInputLayout) findViewById(R.id.create_new_member_name);
         ListView contact_list = (ListView) findViewById(R.id.create_new_contact_list);
         Button new_contact = (Button) findViewById(R.id.new_contact_button);
+        ImageButton type = (ImageButton) findViewById(R.id.create_new_member_type);
 
         new_contact.setOnClickListener(this);
+        type.setOnClickListener(this);
         registerForContextMenu(contact_list);
         name.requestFocus();
     }
@@ -154,7 +156,7 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
                 newFragment.show(getFragmentManager(), "new_contact");
                 break;
             case R.id.create_new_member_type:
-                view.showContextMenu();
+                showMemberTypePopup(view);
                 break;
         }
     }
@@ -185,7 +187,7 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
         inflater.inflate(R.menu.member_type, popup.getMenu());
 
         try {
-            Field field = popup.getClass().getDeclaredField("memberPopup");
+            Field field = popup.getClass().getDeclaredField("mPopup");
             field.setAccessible(true);
             MenuPopupHelper popupHelper = (MenuPopupHelper) field.get(popup);
             popupHelper.setForceShowIcon(true);
@@ -219,17 +221,19 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
                 manager.replaceMember(member, newMember);
                 member = newMember;
             } else {
-                member.setFirstName(name);
+                member.setName(name);
                 member.setSurname(surname);
                 member.setBirthDate(birth_date);
             }
+            member.setJoinedDate(joined_date);
+            member.setNote(getEditTextContent(note));
         } else {
             member = manager.createMember((int) type.getTag(), name, surname, birth_date);
             member.setContactManager(contactManager);
+            member.setJoinedDate(joined_date);
+            member.setNote(getEditTextContent(note));
             manager.addMember(member);
         }
-        member.setJoinedDate(joined_date);
-        member.setNote(getEditTextContent(note));
 
         setResult(0);
         finish();

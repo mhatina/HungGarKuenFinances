@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@android:drawable/screen_background_light_transparent"
-            android:onClick="showMemberTypePopup"
+            android:clickable="true"
             android:src="@drawable/beginner_icon" />
 
         <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout
