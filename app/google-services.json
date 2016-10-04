@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "126168175263",
-    "project_id": "hung-gar-kuen"
+    "firebase_url": "https://hung-gar-kuen.firebaseio.com",
+    "project_id": "hung-gar-kuen",
+    "storage_bucket": "hung-gar-kuen.appspot.com"
   },
   "client": [
     {
@@ -21,6 +23,10 @@
           }
         },
         {
+          "client_id": "126168175263-kf1vlfd26vtpu2tsudgif6m802t69u75.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
           "client_id": "126168175263-4mihk0re6j4phksu0laumv1lbk3p60u4.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -35,11 +41,16 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "126168175263-kf1vlfd26vtpu2tsudgif6m802t69u75.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }
