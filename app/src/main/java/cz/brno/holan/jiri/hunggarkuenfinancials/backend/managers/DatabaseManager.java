@@ -25,7 +25,9 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity
 /**
  * Created by mhatina on 03/10/16.
  */
-public interface LoadManager {
+public interface DatabaseManager {
     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("members");
     void load(MainActivity activity);
+    void update();
+    void delete();
 }
