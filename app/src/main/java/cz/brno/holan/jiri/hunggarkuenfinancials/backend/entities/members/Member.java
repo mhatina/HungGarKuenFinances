@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.Payment;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Address;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Mail;
@@ -31,7 +32,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ContactManager;
 /**
  * Created by mhatina on 3/8/16.
  */
-public class Member {
+public class Member extends BaseEntity {
 
     public static final int ICON_PATH = R.drawable.lam_ga_hung_kuen_logo;
     public static final int PAYMENT_OK = android.R.drawable.presence_online;
@@ -40,14 +41,22 @@ public class Member {
     public static final long BEFORE_END_OF_PAYMENT_PERIOD = 3 * 24 * 60 * 60 * 1000; // #days * 24h * 60min * 60sec * 1000msec
     public static final long INACTIVATION_PERIOD = 14 * 24 * 60 * 60 * 1000; // #days * 24h * 60min * 60sec * 1000msec
 
-    private Long       id;
+    public static final int NAME_ = 0x1;
+    public static final int SURNAME_ = 0x2;
+    public static final int BIRTH_DATE_ = 0x4;
+    public static final int JOINED_DATE_ = 0x8;
+    public static final int PAID_UNTIL_ = 0x16;
+    public static final int NOTE_ = 0x32;
+
     private String name;
-    private String     surname;
-    private Date       birthDate;
-    private Date       joinedDate;
-    private Date       paidUntil;
+    private String surname;
+    private Date birthDate;
+    private Date joinedDate;
+    private Date paidUntil;
     private MemberStatus status;
-    private String     note;
+    private String note;
+
+    private int updatePropertiesSwitch = 0;
 
     private ArrayList<Payment> payments;
     private ContactManager contactManager = new ContactManager();
@@ -60,18 +69,13 @@ public class Member {
     }
 
     public Member(long id, String name, String surname, Date birthDate) {
-        this.id = id;
+        super(id);
         this.name = name;
         this.surname = surname;
         this.paidUntil = new Date(System.currentTimeMillis());
         this.birthDate = birthDate;
         this.joinedDate = new Date(System.currentTimeMillis());
         updateStatus();
-
-        // TODO remove
-        contactManager.addContact(new Phone("+421 908 862 822", "Mobile"));
-        contactManager.addContact(new Mail("mail@work.co", "Work mail"));
-        contactManager.addContact(new Address("Purkynova 50, Brno", "Home address"));
     }
 
     @Override
@@ -81,7 +85,7 @@ public class Member {
 
         Member member = (Member) o;
 
-        if (!id.equals(member.id)) return false;
+        if (getId() != member.getId()) return false;
         if (!name.equals(member.name)) return false;
         return surname.equals(member.surname);
 
@@ -89,18 +93,9 @@ public class Member {
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + name.hashCode();
+        int result = name.hashCode();
         result = 31 * result + surname.hashCode();
         return result;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -108,7 +103,10 @@ public class Member {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (this.name == null || !this.name.equals(name)) {
+            this.name = name;
+            updatePropertiesSwitch |= NAME_;
+        }
     }
 
     public String getSurname() {
@@ -116,7 +114,10 @@ public class Member {
     }
 
     public void setSurname(String surname) {
-        this.surname = surname;
+        if (this.surname == null || !this.surname.equals(surname)) {
+            this.surname = surname;
+            updatePropertiesSwitch |= SURNAME_;
+        }
     }
 
     public Date getBirthDate() {
@@ -124,7 +125,10 @@ public class Member {
     }
 
     public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
+        if (this.birthDate == null || !this.birthDate.equals(birthDate)) {
+            this.birthDate = birthDate;
+            updatePropertiesSwitch |= BIRTH_DATE_;
+        }
     }
 
     public Date getJoinedDate() {
@@ -132,7 +136,10 @@ public class Member {
     }
 
     public void setJoinedDate(Date joinedDate) {
-        this.joinedDate = joinedDate;
+        if (this.joinedDate == null || !this.joinedDate.equals(joinedDate)) {
+            this.joinedDate = joinedDate;
+            updatePropertiesSwitch |= JOINED_DATE_;
+        }
     }
 
     public MemberStatus getStatus() {
@@ -165,7 +172,10 @@ public class Member {
     }
 
     public void setPaidUntil(Date paidUntil) {
-        this.paidUntil = paidUntil;
+        if (this.paidUntil == null || !this.paidUntil.equals(paidUntil)) {
+            this.paidUntil = paidUntil;
+            updatePropertiesSwitch |= PAID_UNTIL_;
+        }
     }
 
     public String getNote() {
@@ -173,7 +183,18 @@ public class Member {
     }
 
     public void setNote(String note) {
-        this.note = note;
+        if (this.note == null || !this.note.equals(note)) {
+            this.note = note;
+            updatePropertiesSwitch |= NOTE_;
+        }
+    }
+
+    public int getUpdatePropertiesSwitch() {
+        return updatePropertiesSwitch;
+    }
+
+    public void clearUpdatePropertiesSwitch() {
+        this.updatePropertiesSwitch = 0;
     }
 
     public int getIconPath() {
@@ -190,7 +211,7 @@ public class Member {
 
     @Override
     public String toString() {
-        return  "name='" + name + '\'' +
+        return "name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", birthDate=" + birthDate +
                 ", joinedDate=" + joinedDate +

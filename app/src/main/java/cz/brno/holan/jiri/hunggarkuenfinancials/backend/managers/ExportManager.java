@@ -27,27 +27,8 @@ import java.io.OutputStreamWriter;
 /**
  * Created by mhatina on 02/10/16.
  */
-public abstract class ExportManager {
+public interface ExportManager {
 
-    public abstract String toString();
-
-    void export(Context context, String filename) {
-        writeToFile(toString(), context);
-    }
-
-    private void writeToFile(String data, Context context) {
-        OutputStreamWriter outputStreamWriter = null;
-        try {
-            outputStreamWriter = new OutputStreamWriter(context.openFileOutput("config.txt", Context.MODE_PRIVATE));
-        } catch (FileNotFoundException e) {
-            return;
-        }
-
-        try {
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-        } catch (IOException e) {
-        }
-
-    }
+    String toString();
+    void export(Context context, String filename);
 }
