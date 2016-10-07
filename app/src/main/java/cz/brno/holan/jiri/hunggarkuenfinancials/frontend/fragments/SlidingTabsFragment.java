@@ -24,13 +24,8 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.MemberListOnItemClickListener;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.SlidingTabManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.SlidingTabLayout;
 
@@ -40,6 +35,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.SlidingTabLayout;
 public class SlidingTabsFragment extends Fragment {
 
     public static final String TAG = "SlidingTabsFragment";
+    ViewPager viewPager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,7 +44,7 @@ public class SlidingTabsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewpager);
+        viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         viewPager.setAdapter(new SwipeViewAdapter());
 
         ((SlidingTabLayout) view.findViewById(R.id.sliding_tabs)).setViewPager(viewPager);
@@ -58,7 +54,7 @@ public class SlidingTabsFragment extends Fragment {
 
         public static final int NUM_OF_PAGES = 3;
 
-        private SlidingTabManager tabManager = new SlidingTabManager();
+        private SlidingTabManager tabManager = SlidingTabManager.createInstance(viewPager);
 
         @Override
         public int getCount() {
@@ -77,7 +73,7 @@ public class SlidingTabsFragment extends Fragment {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            return tabManager.getInstance(getActivity(), container, position);
+            return tabManager.createInstance(getActivity(), container, position);
         }
 
         @Override

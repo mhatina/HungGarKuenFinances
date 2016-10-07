@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.PopupMenu;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,7 +38,10 @@ import android.widget.Toast;
 import java.lang.reflect.Field;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Address;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Contact;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Mail;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Phone;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ContactManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.CreateNewMemberActivity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
@@ -51,6 +55,7 @@ public class NewContactFragment extends DialogFragment implements ImageButton.On
     private ImageButton contact_type;
     private TextInputLayout contact_content;
     private TextInputLayout contact_note;
+    private ContactManager contactManager;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -64,7 +69,7 @@ public class NewContactFragment extends DialogFragment implements ImageButton.On
         contact_type = (ImageButton) view.findViewById(R.id.new_contact_type);
         contact_type.setOnClickListener(this);
 
-        CreateNewMemberActivity.setImageButtonResource(contact_type, R.drawable.home_black);
+        CreateNewMemberActivity.setImageButtonResource(contact_type, Address.ICON_PATH);
 
         builder.setMessage("New contact")
                 .setView(view)
@@ -115,16 +120,19 @@ public class NewContactFragment extends DialogFragment implements ImageButton.On
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.type_address:
-                CreateNewMemberActivity.setImageButtonResource(contact_type, R.drawable.home_black);
+                CreateNewMemberActivity.setImageButtonResource(contact_type, Address.ICON_PATH);
                 contact_content.setHint("Address");
+                contact_content.getEditText().setInputType(InputType.TYPE_CLASS_TEXT);
                 return true;
             case R.id.type_mail:
-                CreateNewMemberActivity.setImageButtonResource(contact_type, R.drawable.mail_black);
+                CreateNewMemberActivity.setImageButtonResource(contact_type, Mail.ICON_PATH);
                 contact_content.setHint("Mail");
+                contact_content.getEditText().setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 return true;
             case R.id.type_phone:
-                CreateNewMemberActivity.setImageButtonResource(contact_type, R.drawable.phone_black);
+                CreateNewMemberActivity.setImageButtonResource(contact_type, Phone.ICON_PATH);
                 contact_content.setHint("Phone");
+                contact_content.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
                 return true;
             default:
                 return false;
@@ -161,9 +169,13 @@ public class NewContactFragment extends DialogFragment implements ImageButton.On
             return false;
         }
 
-        contact = ContactManager.createContact((int) contact_type.getTag(), contact_content.getEditText().getText().toString(), contact_note_string);
+        contact = contactManager.createContact((int) contact_type.getTag(), contact_content.getEditText().getText().toString(), contact_note_string);
         adapter = ((ArrayAdapter<Contact>) contact_list.getAdapter());
         adapter.add(contact);
         return true;
+    }
+
+    public void setContactManager(ContactManager contactManager) {
+        this.contactManager = contactManager;
     }
 }

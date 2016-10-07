@@ -83,7 +83,8 @@ public class MemberDetailDialog extends DialogFragment implements MenuItem.OnMen
         setPaymentStatus(member);
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        birthDate.setText(formatter.format(member.getBirthDate()));
+        if (member.getBirthDate() != null)
+            birthDate.setText(formatter.format(member.getBirthDate()));
         joinDate.setText(formatter.format(member.getJoinedDate()));
         note.setText(member.getNote());
 

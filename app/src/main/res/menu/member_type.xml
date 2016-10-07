@@ -20,6 +20,9 @@
     <item android:id="@+id/type_adult"
         android:title="Adult"
         android:icon="@drawable/adult_icon" />
+    <item android:id="@+id/type_youngster"
+        android:title="Youngster"
+        android:icon="@drawable/youngster_icon"/>
     <item android:id="@+id/type_junior"
         android:title="Junior"
         android:icon="@drawable/junior_icon"/>

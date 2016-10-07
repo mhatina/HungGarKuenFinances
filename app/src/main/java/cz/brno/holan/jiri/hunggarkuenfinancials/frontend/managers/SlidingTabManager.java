@@ -18,6 +18,8 @@
 package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers;
 
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
@@ -27,7 +29,6 @@ import android.widget.TextView;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ProductManager;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.CreateNewMemberActivity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ProductsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.MemberListOnItemClickListener;
@@ -37,43 +38,56 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.MemberListOnI
  */
 public class SlidingTabManager {
 
-    public static final int MEMBER_ACTIVITY_INDEX = 1;
-    public static final int PAYMENT_ACTIVITY_INDEX = 2;
-    public static final int PRODUCT_ACTIVITY_INDEX = 0;
+    public static final int MEMBER_LIST_INDEX = 1;
+    public static final int PAYMENT_LIST_INDEX = 2;
+    public static final int PRODUCT_LIST_INDEX = 0;
 
-    CreateNewMemberActivity memberActivity;
+    private ListView mMemberList = null;
+    private ListView mPaymentList = null;
+    private ListView mProductList = null;
 
-    public SlidingTabManager() {
-        memberActivity = new CreateNewMemberActivity();
+    ViewPager viewPager;
+
+    private static SlidingTabManager ourInstance = new SlidingTabManager();
+
+    public static SlidingTabManager createInstance(ViewPager viewPager) {
+        ourInstance.viewPager = viewPager;
+        return ourInstance;
+    }
+
+    public static SlidingTabManager createInstance() {
+        return ourInstance;
     }
 
     public String getTabTitle(int position) {
         switch (position) {
-            case MEMBER_ACTIVITY_INDEX:
+            case MEMBER_LIST_INDEX:
                 return "Members";
-            case PAYMENT_ACTIVITY_INDEX:
+            case PAYMENT_LIST_INDEX:
                 return "Payments";
-            case PRODUCT_ACTIVITY_INDEX:
+            case PRODUCT_LIST_INDEX:
                 return "Products";
             default:
                 return "Unknown";
         }
     }
 
-    public Object getInstance(FragmentActivity context, ViewGroup container, int position) {
-        ListView listView;
+    public Object createInstance(FragmentActivity context, ViewGroup container, int position) {
+        if (mMemberList == null) {
+            mMemberList = prepareTabObject(context, container, new MembersAdapter(context, R.layout.layout_member, MemberManager.getInstance().getMembers()));
+            mMemberList.setOnItemClickListener(new MemberListOnItemClickListener(mMemberList, context.getFragmentManager()));
+
+            mProductList = prepareTabObject(context, container, new ProductsAdapter(context, R.layout.layout_product, ProductManager.getInstance().getProducts()));
+            // TODO setOnItemClickListener
+        }
 
         switch (position) {
-            case MEMBER_ACTIVITY_INDEX:
-                listView = prepareTabObject(context, container, new MembersAdapter(context, R.layout.layout_member, MemberManager.getInstance().getMembers()));
-                listView.setOnItemClickListener(new MemberListOnItemClickListener(listView, context.getFragmentManager()));
-                return listView;
-            case PAYMENT_ACTIVITY_INDEX:
+            case MEMBER_LIST_INDEX:
+                return mMemberList;
+            case PAYMENT_LIST_INDEX:
                 return null;
-            case PRODUCT_ACTIVITY_INDEX:
-                ListAdapter adapter = new ProductsAdapter(context, R.layout.layout_product, ProductManager.getInstance().getProducts());
-                listView = prepareTabObject(context, container, adapter);
-                return listView;
+            case PRODUCT_LIST_INDEX:
+                return mProductList;
             default:
                 View view = context.getLayoutInflater().inflate(R.layout.pager_item,
                         container, false);
@@ -96,5 +110,29 @@ public class SlidingTabManager {
 
         container.addView(listView);
         return listView;
+    }
+
+    public ListView getMemberList() {
+        if (mMemberList == null) {
+            mMemberList = (ListView) viewPager.getChildAt(MEMBER_LIST_INDEX);
+        }
+
+        return mMemberList;
+    }
+
+    public ListView getPaymentList() {
+        if (mPaymentList == null) {
+            mPaymentList = (ListView) viewPager.getChildAt(PAYMENT_LIST_INDEX);
+        }
+
+        return mPaymentList;
+    }
+
+    public ListView getProductList() {
+        if (mProductList == null) {
+            mProductList = (ListView) viewPager.getChildAt(PRODUCT_LIST_INDEX);
+        }
+
+        return mProductList;
     }
 }
