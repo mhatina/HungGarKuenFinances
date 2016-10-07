@@ -21,7 +21,7 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products;
  * Created by mhatina on 01/10/16.
  */
 public class OneTimeOnly extends Product {
-    public OneTimeOnly(String name, int value) {
-        super(name, value);
+    public OneTimeOnly(long id, String name, int value) {
+        super(id, name, value);
     }
 }

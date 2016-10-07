@@ -25,8 +25,8 @@ public class Periodic extends Product {
     long validTime;
     int perWeek;
 
-    public Periodic(String name, int value, long validTime, int perWeek) {
-        super(name, value);
+    public Periodic(long id, String name, int value, long validTime, int perWeek) {
+        super(id, name, value);
         this.validTime = validTime;
         this.perWeek = perWeek;
     }
