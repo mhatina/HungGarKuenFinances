@@ -15,8 +15,8 @@ public class Address extends Contact {
     public Address() {
     }
 
-    public Address(String contact, String note) {
-        super(contact, note);
+    public Address(long id, String contact, String note) {
+        super(id, contact, note);
     }
 
     @Override

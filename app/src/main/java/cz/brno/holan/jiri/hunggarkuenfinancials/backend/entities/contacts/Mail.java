@@ -32,8 +32,8 @@ public class Mail extends Contact {
     public Mail() {
     }
 
-    public Mail(String contact, String note) {
-        super(contact, note);
+    public Mail(long id, String contact, String note) {
+        super(id, contact, note);
     }
 
     @Override

@@ -32,8 +32,8 @@ public class Phone extends Contact {
     public Phone() {
     }
 
-    public Phone(String content, String note) {
-        super(content, note);
+    public Phone(long id, String content, String note) {
+        super(id, content, note);
     }
 
     @Override

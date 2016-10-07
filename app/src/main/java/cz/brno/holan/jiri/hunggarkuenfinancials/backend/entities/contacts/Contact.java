@@ -20,11 +20,12 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts;
 import android.content.Context;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 
 /**
  * Created by mhatina on 3/9/16.
  */
-public abstract class Contact {
+public abstract class Contact extends BaseEntity {
     public static final int ICON_PATH = R.drawable.home_black;
     private String content;
     private String note;
@@ -32,7 +33,8 @@ public abstract class Contact {
     public Contact() {
     }
 
-    public Contact(String contact, String note) {
+    public Contact(long id, String contact, String note) {
+        super(id);
         this.content = contact;
         this.note = note;
     }
