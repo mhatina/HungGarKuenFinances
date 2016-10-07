@@ -17,9 +17,8 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
-import android.content.Context;
-import android.support.v4.app.FragmentActivity;
 import android.widget.BaseAdapter;
+import android.widget.ListView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,21 +30,25 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import cz.brno.holan.jiri.hunggarkuenfinancials.R;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Adult;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Child;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Junior;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Youngster;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.SlidingTabManager;
 
 
-public class MemberManager extends ExportManager implements LoadManager {
+public class MemberManager extends BaseManager {
     private ArrayList<Member> mMembers;
+    private long newMemberId;
 
-    private static MemberManager ourInstance;
+    private static MemberManager ourInstance = null;
 
     public static MemberManager getInstance(MainActivity activity) {
-        ourInstance = new MemberManager(activity);
+        if (ourInstance == null)
+            ourInstance = new MemberManager(activity);
         return ourInstance;
     }
 
@@ -55,8 +58,17 @@ public class MemberManager extends ExportManager implements LoadManager {
 
     private MemberManager(MainActivity activity) {
         mMembers = new ArrayList<>();
+        mDatabase.child("members").keepSynced(true);
 
         load(activity);
+    }
+
+    public long getNewMemberId() {
+        return newMemberId;
+    }
+
+    public void setNewMemberId(long newMemberId) {
+        this.newMemberId = newMemberId;
     }
 
     /**
@@ -113,18 +125,20 @@ public class MemberManager extends ExportManager implements LoadManager {
      * @return newly created member
      */
     public Member createMember(int type, String name, String surname, Date birth_date) {
-        long id = 0;
-        if (!mMembers.isEmpty())
-            id = mMembers.get(mMembers.size() - 1).getId() + 1;
+        newMemberId++;
+        mDatabase.child("members").child("id").setValue(newMemberId);
+
         switch (type) {
-            case R.drawable.adult_icon:
-                return new Adult(id, name, surname, birth_date);
-            case R.drawable.junior_icon:
-                return new Junior(id, name, surname, birth_date);
-            case R.drawable.child_icon:
-                return new Child(id, name, surname, birth_date);
+            case Adult.ICON_PATH:
+                return new Adult(newMemberId, name, surname, birth_date);
+            case Youngster.ICON_PATH:
+                return new Youngster(newMemberId, name, surname, birth_date);
+            case Junior.ICON_PATH:
+                return new Junior(newMemberId, name, surname, birth_date);
+            case Child.ICON_PATH:
+                return new Child(newMemberId, name, surname, birth_date);
             default:
-                return new Member(id, name, surname, birth_date);
+                return new Member(newMemberId, name, surname, birth_date);
         }
     }
 
@@ -135,23 +149,9 @@ public class MemberManager extends ExportManager implements LoadManager {
      */
     public void addMember(Member member) {
         mMembers.add(member);
-        uploadMember(member);
+        upload(member);
     }
 
-    private void uploadMember(Member member) {
-        DatabaseReference reference = mDatabase.child(member.getClass().getSimpleName())
-                .child(String.valueOf(member.getId()));
-
-        reference.child("id").setValue(member.getId());
-        reference.child("name").setValue(member.getName());
-        reference.child("surname").setValue(member.getSurname());
-        reference.child("birthDate").setValue(member.getBirthDate());
-        reference.child("joinedDate").setValue(member.getJoinedDate());
-        reference.child("paidUntil").setValue(member.getPaidUntil());
-        reference.child("note").setValue(member.getNote());
-
-        member.getContactManager().uploadContacts(reference);
-    }
 
     /**
      * Delete member
@@ -160,9 +160,7 @@ public class MemberManager extends ExportManager implements LoadManager {
      */
     public void deleteMember(Member member) {
         mMembers.remove(member);
-        mDatabase.child(member.getClass().getSimpleName())
-                .child(String.valueOf(member.getId()))
-                .removeValue();
+        delete(member);
     }
 
 
@@ -175,6 +173,7 @@ public class MemberManager extends ExportManager implements LoadManager {
     public void replaceMember(Member oldMember, Member newMember) {
         newMember.setId(oldMember.getId());
         newMember.setContactManager(oldMember.getContactManager());
+        newMember.setPaidUntil(oldMember.getPaidUntil());
         deleteMember(oldMember);
         addMember(newMember);
     }
@@ -224,27 +223,25 @@ public class MemberManager extends ExportManager implements LoadManager {
 
     @Override
     public void load(final MainActivity activity) {
-        mDatabase.addListenerForSingleValueEvent(
+        mDatabase.child("members").addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
+                        newMemberId = dataSnapshot.child("id").getValue(long.class);
+
                         for (DataSnapshot postSnapshot : dataSnapshot.child("Adult").getChildren()) {
-                            Adult adult = postSnapshot.getValue(Adult.class);
-                            if (adult.getContactManager() == null)
-                                adult.setContactManager(new ContactManager());
-                            mMembers.add(adult);
+                            loadMember(postSnapshot, Adult.class);
                         }
                         for (DataSnapshot postSnapshot : dataSnapshot.child("Junior").getChildren()) {
-                            Junior junior = postSnapshot.getValue(Junior.class);
-                            mMembers.add(junior);
+                            loadMember(postSnapshot, Junior.class);
                         }
                         for (DataSnapshot postSnapshot : dataSnapshot.child("Child").getChildren()) {
-                            Child child = postSnapshot.getValue(Child.class);
-                            mMembers.add(child);
+                            loadMember(postSnapshot, Child.class);
                         }
 
-                        ((BaseAdapter) activity.getMemberListView().getAdapter()).notifyDataSetChanged();
+                        ListView memberList = SlidingTabManager.createInstance().getMemberList();
+                        ((BaseAdapter) memberList.getAdapter()).notifyDataSetChanged();
                     }
 
                     @Override
@@ -252,6 +249,63 @@ public class MemberManager extends ExportManager implements LoadManager {
 
                     }
                 });
+    }
+
+    private void loadMember(DataSnapshot postSnapshot, Class<?> memberClass) {
+        Member member = (Member) postSnapshot.getValue(memberClass);
+        if (member.getContactManager() == null)
+            member.setContactManager(new ContactManager());
+        postSnapshot = postSnapshot.child("contacts");
+        member.getContactManager().load(postSnapshot);
+        mMembers.add(member);
+    }
+
+    @Override
+    public void upload(BaseEntity entity) {
+        Member member = (Member) entity;
+        DatabaseReference reference = mDatabase.child("members").child(member.getClass().getSimpleName())
+                .child(String.valueOf(member.getId()));
+
+        reference.child("id").setValue(member.getId());
+        reference.child("name").setValue(member.getName());
+        reference.child("surname").setValue(member.getSurname());
+        if (member.getBirthDate() != null)
+            reference.child("birthDate").setValue(member.getBirthDate());
+        reference.child("joinedDate").setValue(member.getJoinedDate());
+        reference.child("paidUntil").setValue(member.getPaidUntil());
+        reference.child("note").setValue(member.getNote());
+
+        member.getContactManager().uploadContacts(reference);
+    }
+
+    @Override
+    public void update(BaseEntity entity) {
+        Member member = (Member) entity;
+        DatabaseReference reference = mDatabase.child("members").child(member.getClass().getSimpleName())
+                .child(String.valueOf(member.getId()));
+
+        if ((member.getUpdatePropertiesSwitch() & Member.NAME_) > 0)
+            reference.child("name").setValue(member.getName());
+        if ((member.getUpdatePropertiesSwitch() & Member.SURNAME_) > 0)
+            reference.child("surname").setValue(member.getSurname());
+        if ((member.getUpdatePropertiesSwitch() & Member.BIRTH_DATE_) > 0)
+            reference.child("birthDate").setValue(member.getBirthDate());
+        if ((member.getUpdatePropertiesSwitch() & Member.JOINED_DATE_) > 0)
+            reference.child("joinedDate").setValue(member.getJoinedDate());
+        if ((member.getUpdatePropertiesSwitch() & Member.PAID_UNTIL_) > 0)
+            reference.child("paidUntil").setValue(member.getPaidUntil());
+        if ((member.getUpdatePropertiesSwitch() & Member.NOTE_) > 0)
+            reference.child("note").setValue(member.getNote());
+
+        member.clearUpdatePropertiesSwitch();
+    }
+
+    @Override
+    public void delete(BaseEntity entity) {
+        Member member = (Member) entity;
+        mDatabase.child("members").child(member.getClass().getSimpleName())
+                .child(String.valueOf(member.getId()))
+                .removeValue();
     }
 
     /**
