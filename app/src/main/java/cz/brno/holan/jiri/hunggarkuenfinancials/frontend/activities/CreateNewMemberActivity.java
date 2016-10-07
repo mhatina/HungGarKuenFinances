@@ -41,7 +41,11 @@ import java.util.Date;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Contact;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Adult;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Child;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Junior;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Youngster;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ContactManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ContactsAdapter;
@@ -66,7 +70,7 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
 
         setTitle("New member");
 
-        setImageButtonResource(type, R.drawable.adult_icon);
+        setImageButtonResource(type, Adult.ICON_PATH);
         contactManager = new ContactManager();
         contact_list.setAdapter(new ContactsAdapter(this, R.layout.layout_contact_new, contactManager.getContacts()));
         setDate(R.id.create_new_day_of_joining, R.id.create_new_month_of_joining, R.id.create_new_year_of_joining, new Date(System.currentTimeMillis()));
@@ -87,7 +91,8 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
         setImageButtonResource(type, member.getIconPath());
         setEditTextContent(name, member.getName());
         setEditTextContent(surname, member.getSurname());
-        setDate(R.id.create_new_day_of_birth, R.id.create_new_month_of_birth, R.id.create_new_year_of_birth, member.getBirthDate());
+        if (member.getBirthDate() != null)
+            setDate(R.id.create_new_day_of_birth, R.id.create_new_month_of_birth, R.id.create_new_year_of_birth, member.getBirthDate());
         setDate(R.id.create_new_day_of_joining, R.id.create_new_month_of_joining, R.id.create_new_year_of_joining, member.getJoinedDate());
         setEditTextContent(note, member.getNote());
         contact_list.setAdapter(new ContactsAdapter(this, R.layout.layout_contact, member.getContactManager().getContacts()));
@@ -153,6 +158,7 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
         switch (view.getId()) {
             case R.id.new_contact_button:
                 NewContactFragment newFragment = new NewContactFragment();
+                newFragment.setContactManager(contactManager);
                 newFragment.show(getFragmentManager(), "new_contact");
                 break;
             case R.id.create_new_member_type:
@@ -167,13 +173,16 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
 
         switch (item.getItemId()) {
             case R.id.type_adult:
-                setImageButtonResource(button, R.drawable.adult_icon);
+                setImageButtonResource(button, Adult.ICON_PATH);
+                return true;
+            case R.id.type_youngster:
+                setImageButtonResource(button, Youngster.ICON_PATH);
                 return true;
             case R.id.type_junior:
-                setImageButtonResource(button, R.drawable.junior_icon);
+                setImageButtonResource(button, Junior.ICON_PATH);
                 return true;
             case R.id.type_child:
-                setImageButtonResource(button, R.drawable.child_icon);
+                setImageButtonResource(button, Child.ICON_PATH);
                 return true;
             default:
                 return false;
@@ -209,14 +218,14 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
         String name = verifyName(R.id.create_new_member_name);
         String surname = verifyName(R.id.create_new_member_surname);
 
-        Date birth_date = verifyDate(R.id.create_new_day_of_birth, R.id.create_new_month_of_birth, R.id.create_new_year_of_birth);
-        Date joined_date = verifyDate(R.id.create_new_day_of_joining, R.id.create_new_month_of_joining, R.id.create_new_year_of_joining);
+        Date birth_date = verifyDate(R.id.create_new_day_of_birth, R.id.create_new_month_of_birth, R.id.create_new_year_of_birth, false);
+        Date joined_date = verifyDate(R.id.create_new_day_of_joining, R.id.create_new_month_of_joining, R.id.create_new_year_of_joining, true);
 
-        if (name == null || surname == null || birth_date == null || joined_date == null) {
+        if (name == null || surname == null || joined_date == null) {
             return false;
         } else if (getIntent().hasExtra(EDIT_ENTITY)) {
             member = manager.findMember(getIntent().getLongExtra(EDIT_ENTITY, 0));
-            if (member.getIconPath() != type.getTag()) {
+            if (member.getIconPath() != (int) type.getTag()) {
                 Member newMember = manager.createMember((int) type.getTag(), name, surname, birth_date);
                 manager.replaceMember(member, newMember);
                 member = newMember;
@@ -227,11 +236,14 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
             }
             member.setJoinedDate(joined_date);
             member.setNote(getEditTextContent(note));
+
+            manager.update(member);
         } else {
             member = manager.createMember((int) type.getTag(), name, surname, birth_date);
             member.setContactManager(contactManager);
             member.setJoinedDate(joined_date);
             member.setNote(getEditTextContent(note));
+
             manager.addMember(member);
         }
 
@@ -245,7 +257,7 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
         button.setTag(resource);
     }
 
-    private Date verifyDate(int dayResource, int monthResource, int yearResource) {
+    private Date verifyDate(int dayResource, int monthResource, int yearResource, boolean required) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         TextInputLayout dayText = (TextInputLayout) findViewById(dayResource);
         TextInputLayout monthText = (TextInputLayout) findViewById(monthResource);
@@ -260,7 +272,8 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
         if (getEditTextContent(dayText).isEmpty()
                 || getEditTextContent(monthText).isEmpty()
                 || getEditTextContent(yearText).isEmpty()) {
-            yearText.setError("Date is required.");
+            if (required)
+                yearText.setError("Date is required.");
             return null;
         }
 
