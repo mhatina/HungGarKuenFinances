@@ -26,7 +26,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.R;
  */
 public class Adult extends Member {
 
-    public final int ICON_PATH = R.drawable.adult_icon;
+    public static final int ICON_PATH = R.drawable.adult_icon;
 
     public Adult() {
     }

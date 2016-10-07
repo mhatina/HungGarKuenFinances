@@ -26,7 +26,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.R;
  */
 public class Junior extends Member {
 
-    public final int ICON_PATH = R.drawable.junior_icon;
+    public static final int ICON_PATH = R.drawable.junior_icon;
 
     public Junior() {
     }
