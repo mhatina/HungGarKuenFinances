@@ -49,7 +49,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Product;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ProductManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.MemberDetailDialog;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.SlidingTabsFragment;
@@ -135,6 +137,7 @@ public class MainActivity extends AppCompatActivity
         super.onStart();
 
         MemberManager.getInstance(this);
+        ProductManager.getInstance();
 
         // TODO login
 //        Intent intent = new Intent(this, LoginActivity.class);

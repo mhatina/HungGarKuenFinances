@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.OneTimeOnly;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Periodic;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Product;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity;
 
@@ -39,7 +41,8 @@ public class ProductManager extends BaseManager {
     private ProductManager() {
         mProducts = new ArrayList<>();
         // TODO remove
-        addProduct(new Product(0, "Training", 3000));
+        addProduct(new Periodic(0, "Training", 3000, 0, 3));
+        addProduct(new OneTimeOnly(0, "Training", 3000));
     }
 
 

@@ -28,6 +28,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.OneTimeOnly;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Periodic;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Product;
 
 /**
@@ -59,6 +61,11 @@ public class ProductsAdapter extends ArrayAdapter<Product> {
 
         if (product != null) {
             viewHolder.name.setText(product.getName());
+            viewHolder.price.setText(product.getPrice());
+            if (product instanceof Periodic)
+                viewHolder.detail.setText(((Periodic) product).getPerWeek());
+            else
+                viewHolder.detail.setText(((OneTimeOnly) product).getStock());
         }
 
         return convertView;
@@ -71,9 +78,13 @@ public class ProductsAdapter extends ArrayAdapter<Product> {
 
     public class ViewHolder {
         public TextView name;
+        public TextView price;
+        public TextView detail;
 
         ViewHolder(View view) {
             name = (TextView) view.findViewById(R.id.product_layout_name);
+            price = (TextView) view.findViewById(R.id.product_layout_price);
+            detail = (TextView) view.findViewById(R.id.product_layout_detail);
         }
     }
 }

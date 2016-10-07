@@ -31,6 +31,22 @@ public class Periodic extends Product {
         this.perWeek = perWeek;
     }
 
+    public long getValidTime() {
+        return validTime;
+    }
+
+    public void setValidTime(long validTime) {
+        this.validTime = validTime;
+    }
+
+    public int getPerWeek() {
+        return perWeek;
+    }
+
+    public void setPerWeek(int perWeek) {
+        this.perWeek = perWeek;
+    }
+
     @Override
     public String toString() {
         return super.toString() +

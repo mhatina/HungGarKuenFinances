@@ -24,13 +24,13 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
  */
 public class Product extends BaseEntity {
     String name;
-    int value;
+    int price;
     boolean isAvailable;
 
     public Product(long id, String name, int value) {
         super(id);
         this.name = name;
-        this.value = value;
+        this.price = value;
     }
 
     public String getName() {
@@ -41,12 +41,12 @@ public class Product extends BaseEntity {
         this.name = name;
     }
 
-    public int getValue() {
-        return value;
+    public int getPrice() {
+        return price;
     }
 
-    public void setValue(int value) {
-        this.value = value;
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public boolean isAvailable() {
@@ -64,7 +64,7 @@ public class Product extends BaseEntity {
 
         Product product = (Product) o;
 
-        if (value != product.value) return false;
+        if (price != product.price) return false;
         return !(name != null ? !name.equals(product.name) : product.name != null);
 
     }
@@ -72,14 +72,14 @@ public class Product extends BaseEntity {
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + value;
+        result = 31 * result + price;
         return result;
     }
 
     @Override
     public String toString() {
         return "name='" + name + '\'' +
-               ", value=" + value +
+               ", price=" + price +
                ", isAvailable=" + isAvailable;
     }
 }
