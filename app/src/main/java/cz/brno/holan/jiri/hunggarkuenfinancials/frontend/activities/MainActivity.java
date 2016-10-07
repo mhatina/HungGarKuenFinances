@@ -26,6 +26,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -43,7 +44,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter;
@@ -60,12 +64,11 @@ public class MainActivity extends AppCompatActivity
 
     private String TAG = "MainActivity";
 
-    private MemberManager mMembersManager;
-    private Member mContextMenuMember;
+    private BaseEntity mContextEntity;
 
     public MainActivity() {
-        mMembersManager = MemberManager.getInstance(this);
-        mContextMenuMember = null;
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        mContextEntity = null;
     }
 
     private void initNavigationView() {
@@ -87,7 +90,23 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(v.getContext(), CreateNewMemberActivity.class));
+                Class<?> activity = null;
+                ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+                SearchView searchView = (SearchView) findViewById(R.id.search);
+                if (viewPager.getCurrentItem() == SlidingTabManager.MEMBER_LIST_INDEX) {
+                    activity = CreateNewMemberActivity.class;
+                } else if (viewPager.getCurrentItem() == SlidingTabManager.PAYMENT_LIST_INDEX) {
+
+                } else if (viewPager.getCurrentItem() == SlidingTabManager.PRODUCT_LIST_INDEX) {
+
+                }
+
+                if (activity != null) {
+                    searchView.setIconified(true);
+                    startActivity(new Intent(v.getContext(), activity));
+                } else {
+                    // TODO report problem
+                }
             }
         });
     }
@@ -114,6 +133,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+
+        MemberManager.getInstance(this);
 
         // TODO login
 //        Intent intent = new Intent(this, LoginActivity.class);
@@ -221,8 +242,16 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
-        mContextMenuMember = (Member) memberList.getItemAtPosition(adapterMenuInfo.position);
-        menu.setHeaderTitle(mContextMenuMember.getName() + " " + mContextMenuMember.getSurname());
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        if (viewPager.getCurrentItem() == SlidingTabManager.MEMBER_LIST_INDEX) {
+            Member member;
+            mContextEntity = member = (Member) memberList.getItemAtPosition(adapterMenuInfo.position);
+            menu.setHeaderTitle(member.getName() + " " + member.getSurname());
+        } else if (viewPager.getCurrentItem() == SlidingTabManager.PAYMENT_LIST_INDEX) {
+
+        } else if (viewPager.getCurrentItem() == SlidingTabManager.PRODUCT_LIST_INDEX) {
+
+        }
 
         menu.removeGroup(MemberDetailDialog.MEMBER_DETAIL_CONTEXT_GROUP_ID);
         menu.add(0, v.getId(), 0, "Edit");
@@ -233,7 +262,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getTitle().equals("Edit")) {
             Intent intent = new Intent(this, CreateNewMemberActivity.class);
-            intent.putExtra(CreateNewMemberActivity.EDIT_ENTITY, mContextMenuMember.getId());
+            intent.putExtra(CreateNewMemberActivity.EDIT_ENTITY, mContextEntity.getId());
             startActivityForResult(intent, 1);
         } else if (item.getTitle().equals("Delete")) {
             new AlertDialog.Builder(this)
@@ -241,10 +270,12 @@ public class MainActivity extends AppCompatActivity
                     .setMessage("Are you sure you want to delete member?")
                     .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            MemberManager.getInstance().deleteMember(mContextMenuMember);
-                            ArrayAdapter<Member> arrayAdapter = (ArrayAdapter<Member>) getMemberListView().getAdapter();
-                            arrayAdapter.remove(mContextMenuMember);
-                            mContextMenuMember = null;
+                            if (mContextEntity instanceof Member) {
+                                MemberManager.getInstance().deleteMember((Member) mContextEntity);
+                                ArrayAdapter<Member> arrayAdapter = (ArrayAdapter<Member>) getMemberListView().getAdapter();
+                                arrayAdapter.remove((Member) mContextEntity);
+                                mContextEntity = null;
+                            }
                         }
                     })
                     .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -261,12 +292,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public ListView getMemberListView() {
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        View view = viewPager.getChildAt(SlidingTabManager.MEMBER_ACTIVITY_INDEX);
-        if (view instanceof ListView)
-            return (ListView) view;
-
-        return null;
+        return SlidingTabManager.createInstance().getMemberList();
     }
 
     private void filterMemberList(String query) {
