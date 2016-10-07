@@ -17,13 +17,13 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 
-import cz.brno.holan.jiri.hunggarkuenfinancials.R;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Contact;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Address;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Contact;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Mail;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Phone;
 
@@ -54,17 +54,37 @@ public class ContactManager {
         }
     }
 
-    public static Contact createContact(int type, String contact, String note) {
+    public Contact createContact(int type, String contact, String note) {
+        long id = 0;
+        if (!contacts.isEmpty())
+            id = contacts.get(contacts.size() - 1).getId() + 1;
         switch (type) {
-            case R.drawable.home_black:
+            case Address.ICON_PATH:
                 // TODO translate
-                return new Address(contact, note.isEmpty() ? "Home address" : note);
-            case R.drawable.mail_black:
-                return new Mail(contact, note.isEmpty() ? "Personal mail" : note);
-            case R.drawable.phone_black:
-                return new Phone(contact, note.isEmpty() ? "Mobile phone" : note);
+                return new Address(id, contact, note.isEmpty() ? "Home address" : note);
+            case Mail.ICON_PATH:
+                return new Mail(id, contact, note.isEmpty() ? "Personal mail" : note);
+            case Phone.ICON_PATH:
+                return new Phone(id, contact, note.isEmpty() ? "Mobile phone" : note);
             default:
                 return null;
         }
+    }
+
+    public void load(DataSnapshot snapshot) {
+        for (DataSnapshot postSnapshot : snapshot.child("Address").getChildren()) {
+            loadContact(postSnapshot, Address.class);
+        }
+        for (DataSnapshot postSnapshot : snapshot.child("Mail").getChildren()) {
+            loadContact(postSnapshot, Mail.class);
+        }
+        for (DataSnapshot postSnapshot : snapshot.child("Phone").getChildren()) {
+            loadContact(postSnapshot, Phone.class);
+        }
+    }
+
+    private void loadContact(DataSnapshot snapshot, Class<?> contactClass) {
+        Contact contact = (Contact) snapshot.getValue(contactClass);
+        contacts.add(contact);
     }
 }
