@@ -20,13 +20,14 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 import java.util.ArrayList;
 import java.util.List;
 
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Product;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity;
 
 /**
  * Created by mhatina on 03/10/16.
  */
-public class ProductManager extends ExportManager {
+public class ProductManager extends BaseManager {
     private ArrayList<Product> mProducts;
 
     private static ProductManager ourInstance = new ProductManager();
@@ -38,7 +39,7 @@ public class ProductManager extends ExportManager {
     private ProductManager() {
         mProducts = new ArrayList<>();
         // TODO remove
-        addProduct(new Product("Training", 3000));
+        addProduct(new Product(0, "Training", 3000));
     }
 
 
@@ -64,5 +65,25 @@ public class ProductManager extends ExportManager {
         }
 
         return exportText;
+    }
+
+    @Override
+    public void load(MainActivity activity) {
+
+    }
+
+    @Override
+    public void upload(BaseEntity entity) {
+
+    }
+
+    @Override
+    public void update(BaseEntity entity) {
+
+    }
+
+    @Override
+    public void delete(BaseEntity entity) {
+
     }
 }
