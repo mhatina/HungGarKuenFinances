@@ -61,11 +61,14 @@ public class ProductsAdapter extends ArrayAdapter<Product> {
 
         if (product != null) {
             viewHolder.name.setText(product.getName());
-            viewHolder.price.setText(product.getPrice());
-            if (product instanceof Periodic)
-                viewHolder.detail.setText(((Periodic) product).getPerWeek());
-            else
-                viewHolder.detail.setText(((OneTimeOnly) product).getStock());
+            viewHolder.price.setText(String.valueOf(product.getPrice()) + " CZK");
+            if (product instanceof Periodic) {
+                String perWeek = String.valueOf(((Periodic) product).getPerWeek());
+                viewHolder.detail.setText(perWeek + "/week");
+            } else {
+                String stock = String.valueOf(((OneTimeOnly) product).getStock());
+                viewHolder.detail.setText(stock + " in stock");
+            }
         }
 
         return convertView;
