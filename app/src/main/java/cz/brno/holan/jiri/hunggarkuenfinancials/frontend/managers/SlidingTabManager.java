@@ -17,8 +17,8 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers;
 
+import android.content.res.Resources;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,9 +33,6 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ProductsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.MemberListOnItemClickListener;
 
-/**
- * Created by mhatina on 02/10/16.
- */
 public class SlidingTabManager {
 
     public static final int MEMBER_LIST_INDEX = 1;
@@ -47,6 +44,7 @@ public class SlidingTabManager {
     private ListView mProductList = null;
 
     ViewPager viewPager;
+    Resources systemResources = Resources.getSystem();
 
     private static SlidingTabManager ourInstance = new SlidingTabManager();
 
@@ -62,13 +60,13 @@ public class SlidingTabManager {
     public String getTabTitle(int position) {
         switch (position) {
             case MEMBER_LIST_INDEX:
-                return "Members";
+                return systemResources.getString(R.string.members_title);
             case PAYMENT_LIST_INDEX:
-                return "Payments";
+                return systemResources.getString(R.string.payments_title);
             case PRODUCT_LIST_INDEX:
-                return "Products";
+                return systemResources.getString(R.string.products_title);
             default:
-                return "Unknown";
+                return systemResources.getString(R.string.unknown_title);
         }
     }
 

@@ -36,6 +36,7 @@ dependencies {
     compile 'com.google.firebase:firebase-database:9.6.1'
     compile 'com.google.firebase:firebase-crash:9.6.1'
     compile 'com.google.firebase:firebase-messaging:9.6.1'
+    compile 'org.docx4j:docx4j:3.3.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

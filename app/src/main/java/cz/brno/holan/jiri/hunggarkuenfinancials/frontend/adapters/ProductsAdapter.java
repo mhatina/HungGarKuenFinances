@@ -32,9 +32,6 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.OneTim
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Periodic;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Product;
 
-/**
- * Created by mhatina on 03/10/16.
- */
 public class ProductsAdapter extends ArrayAdapter<Product> {
 
     public ProductsAdapter(Context context, int resource, List<Product> objects) {
@@ -61,13 +58,14 @@ public class ProductsAdapter extends ArrayAdapter<Product> {
 
         if (product != null) {
             viewHolder.name.setText(product.getName());
-            viewHolder.price.setText(String.valueOf(product.getPrice()) + " CZK");
+            viewHolder.price.setText(getContext().getString(R.string.currency, String.valueOf(product.getPrice())));
             if (product instanceof Periodic) {
                 String perWeek = String.valueOf(((Periodic) product).getPerWeek());
-                viewHolder.detail.setText(perWeek + "/week");
+                perWeek += getContext().getString(R.string.week);
+                viewHolder.detail.setText(perWeek);
             } else {
-                String stock = String.valueOf(((OneTimeOnly) product).getStock());
-                viewHolder.detail.setText(stock + " in stock");
+                String stock = getContext().getString(R.string.in_stock, String.valueOf(((OneTimeOnly) product).getStock()));
+                viewHolder.detail.setText(stock);
             }
         }
 

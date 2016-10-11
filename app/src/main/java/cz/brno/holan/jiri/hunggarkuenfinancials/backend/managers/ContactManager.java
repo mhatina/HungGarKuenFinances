@@ -17,17 +17,19 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
+import android.content.res.Resources;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Address;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Contact;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Mail;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Phone;
 
-// TODO finish
 public class ContactManager {
     private ArrayList<Contact> contacts;
 
@@ -56,16 +58,16 @@ public class ContactManager {
 
     public Contact createContact(int type, String contact, String note) {
         long id = 0;
+        Resources system = Resources.getSystem();
         if (!contacts.isEmpty())
             id = contacts.get(contacts.size() - 1).getId() + 1;
         switch (type) {
             case Address.ICON_PATH:
-                // TODO translate
-                return new Address(id, contact, note.isEmpty() ? "Home address" : note);
+                return new Address(id, contact, note.isEmpty() ? system.getString(R.string.address_default_note) : note);
             case Mail.ICON_PATH:
-                return new Mail(id, contact, note.isEmpty() ? "Personal mail" : note);
+                return new Mail(id, contact, note.isEmpty() ? system.getString(R.string.mail_default_note) : note);
             case Phone.ICON_PATH:
-                return new Phone(id, contact, note.isEmpty() ? "Mobile phone" : note);
+                return new Phone(id, contact, note.isEmpty() ? system.getString(R.string.phone_default_note) : note);
             default:
                 return null;
         }

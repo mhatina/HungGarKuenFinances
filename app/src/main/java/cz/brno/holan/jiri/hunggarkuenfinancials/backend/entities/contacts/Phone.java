@@ -23,9 +23,6 @@ import android.net.Uri;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 
-/**
- * Created by mhatina on 22/09/16.
- */
 public class Phone extends Contact {
     public static final int ICON_PATH = R.drawable.phone_black;
 
@@ -43,7 +40,7 @@ public class Phone extends Contact {
 
     @Override
     public String getRunDescription() {
-        return "Call " + getContent();
+        return systemResources.getString(R.string.phone_run_description, getContent());
     }
 
     @Override

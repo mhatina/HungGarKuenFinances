@@ -6,9 +6,6 @@ import android.net.Uri;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 
-/**
- * Created by mhatina on 22/09/16.
- */
 public class Address extends Contact {
     public static final int ICON_PATH = R.drawable.home_black;
 
@@ -26,7 +23,7 @@ public class Address extends Contact {
 
     @Override
     public String getRunDescription() {
-        return "Show " + getContent();
+        return systemResources.getString(R.string.address_run_description, getContent());
     }
 
     @Override

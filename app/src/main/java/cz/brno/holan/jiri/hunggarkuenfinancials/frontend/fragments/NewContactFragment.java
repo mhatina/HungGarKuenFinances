@@ -46,9 +46,6 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ContactManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.CreateNewMemberActivity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 
-/**
- * Created by mhatina on 25/09/16.
- */
 // todo refactor
 public class NewContactFragment extends DialogFragment implements ImageButton.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
@@ -71,14 +68,14 @@ public class NewContactFragment extends DialogFragment implements ImageButton.On
 
         CreateNewMemberActivity.setImageButtonResource(contact_type, Address.ICON_PATH);
 
-        builder.setMessage("New contact")
+        builder.setMessage(R.string.new_contact_title)
                 .setView(view)
-                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                     }
@@ -121,17 +118,17 @@ public class NewContactFragment extends DialogFragment implements ImageButton.On
         switch (item.getItemId()) {
             case R.id.type_address:
                 CreateNewMemberActivity.setImageButtonResource(contact_type, Address.ICON_PATH);
-                contact_content.setHint("Address");
+                contact_content.setHint(getContext().getString(R.string.address));
                 contact_content.getEditText().setInputType(InputType.TYPE_CLASS_TEXT);
                 return true;
             case R.id.type_mail:
                 CreateNewMemberActivity.setImageButtonResource(contact_type, Mail.ICON_PATH);
-                contact_content.setHint("Mail");
+                contact_content.setHint(getContext().getString(R.string.mail));
                 contact_content.getEditText().setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 return true;
             case R.id.type_phone:
                 CreateNewMemberActivity.setImageButtonResource(contact_type, Phone.ICON_PATH);
-                contact_content.setHint("Phone");
+                contact_content.setHint(getContext().getString(R.string.phone));
                 contact_content.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
                 return true;
             default:
@@ -165,7 +162,7 @@ public class NewContactFragment extends DialogFragment implements ImageButton.On
         String contact_note_string = contact_note.getEditText().getText().toString();
 
         if (contact_content.getEditText().getText().toString().isEmpty()) {
-            contact_content.setError("This field is required.");
+            contact_content.setError(getContext().getString(R.string.required_error));
             return false;
         }
 

@@ -18,17 +18,16 @@
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 
-/**
- * Created by mhatina on 3/9/16.
- */
 public abstract class Contact extends BaseEntity {
     public static final int ICON_PATH = R.drawable.home_black;
     private String content;
     private String note;
+    Resources systemResources = Resources.getSystem();
 
     public Contact() {
     }

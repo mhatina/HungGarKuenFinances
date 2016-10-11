@@ -68,7 +68,7 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
         ImageButton type = (ImageButton) findViewById(R.id.create_new_member_type);
         ListView contact_list = (ListView) findViewById(R.id.create_new_contact_list);
 
-        setTitle("New member");
+        setTitle(getString(R.string.new_member_title));
 
         setImageButtonResource(type, Adult.ICON_PATH);
         contactManager = new ContactManager();
@@ -85,7 +85,7 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
         ListView contact_list = (ListView) findViewById(R.id.create_new_contact_list);
         Member member = MemberManager.getInstance().findMember(getIntent().getLongExtra(EDIT_ENTITY, 0));
 
-        setTitle("Edit member");
+        setTitle(getString(R.string.edit_member_title));
 
         contactManager = member.getContactManager();
         setImageButtonResource(type, member.getIconPath());
@@ -122,18 +122,18 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
         contextContact = (Contact) contact_list.getItemAtPosition(adapterMenuInfo.position);
         menu.setHeaderTitle(contextContact.getContent());
 
-        menu.add(0, v.getId(), 0, "Delete");
+        menu.add(0, v.getId(), 0, R.string.delete);
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         final ListView contact_list = (ListView) findViewById(R.id.create_new_contact_list);
 
-        if (item.getTitle().equals("Delete")) {
+        if (item.getTitle().equals(getString(R.string.delete))) {
             new AlertDialog.Builder(this)
-                    .setTitle("Delete contact " + contextContact.getContent())
-                    .setMessage("Are you sure you want to delete contact?")
-                    .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    .setTitle(getString(R.string.delete_contact_title) + " " + contextContact.getContent())
+                    .setMessage(R.string.sure_to_delete_contact)
+                    .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             ArrayAdapter<Contact> arrayAdapter = (ArrayAdapter<Contact>) contact_list.getAdapter();
                             arrayAdapter.remove(contextContact);
@@ -273,7 +273,7 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
                 || getEditTextContent(monthText).isEmpty()
                 || getEditTextContent(yearText).isEmpty()) {
             if (required)
-                yearText.setError("Date is required.");
+                yearText.setError(getString(R.string.date_required_error));
             return null;
         }
 
@@ -285,12 +285,12 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
             format.setLenient(false);
             date = format.parse(year + "-" + month + "-" + day);
         } catch (ParseException | NumberFormatException e) {
-            yearText.setError("Wrong format of date");
+            yearText.setError(getString(R.string.wrong_date_format_error));
             return null;
         }
 
         if (date.after(new Date(System.currentTimeMillis()))) {
-            yearText.setError("Date cannot be in future");
+            yearText.setError(getString(R.string.date_in_future_error));
             return null;
         }
 
@@ -300,7 +300,7 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
     private String verifyName(int nameResource) {
         TextInputLayout name = (TextInputLayout) findViewById(nameResource);
         if (getEditTextContent(name).isEmpty()) {
-            name.setError("This field is required.");
+            name.setError(getString(R.string.required_error));
             return null;
         } else {
             name.setError(null);

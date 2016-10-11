@@ -39,9 +39,6 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ContactsAdapter;
 
-/**
- * Created by mhatina on 29/09/16.
- */
 public class MemberDetailDialog extends DialogFragment implements MenuItem.OnMenuItemClickListener {
 
     public static final int MEMBER_DETAIL_CONTEXT_GROUP_ID = 1;
@@ -91,9 +88,9 @@ public class MemberDetailDialog extends DialogFragment implements MenuItem.OnMen
         registerForContextMenu(contactList);
         contactList.setOnCreateContextMenuListener(this);
 
-        builder.setMessage("Member details")
+        builder.setMessage(R.string.member_details_title)
                 .setView(view)
-                .setNegativeButton("Hide", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.hide, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                     }

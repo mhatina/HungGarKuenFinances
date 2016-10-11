@@ -19,15 +19,10 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
 import android.content.Context;
 
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-/**
- * Created by mhatina on 04/10/16.
- */
 public abstract class BaseManager implements DatabaseManager, ExportManager {
 
     public BaseManager() {

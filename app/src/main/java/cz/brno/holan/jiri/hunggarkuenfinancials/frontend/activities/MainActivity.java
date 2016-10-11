@@ -26,7 +26,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -49,7 +48,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Product;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ProductManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter;
@@ -257,21 +255,21 @@ public class MainActivity extends AppCompatActivity
         }
 
         menu.removeGroup(MemberDetailDialog.MEMBER_DETAIL_CONTEXT_GROUP_ID);
-        menu.add(0, v.getId(), 0, "Edit");
-        menu.add(0, v.getId(), 0, "Delete");
+        menu.add(0, v.getId(), 0, R.string.edit);
+        menu.add(0, v.getId(), 0, R.string.delete);
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if (item.getTitle().equals("Edit")) {
+        if (item.getTitle().equals(getString(R.string.edit))) {
             Intent intent = new Intent(this, CreateNewMemberActivity.class);
             intent.putExtra(CreateNewMemberActivity.EDIT_ENTITY, mContextEntity.getId());
             startActivityForResult(intent, 1);
-        } else if (item.getTitle().equals("Delete")) {
+        } else if (item.getTitle().equals(getString(R.string.delete))) {
             new AlertDialog.Builder(this)
-                    .setTitle("Delete member")
-                    .setMessage("Are you sure you want to delete member?")
-                    .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    .setTitle(R.string.delete_member_title)
+                    .setMessage(R.string.sure_to_delete_member)
+                    .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             if (mContextEntity instanceof Member) {
                                 MemberManager.getInstance().deleteMember((Member) mContextEntity);
