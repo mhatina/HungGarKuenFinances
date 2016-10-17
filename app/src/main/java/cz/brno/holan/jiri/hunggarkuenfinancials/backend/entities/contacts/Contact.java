@@ -27,7 +27,6 @@ public abstract class Contact extends BaseEntity {
     public static final int ICON_PATH = R.drawable.home_black;
     private String content;
     private String note;
-    Resources systemResources = Resources.getSystem();
 
     public Contact() {
     }
@@ -64,7 +63,7 @@ public abstract class Contact extends BaseEntity {
                 ", note='" + note + '\'';
     }
 
-    public abstract String getRunDescription();
+    public abstract String getRunDescription(Context context);
 
     public abstract void run(Context context);
 

@@ -22,8 +22,8 @@ public class Address extends Contact {
     }
 
     @Override
-    public String getRunDescription() {
-        return systemResources.getString(R.string.address_run_description, getContent());
+    public String getRunDescription(Context context) {
+        return context.getString(R.string.address_run_description, getContent());
     }
 
     @Override

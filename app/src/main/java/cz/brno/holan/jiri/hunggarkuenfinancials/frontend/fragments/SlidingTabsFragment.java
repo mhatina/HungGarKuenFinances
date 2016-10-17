@@ -68,7 +68,7 @@ public class SlidingTabsFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return tabManager.getTabTitle(position);
+            return tabManager.getTabTitle(getActivity(), position);
         }
 
         @Override

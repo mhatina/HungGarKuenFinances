@@ -118,17 +118,17 @@ public class NewContactFragment extends DialogFragment implements ImageButton.On
         switch (item.getItemId()) {
             case R.id.type_address:
                 CreateNewMemberActivity.setImageButtonResource(contact_type, Address.ICON_PATH);
-                contact_content.setHint(getContext().getString(R.string.address));
+                contact_content.setHint(getActivity().getString(R.string.address));
                 contact_content.getEditText().setInputType(InputType.TYPE_CLASS_TEXT);
                 return true;
             case R.id.type_mail:
                 CreateNewMemberActivity.setImageButtonResource(contact_type, Mail.ICON_PATH);
-                contact_content.setHint(getContext().getString(R.string.mail));
+                contact_content.setHint(getActivity().getString(R.string.mail));
                 contact_content.getEditText().setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 return true;
             case R.id.type_phone:
                 CreateNewMemberActivity.setImageButtonResource(contact_type, Phone.ICON_PATH);
-                contact_content.setHint(getContext().getString(R.string.phone));
+                contact_content.setHint(getActivity().getString(R.string.phone));
                 contact_content.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
                 return true;
             default:
@@ -162,7 +162,7 @@ public class NewContactFragment extends DialogFragment implements ImageButton.On
         String contact_note_string = contact_note.getEditText().getText().toString();
 
         if (contact_content.getEditText().getText().toString().isEmpty()) {
-            contact_content.setError(getContext().getString(R.string.required_error));
+            contact_content.setError(getActivity().getString(R.string.required_error));
             return false;
         }
 

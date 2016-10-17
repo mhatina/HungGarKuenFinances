@@ -26,9 +26,6 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Period
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Product;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity;
 
-/**
- * Created by mhatina on 03/10/16.
- */
 public class ProductManager extends BaseManager {
     private ArrayList<Product> mProducts;
 
@@ -68,6 +65,11 @@ public class ProductManager extends BaseManager {
         }
 
         return exportText;
+    }
+
+    @Override
+    public String exportDescription() {
+        return null;
     }
 
     @Override

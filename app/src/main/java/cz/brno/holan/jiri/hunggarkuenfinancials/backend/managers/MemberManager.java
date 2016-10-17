@@ -39,7 +39,6 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Youngst
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.SlidingTabManager;
 
-
 public class MemberManager extends BaseManager {
     private ArrayList<Member> mMembers;
     private long newMemberId;
@@ -219,6 +218,11 @@ public class MemberManager extends BaseManager {
         }
 
         return exportText;
+    }
+
+    @Override
+    public String exportDescription() {
+        return null;
     }
 
     @Override

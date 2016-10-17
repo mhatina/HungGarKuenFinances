@@ -17,6 +17,7 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
@@ -54,6 +55,7 @@ public class MemberDetailDialog extends DialogFragment implements MenuItem.OnMen
         this.member = member;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -73,13 +75,20 @@ public class MemberDetailDialog extends DialogFragment implements MenuItem.OnMen
         TextView joinDate = (TextView) view.findViewById(R.id.member_detail_date_of_joining);
         TextView note = (TextView) view.findViewById(R.id.member_detail_note);
 
-        contactList.setAdapter(new ContactsAdapter(getActivity(), R.layout.layout_contact, member.getContactManager().getContacts()));
+        contactList.setAdapter(
+                new ContactsAdapter(
+                        getActivity(),
+                        R.layout.layout_contact,
+                        member.getContactManager().getContacts()
+                )
+        );
+
         type.setImageResource(member.getIconPath());
         name.setText(member.getName());
         surname.setText(member.getSurname());
         setPaymentStatus(member);
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         if (member.getBirthDate() != null)
             birthDate.setText(formatter.format(member.getBirthDate()));
         joinDate.setText(formatter.format(member.getJoinedDate()));
@@ -102,12 +111,13 @@ public class MemberDetailDialog extends DialogFragment implements MenuItem.OnMen
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         AdapterView.AdapterContextMenuInfo adapterMenuInfo = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        ListView contactList = (ListView) view.findViewById(R.id.member_detail_contact_list);;
+        ListView contactList = (ListView) view.findViewById(R.id.member_detail_contact_list);
+        ;
 
         contextContact = (Contact) contactList.getItemAtPosition(adapterMenuInfo.position);
         menu.setHeaderTitle(contextContact.getNote());
         menu.removeGroup(MainActivity.MEMBER_CONTEXT_GROUP_ID);
-        menu.add(1, v.getId(), 0, contextContact.getRunDescription());
+        menu.add(1, v.getId(), 0, contextContact.getRunDescription(getActivity()));
         menu.getItem(0).setOnMenuItemClickListener(this);
     }
 

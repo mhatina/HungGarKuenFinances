@@ -24,11 +24,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-/**
- * Created by mhatina on 02/10/16.
- */
 public interface ExportManager {
 
     String toString();
     void export(Context context, String filename);
+    String exportDescription();
 }

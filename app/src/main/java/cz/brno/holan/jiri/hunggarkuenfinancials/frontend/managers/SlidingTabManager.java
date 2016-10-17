@@ -17,6 +17,7 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -44,7 +45,6 @@ public class SlidingTabManager {
     private ListView mProductList = null;
 
     ViewPager viewPager;
-    Resources systemResources = Resources.getSystem();
 
     private static SlidingTabManager ourInstance = new SlidingTabManager();
 
@@ -57,16 +57,17 @@ public class SlidingTabManager {
         return ourInstance;
     }
 
-    public String getTabTitle(int position) {
+    public String getTabTitle(Context context, int position) {
+        Resources resources = context.getResources();
         switch (position) {
             case MEMBER_LIST_INDEX:
-                return systemResources.getString(R.string.members_title);
+                return resources.getString(R.string.members_title);
             case PAYMENT_LIST_INDEX:
-                return systemResources.getString(R.string.payments_title);
+                return resources.getString(R.string.payments_title);
             case PRODUCT_LIST_INDEX:
-                return systemResources.getString(R.string.products_title);
+                return resources.getString(R.string.products_title);
             default:
-                return systemResources.getString(R.string.unknown_title);
+                return resources.getString(R.string.unknown_title);
         }
     }
 
