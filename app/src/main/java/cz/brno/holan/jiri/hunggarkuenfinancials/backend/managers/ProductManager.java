@@ -17,6 +17,10 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
+import android.content.Context;
+import android.net.Uri;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,5 +94,15 @@ public class ProductManager extends BaseManager {
     @Override
     public void delete(BaseEntity entity) {
 
+    }
+
+    @Override
+    public void importFromFile(Context context, Uri uri) throws IOException {
+
+    }
+
+    @Override
+    public String importDescription() {
+        return null;
     }
 }

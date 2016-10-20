@@ -5,10 +5,7 @@
     <string name="action_about">O aplikaci</string>
     <string name="disconnect">Odpojit</string>
     <string name="navigation_drawer_close">Zavřít navigační panel</string>
-    <string name="navigation_drawer_members">Členové</string>
     <string name="navigation_drawer_open">Otevřít navigační panel</string>
-    <string name="navigation_drawer_payments">Platby</string>
-    <string name="navigation_drawer_products">Produkty</string>
     <string name="navigation_drawer_statistics">Statistika</string>
     <string name="sing_in">Přihlásit se</string>
     <string name="signing_in">Přihlašuji…</string>

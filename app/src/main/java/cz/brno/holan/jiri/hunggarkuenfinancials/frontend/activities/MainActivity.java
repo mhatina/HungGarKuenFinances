@@ -45,7 +45,12 @@ import android.widget.TextView;
 
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
+import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.FileUtils;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
@@ -145,6 +150,28 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        switch (requestCode) {
+            case Constant.FILE_SELECT_CODE:
+                if (resultCode != RESULT_OK) {
+                    break;
+                }
+                try {
+                    Uri uri = data.getData();
+                    if (viewPager.getCurrentItem() == SlidingTabManager.MEMBER_LIST_INDEX) {
+                        MemberManager.getInstance().importFromFile(this, uri);
+                    } else if (viewPager.getCurrentItem() == SlidingTabManager.PAYMENT_LIST_INDEX) {
+//                    PaymentManager.getInstance().importFromFile(this, path);
+                    } else if (viewPager.getCurrentItem() == SlidingTabManager.PRODUCT_LIST_INDEX) {
+                        ProductManager.getInstance().importFromFile(this, uri);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    // todo report error
+                }
+
+                break;
+        }
         super.onActivityResult(requestCode, resultCode, data);
 
         ListView memberList;
@@ -188,11 +215,17 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_import:
+                FileUtils.showFileChooser(this, MemberManager.getInstance().importDescription());
+                return true;
+            case R.id.action_export:
+                return true;
+            case R.id.action_settings:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

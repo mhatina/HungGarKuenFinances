@@ -166,7 +166,7 @@ public class NewContactFragment extends DialogFragment implements ImageButton.On
             return false;
         }
 
-        contact = contactManager.createContact((int) contact_type.getTag(), contact_content.getEditText().getText().toString(), contact_note_string);
+        contact = contactManager.createContact(getActivity(), (int) contact_type.getTag(), contact_content.getEditText().getText().toString(), contact_note_string);
         adapter = ((ArrayAdapter<Contact>) contact_list.getAdapter());
         adapter.add(contact);
         return true;

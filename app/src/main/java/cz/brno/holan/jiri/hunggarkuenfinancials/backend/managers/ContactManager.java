@@ -17,7 +17,9 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
+import android.content.Context;
 import android.content.res.Resources;
+import android.provider.ContactsContract;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -46,9 +48,9 @@ public class ContactManager {
     }
 
     public void uploadContacts(DatabaseReference reference) {
+        DatabaseReference root = reference.child("contacts");
         for (Contact contact : contacts) {
-            reference = reference.child("contacts")
-                    .child(contact.getClass().getSimpleName())
+            reference = root.child(contact.getClass().getSimpleName())
                     .child(String.valueOf(contacts.indexOf(contact)));
 
             reference.child("content").setValue(contact.getContent());
@@ -56,18 +58,17 @@ public class ContactManager {
         }
     }
 
-    public Contact createContact(int type, String contact, String note) {
+    public Contact createContact(Context context, int type, String contact, String note) {
         long id = 0;
-        Resources system = Resources.getSystem();
         if (!contacts.isEmpty())
             id = contacts.get(contacts.size() - 1).getId() + 1;
         switch (type) {
             case Address.ICON_PATH:
-                return new Address(id, contact, note.isEmpty() ? system.getString(R.string.address_default_note) : note);
+                return new Address(id, contact, note.isEmpty() ? context.getString(R.string.address_default_note) : note);
             case Mail.ICON_PATH:
-                return new Mail(id, contact, note.isEmpty() ? system.getString(R.string.mail_default_note) : note);
+                return new Mail(id, contact, note.isEmpty() ? context.getString(R.string.mail_default_note) : note);
             case Phone.ICON_PATH:
-                return new Phone(id, contact, note.isEmpty() ? system.getString(R.string.phone_default_note) : note);
+                return new Phone(id, contact, note.isEmpty() ? context.getString(R.string.phone_default_note) : note);
             default:
                 return null;
         }

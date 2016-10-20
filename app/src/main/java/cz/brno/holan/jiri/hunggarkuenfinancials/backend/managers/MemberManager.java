@@ -17,6 +17,8 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
+import android.content.Context;
+import android.net.Uri;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
@@ -25,12 +27,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.Normalizer;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Address;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Mail;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Phone;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Adult;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Child;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Junior;
@@ -243,6 +256,9 @@ public class MemberManager extends BaseManager {
                         for (DataSnapshot postSnapshot : dataSnapshot.child("Child").getChildren()) {
                             loadMember(postSnapshot, Child.class);
                         }
+                        for (DataSnapshot postSnapshot : dataSnapshot.child("Member").getChildren()) {
+                            loadMember(postSnapshot, Member.class);
+                        }
 
                         ListView memberList = SlidingTabManager.createInstance().getMemberList();
                         ((BaseAdapter) memberList.getAdapter()).notifyDataSetChanged();
@@ -310,6 +326,116 @@ public class MemberManager extends BaseManager {
         mDatabase.child("members").child(member.getClass().getSimpleName())
                 .child(String.valueOf(member.getId()))
                 .removeValue();
+    }
+
+    @Override
+    public void importFromFile(Context context, Uri uri) throws IOException {
+        InputStream inputStream = null;
+        String mimeType = context.getContentResolver().getType(uri);
+
+        if (mimeType == null || !mimeType.contains("text"))
+            // todo report error
+            return;
+
+        try {
+            inputStream = context.getContentResolver().openInputStream(uri);
+            BufferedReader reader = null;
+            if (inputStream != null) {
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+            } else {
+                throw new NullPointerException("Cannot open file: " + uri.getPath());
+            }
+
+            SimpleDateFormat dateFormat;
+            String line = reader.readLine();
+            while (true) {
+                String name = "";
+                String surname = "";
+                String address = "";
+                String phone = "";
+                String mail = "";
+                Date birthDate = null;
+
+                line = reader.readLine();
+                if (line == null)
+                    break;
+                else if (line.isEmpty() || !line.contains(";"))
+                    continue;
+
+                String[] split = line.split(";");
+
+                if (split.length == 0)
+                    continue;
+
+                for (int i = 0; i < split.length; i++) {
+                    if (split[i].isEmpty())
+                        continue;
+
+                    String withoutAccent = split[i];
+                    withoutAccent = Normalizer.normalize(withoutAccent, Normalizer.Form.NFD);
+                    withoutAccent = withoutAccent.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+
+                    if (withoutAccent.contains("@")) {
+                        mail = split[i];
+                        i++;
+                        continue;
+                    } else if (withoutAccent.matches(Constant.PHONE_REGEX)) {
+                        phone = split[i];
+                        continue;
+                    } else if (withoutAccent.matches(Constant.SIMPLE_ADDRESS_REGEX)) {
+                        address = split[i];
+                        continue;
+                    } else if (withoutAccent.matches(Constant.NAME_REGEX)) {
+                        if (name.isEmpty())
+                            name = split[i];
+                        else
+                            surname = split[i];
+                        continue;
+                    }
+
+                    // todo change date format
+                    // don't really like this
+                    String[] formats = {"dd/MMM/yy", "MM/dd/yy", "dd/MM/yy", "dd/MMM/yyyy",
+                            "MM/dd/yyyy", "dd/MM/yyyy", "dd-MMM-yy", "MM-dd-yy", "dd-MM-yy",
+                            "dd-MMM-yyyy", "MM-dd-yyyy", "dd-MM-yyyy"};
+                    for (String format : formats) {
+                        dateFormat = new SimpleDateFormat(format);
+                        try {
+                            birthDate = dateFormat.parse(split[i]);
+                            break;
+                        } catch (ParseException e) {
+                            // either bad format, or not a date
+                        }
+                    }
+                }
+
+                Member member = createMember(Member.ICON_PATH, name, surname, birthDate);
+                if (!phone.isEmpty())
+                    member.getContactManager().addContact(
+                            member.getContactManager().createContact(context, Phone.ICON_PATH, phone, "")
+                    );
+                if (!mail.isEmpty())
+                    member.getContactManager().addContact(
+                            member.getContactManager().createContact(context, Mail.ICON_PATH, mail, "")
+                    );
+                if (!address.isEmpty())
+                    member.getContactManager().addContact(
+                            member.getContactManager().createContact(context, Address.ICON_PATH, address, "")
+                    );
+                addMember(member);
+            }
+        } catch (NullPointerException e) {
+            // todo report error
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+    }
+
+    @Override
+    public String importDescription() {
+        return null;
     }
 
     /**

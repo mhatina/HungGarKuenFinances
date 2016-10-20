@@ -23,7 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-public abstract class BaseManager implements DatabaseManager, ExportManager {
+public abstract class BaseManager implements DatabaseManager, ExportManager, ImportManager {
 
     public BaseManager() {
 

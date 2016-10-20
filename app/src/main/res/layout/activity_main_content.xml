@@ -24,6 +24,11 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".frontend.activities.MainActivity">
 
+    <FrameLayout
+        android:id="@+id/slide_tabs_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -33,10 +38,5 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="@color/colorPrimaryDark" />
-
-    <FrameLayout
-        android:id="@+id/slide_tabs_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
 
 </RelativeLayout>
