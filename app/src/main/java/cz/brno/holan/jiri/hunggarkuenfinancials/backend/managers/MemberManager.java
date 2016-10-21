@@ -49,7 +49,10 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Child;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Junior;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Youngster;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.comparators.FilterComparator;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.comparators.MemberComparator;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.SlidingTabManager;
 
 public class MemberManager extends BaseManager {
@@ -262,6 +265,7 @@ public class MemberManager extends BaseManager {
 
                         ListView memberList = SlidingTabManager.createInstance().getMemberList();
                         ((BaseAdapter) memberList.getAdapter()).notifyDataSetChanged();
+                        ((MembersAdapter) memberList.getAdapter()).sort(new MemberComparator());
                     }
 
                     @Override
@@ -277,6 +281,8 @@ public class MemberManager extends BaseManager {
             member.setContactManager(new ContactManager());
         postSnapshot = postSnapshot.child("contacts");
         member.getContactManager().load(postSnapshot);
+
+        member.updateStatus();
         mMembers.add(member);
     }
 
@@ -436,36 +442,5 @@ public class MemberManager extends BaseManager {
     @Override
     public String importDescription() {
         return null;
-    }
-
-    /**
-     * Comparator for showing all members
-     */
-    public class MemberComparator implements java.util.Comparator<Member> {
-
-        @Override
-        public int compare(Member lhs, Member rhs) {
-            int statusComparation = lhs.getStatus().getValue() - rhs.getStatus().getValue();
-            if (statusComparation == 0) {
-                if (lhs.getSurname().equals(rhs.getSurname()))
-                    return lhs.getName().compareTo(rhs.getName());
-
-                return lhs.getSurname().compareTo(rhs.getSurname());
-            }
-
-            return statusComparation;
-        }
-    }
-
-    /**
-     * Comparator used when searching for member
-     */
-    public class FilterComparator implements java.util.Comparator<Member> {
-
-        @Override
-        public int compare(Member lhs, Member rhs) {
-            return ((lhs.getSurname().length() * 2) + lhs.getName().length())
-                    - ((rhs.getSurname().length() * 2) + rhs.getName().length());
-        }
     }
 }

@@ -171,14 +171,18 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 break;
+            case Constant.SIGN_IN_CODE:
+                setSignedInAs(data);
+                break;
         }
         super.onActivityResult(requestCode, resultCode, data);
 
-        ListView memberList;
-        if (data != null && data.hasExtra(SIGNED_IN_AS))
-            setSignedInAs(data);
-        else if ((memberList = getMemberListView()) != null)
+        ListView memberList = getMemberListView();
+        if (memberList != null)
             memberList.setAdapter(new MembersAdapter(this, R.layout.layout_member, MemberManager.getInstance().getMembers()));
+        else {
+            // todo report error
+        }
     }
 
     private void setSignedInAs(Intent data) {
