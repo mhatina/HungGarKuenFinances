@@ -81,4 +81,5 @@
     <string name="hide">Hide</string>
     <string name="save">Save</string>
     <string name="currency">%s CZK</string>
+    <string name="dismiss">Dismiss</string>
 </resources>

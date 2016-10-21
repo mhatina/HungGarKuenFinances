@@ -46,7 +46,6 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ContactManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.CreateNewMemberActivity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 
-// todo refactor
 public class NewContactFragment extends DialogFragment implements ImageButton.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private ImageButton contact_type;
@@ -56,7 +55,6 @@ public class NewContactFragment extends DialogFragment implements ImageButton.On
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
@@ -81,8 +79,6 @@ public class NewContactFragment extends DialogFragment implements ImageButton.On
                     }
                 });
 
-
-        // Create the AlertDialog object and return it
         final AlertDialog alertDialog = builder.create();
         alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
 

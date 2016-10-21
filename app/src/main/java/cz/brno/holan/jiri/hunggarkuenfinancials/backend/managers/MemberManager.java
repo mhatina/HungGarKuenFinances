@@ -31,6 +31,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.security.InvalidParameterException;
 import java.text.Normalizer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,6 +42,7 @@ import java.util.Date;
 import java.util.List;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
+import cz.brno.holan.jiri.hunggarkuenfinancials.Log;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Address;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Mail;
@@ -77,14 +79,6 @@ public class MemberManager extends BaseManager {
         mDatabase.child("members").keepSynced(true);
 
         load(activity);
-    }
-
-    public long getNewMemberId() {
-        return newMemberId;
-    }
-
-    public void setNewMemberId(long newMemberId) {
-        this.newMemberId = newMemberId;
     }
 
     /**
@@ -210,23 +204,6 @@ public class MemberManager extends BaseManager {
         return null;
     }
 
-    /**
-     * Find member by name or surname, but not both
-     *
-     * @param name
-     * @return
-     */
-    public Member findMember(String name) {
-        int size = mMembers.size();
-        for (int i = 0; i < size; i++) {
-            if (mMembers.get(i).getName().equals(name)
-                    || mMembers.get(i).getSurname().equals(name))
-                return mMembers.get(i);
-        }
-
-        return null;
-    }
-
     @Override
     public String toString() {
         String exportText = "";
@@ -335,14 +312,38 @@ public class MemberManager extends BaseManager {
                 .removeValue();
     }
 
+    private int getTypeByBirthDate(Date birthDate) {
+        if (birthDate == null)
+            return Member.ICON_PATH;
+
+        Calendar now = Calendar.getInstance();
+        Calendar birth = Calendar.getInstance();
+        birth.setTime(birthDate);
+
+        int age = now.get(Calendar.YEAR) - birth.get(Calendar.YEAR);
+
+        if (age < 10) {
+            return Child.ICON_PATH;
+        } else if (age >= 10 && age < 15) {
+            return Junior.ICON_PATH;
+        } else if (age >= 15 && age < 18) {
+            return Youngster.ICON_PATH;
+        } else if (age >= 18) {
+            return Adult.ICON_PATH;
+        }
+
+        return Member.ICON_PATH;
+    }
+
     @Override
     public void importFromFile(Context context, Uri uri) throws IOException {
         InputStream inputStream = null;
         String mimeType = context.getContentResolver().getType(uri);
 
-        if (mimeType == null || !mimeType.contains("text"))
-            // todo report error
+        if (mimeType == null || !mimeType.contains("text")) {
+            Log.warning(context, new InvalidParameterException("File should be a csv or txt."));
             return;
+        }
 
         try {
             inputStream = context.getContentResolver().openInputStream(uri);
@@ -361,6 +362,7 @@ public class MemberManager extends BaseManager {
                 String address = "";
                 String phone = "";
                 String mail = "";
+                String[] split = null;
                 Date birthDate = null;
                 Date paidUntil = null;
                 boolean checkPaidUntil = false;
@@ -368,10 +370,14 @@ public class MemberManager extends BaseManager {
                 line = reader.readLine();
                 if (line == null)
                     break;
-                else if (line.isEmpty() || !line.contains(";"))
+                else if (line.isEmpty())
                     continue;
-
-                String[] split = line.split(";");
+                else if (line.contains(";"))
+                    split = line.split(";");
+                else if (line.contains("\t"))
+                    split = line.split("\t");
+                else
+                    Log.warning(context, new InvalidParameterException("No tabulator or ';' found in file."));
 
                 if (split.length == 0)
                     continue;
@@ -424,7 +430,7 @@ public class MemberManager extends BaseManager {
                     checkPaidUntil = true;
                 }
 
-                Member member = createMember(Member.ICON_PATH, name, surname, birthDate);
+                Member member = createMember(getTypeByBirthDate(birthDate), name, surname, birthDate);
                 if (!phone.isEmpty())
                     member.getContactManager().addContact(
                             member.getContactManager().createContact(context, Phone.ICON_PATH, phone, "")
@@ -444,7 +450,7 @@ public class MemberManager extends BaseManager {
                 addMember(member);
             }
         } catch (NullPointerException e) {
-            // todo report error
+            Log.warning(context, e);
         } finally {
             if (inputStream != null) {
                 inputStream.close();
@@ -454,6 +460,6 @@ public class MemberManager extends BaseManager {
 
     @Override
     public String importDescription() {
-        return null;
+        return "Import members";
     }
 }

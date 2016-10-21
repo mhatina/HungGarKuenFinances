@@ -43,7 +43,7 @@ public class ProductManager extends BaseManager {
         mProducts = new ArrayList<>();
         // TODO remove
         addProduct(new Periodic(0, "Training", 3000, 0, 3));
-        addProduct(new OneTimeOnly(0, "Training", 3000));
+        addProduct(new OneTimeOnly(0, "T-shirt", 250));
     }
 
 

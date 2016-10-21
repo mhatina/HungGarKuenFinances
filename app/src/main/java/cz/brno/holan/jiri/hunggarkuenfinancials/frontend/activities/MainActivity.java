@@ -46,9 +46,12 @@ import android.widget.TextView;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
+import java.io.InvalidClassException;
 import java.net.URISyntaxException;
+import java.security.InvalidParameterException;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
+import cz.brno.holan.jiri.hunggarkuenfinancials.Log;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.FileUtils;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
@@ -67,12 +70,13 @@ public class MainActivity extends AppCompatActivity
     public static final String SIGNED_IN_AS = "signed_in_as";
     public static final int MEMBER_CONTEXT_GROUP_ID = 0;
 
+    public static boolean calledFirebasePersistance = false;
+
     private String TAG = "MainActivity";
 
     private BaseEntity mContextEntity;
 
     public MainActivity() {
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         mContextEntity = null;
     }
 
@@ -110,7 +114,8 @@ public class MainActivity extends AppCompatActivity
                     searchView.setIconified(true);
                     startActivity(new Intent(v.getContext(), activity));
                 } else {
-                    // TODO report problem
+                    Log.warning(getBaseContext(),
+                            new InvalidParameterException("Cannot open activity for creation of new entity."));
                 }
             }
         });
@@ -118,6 +123,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (!calledFirebasePersistance) {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            calledFirebasePersistance = true;
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -156,8 +166,8 @@ public class MainActivity extends AppCompatActivity
                 if (resultCode != RESULT_OK) {
                     break;
                 }
+                Uri uri = data.getData();
                 try {
-                    Uri uri = data.getData();
                     if (viewPager.getCurrentItem() == SlidingTabManager.MEMBER_LIST_INDEX) {
                         MemberManager.getInstance().importFromFile(this, uri);
                     } else if (viewPager.getCurrentItem() == SlidingTabManager.PAYMENT_LIST_INDEX) {
@@ -166,8 +176,7 @@ public class MainActivity extends AppCompatActivity
                         ProductManager.getInstance().importFromFile(this, uri);
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
-                    // todo report error
+                    throw new NullPointerException("Cannot open file: " + uri.getPath());
                 }
 
                 break;
@@ -181,7 +190,8 @@ public class MainActivity extends AppCompatActivity
         if (memberList != null)
             memberList.setAdapter(new MembersAdapter(this, R.layout.layout_member, MemberManager.getInstance().getMembers()));
         else {
-            // todo report error
+            // todo create own exception
+            Log.warning(getBaseContext(), new Exception("Cannot refresh member list."));
         }
     }
 
