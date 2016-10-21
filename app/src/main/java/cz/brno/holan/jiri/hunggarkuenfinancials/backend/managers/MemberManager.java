@@ -35,6 +35,7 @@ import java.text.Normalizer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -361,6 +362,8 @@ public class MemberManager extends BaseManager {
                 String phone = "";
                 String mail = "";
                 Date birthDate = null;
+                Date paidUntil = null;
+                boolean checkPaidUntil = false;
 
                 line = reader.readLine();
                 if (line == null)
@@ -399,20 +402,26 @@ public class MemberManager extends BaseManager {
                         continue;
                     }
 
-                    // todo change date format
                     // don't really like this
-                    String[] formats = {"dd/MMM/yy", "MM/dd/yy", "dd/MM/yy", "dd/MMM/yyyy",
-                            "MM/dd/yyyy", "dd/MM/yyyy", "dd-MMM-yy", "MM-dd-yy", "dd-MM-yy",
-                            "dd-MMM-yyyy", "MM-dd-yyyy", "dd-MM-yyyy"};
+                    String[] formats = {"dd.M.yyyy", "dd.M.yy", "dd.MM.yyyy", "dd.MM.yy",
+                                        "dd/M/yyyy", "dd/M/yy", "dd/MM/yyyy", "dd/MM/yy",
+                                        "dd-M-yyyy", "dd-M-yy", "dd-MM-yyyy", "dd-MM-yy"};
+                    if (split[i].endsWith("."))
+                        split[i] += Calendar.getInstance().get(Calendar.YEAR);
                     for (String format : formats) {
                         dateFormat = new SimpleDateFormat(format);
                         try {
-                            birthDate = dateFormat.parse(split[i]);
+                            if (!checkPaidUntil) {
+                                paidUntil = dateFormat.parse(split[i]);
+                            } else {
+                                birthDate = dateFormat.parse(split[i]);
+                            }
                             break;
                         } catch (ParseException e) {
                             // either bad format, or not a date
                         }
                     }
+                    checkPaidUntil = true;
                 }
 
                 Member member = createMember(Member.ICON_PATH, name, surname, birthDate);
@@ -428,6 +437,10 @@ public class MemberManager extends BaseManager {
                     member.getContactManager().addContact(
                             member.getContactManager().createContact(context, Address.ICON_PATH, address, "")
                     );
+                if (paidUntil != null) {
+                    member.setPaidUntil(paidUntil);
+                    member.updateStatus();
+                }
                 addMember(member);
             }
         } catch (NullPointerException e) {
