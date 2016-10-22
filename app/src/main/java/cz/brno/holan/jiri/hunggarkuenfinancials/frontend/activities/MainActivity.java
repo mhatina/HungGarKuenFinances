@@ -102,11 +102,11 @@ public class MainActivity extends AppCompatActivity
                 Class<?> activity = null;
                 ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
                 SearchView searchView = (SearchView) findViewById(R.id.search);
-                if (viewPager.getCurrentItem() == SlidingTabManager.MEMBER_LIST_INDEX) {
+                if (viewPager.getCurrentItem() == Constant.MEMBER_LIST_INDEX) {
                     activity = CreateNewMemberActivity.class;
-                } else if (viewPager.getCurrentItem() == SlidingTabManager.PAYMENT_LIST_INDEX) {
+                } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
 
-                } else if (viewPager.getCurrentItem() == SlidingTabManager.PRODUCT_LIST_INDEX) {
+                } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
 
                 }
 
@@ -168,11 +168,11 @@ public class MainActivity extends AppCompatActivity
                 }
                 Uri uri = data.getData();
                 try {
-                    if (viewPager.getCurrentItem() == SlidingTabManager.MEMBER_LIST_INDEX) {
+                    if (viewPager.getCurrentItem() == Constant.MEMBER_LIST_INDEX) {
                         MemberManager.getInstance().importFromFile(this, uri);
-                    } else if (viewPager.getCurrentItem() == SlidingTabManager.PAYMENT_LIST_INDEX) {
+                    } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
 //                    PaymentManager.getInstance().importFromFile(this, path);
-                    } else if (viewPager.getCurrentItem() == SlidingTabManager.PRODUCT_LIST_INDEX) {
+                    } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
                         ProductManager.getInstance().importFromFile(this, uri);
                     }
                 } catch (IOException e) {
@@ -293,13 +293,13 @@ public class MainActivity extends AppCompatActivity
         }
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        if (viewPager.getCurrentItem() == SlidingTabManager.MEMBER_LIST_INDEX) {
+        if (viewPager.getCurrentItem() == Constant.MEMBER_LIST_INDEX) {
             Member member;
             mContextEntity = member = (Member) memberList.getItemAtPosition(adapterMenuInfo.position);
             menu.setHeaderTitle(member.getName() + " " + member.getSurname());
-        } else if (viewPager.getCurrentItem() == SlidingTabManager.PAYMENT_LIST_INDEX) {
+        } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
 
-        } else if (viewPager.getCurrentItem() == SlidingTabManager.PRODUCT_LIST_INDEX) {
+        } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
 
         }
 

@@ -27,8 +27,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.comparators.MemberComparator;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ProductManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter;
@@ -36,11 +36,6 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ProductsAdapte
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.MemberListOnItemClickListener;
 
 public class SlidingTabManager {
-
-    public static final int MEMBER_LIST_INDEX = 1;
-    public static final int PAYMENT_LIST_INDEX = 3;
-    public static final int PRODUCT_LIST_INDEX = 0;
-
     private ListView mMemberList = null;
     private ListView mPaymentList = null;
     private ListView mProductList = null;
@@ -61,11 +56,11 @@ public class SlidingTabManager {
     public String getTabTitle(Context context, int position) {
         Resources resources = context.getResources();
         switch (position) {
-            case MEMBER_LIST_INDEX:
+            case Constant.MEMBER_LIST_INDEX:
                 return resources.getString(R.string.members_title);
-            case PAYMENT_LIST_INDEX:
+            case Constant.PAYMENT_LIST_INDEX:
                 return resources.getString(R.string.payments_title);
-            case PRODUCT_LIST_INDEX:
+            case Constant.PRODUCT_LIST_INDEX:
                 return resources.getString(R.string.products_title);
             default:
                 return resources.getString(R.string.unknown_title);
@@ -83,11 +78,11 @@ public class SlidingTabManager {
         }
 
         switch (position) {
-            case MEMBER_LIST_INDEX:
+            case Constant.MEMBER_LIST_INDEX:
                 return mMemberList;
-            case PAYMENT_LIST_INDEX:
+            case Constant.PAYMENT_LIST_INDEX:
                 return null;
-            case PRODUCT_LIST_INDEX:
+            case Constant.PRODUCT_LIST_INDEX:
                 return mProductList;
             default:
                 View view = context.getLayoutInflater().inflate(R.layout.pager_item,
@@ -116,17 +111,17 @@ public class SlidingTabManager {
     public void destroyList(ViewGroup container, int position, Object object) {
         container.removeView((View) object);
         switch (position) {
-            case MEMBER_LIST_INDEX:
+            case Constant.MEMBER_LIST_INDEX:
                 mMemberList = null;
-            case PAYMENT_LIST_INDEX:
-            case PRODUCT_LIST_INDEX:
+            case Constant.PAYMENT_LIST_INDEX:
+            case Constant.PRODUCT_LIST_INDEX:
                 mProductList = null;
         }
     }
 
     public ListView getMemberList() {
         if (mMemberList == null) {
-            mMemberList = (ListView) viewPager.getChildAt(MEMBER_LIST_INDEX);
+            mMemberList = (ListView) viewPager.getChildAt(Constant.MEMBER_LIST_INDEX);
         }
 
         return mMemberList;
@@ -134,7 +129,7 @@ public class SlidingTabManager {
 
     public ListView getPaymentList() {
         if (mPaymentList == null) {
-            mPaymentList = (ListView) viewPager.getChildAt(PAYMENT_LIST_INDEX);
+            mPaymentList = (ListView) viewPager.getChildAt(Constant.PAYMENT_LIST_INDEX);
         }
 
         return mPaymentList;
@@ -142,7 +137,7 @@ public class SlidingTabManager {
 
     public ListView getProductList() {
         if (mProductList == null) {
-            mProductList = (ListView) viewPager.getChildAt(PRODUCT_LIST_INDEX);
+            mProductList = (ListView) viewPager.getChildAt(Constant.PRODUCT_LIST_INDEX);
         }
 
         return mProductList;

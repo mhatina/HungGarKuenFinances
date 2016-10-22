@@ -17,7 +17,9 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities;
 
+import android.annotation.TargetApi;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -38,7 +40,9 @@ import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.Log;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Contact;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Adult;
