@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.SlidingTabManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.SlidingTabLayout;
@@ -51,14 +52,11 @@ public class SlidingTabsFragment extends Fragment {
     }
 
     public class SwipeViewAdapter extends PagerAdapter {
-
-        public static final int NUM_OF_PAGES = 3;
-
         private SlidingTabManager tabManager = SlidingTabManager.createInstance(viewPager);
 
         @Override
         public int getCount() {
-            return NUM_OF_PAGES;
+            return Constant.NUMBER_OF_TABS;
         }
 
         @Override
@@ -78,7 +76,7 @@ public class SlidingTabsFragment extends Fragment {
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
+            tabManager.destroyList(container, position, object);
         }
     }
 }

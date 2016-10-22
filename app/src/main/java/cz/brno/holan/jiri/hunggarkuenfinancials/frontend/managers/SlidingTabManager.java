@@ -38,14 +38,14 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.MemberListOnI
 public class SlidingTabManager {
 
     public static final int MEMBER_LIST_INDEX = 1;
-    public static final int PAYMENT_LIST_INDEX = 2;
+    public static final int PAYMENT_LIST_INDEX = 3;
     public static final int PRODUCT_LIST_INDEX = 0;
 
     private ListView mMemberList = null;
     private ListView mPaymentList = null;
     private ListView mProductList = null;
 
-    ViewPager viewPager;
+    private ViewPager viewPager;
 
     private static SlidingTabManager ourInstance = new SlidingTabManager();
 
@@ -76,7 +76,8 @@ public class SlidingTabManager {
         if (mMemberList == null) {
             mMemberList = prepareTabObject(context, container, new MembersAdapter(context, R.layout.layout_member, MemberManager.getInstance().getMembers()));
             mMemberList.setOnItemClickListener(new MemberListOnItemClickListener(mMemberList, context.getFragmentManager()));
-
+        }
+        if (mProductList == null) {
             mProductList = prepareTabObject(context, container, new ProductsAdapter(context, R.layout.layout_product, ProductManager.getInstance().getProducts()));
             // TODO setOnItemClickListener
         }
@@ -110,6 +111,17 @@ public class SlidingTabManager {
 
         container.addView(listView);
         return listView;
+    }
+
+    public void destroyList(ViewGroup container, int position, Object object) {
+        container.removeView((View) object);
+        switch (position) {
+            case MEMBER_LIST_INDEX:
+                mMemberList = null;
+            case PAYMENT_LIST_INDEX:
+            case PRODUCT_LIST_INDEX:
+                mProductList = null;
+        }
     }
 
     public ListView getMemberList() {

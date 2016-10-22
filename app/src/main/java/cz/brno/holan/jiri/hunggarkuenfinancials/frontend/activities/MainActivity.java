@@ -183,6 +183,8 @@ public class MainActivity extends AppCompatActivity
             case Constant.SIGN_IN_CODE:
                 setSignedInAs(data);
                 break;
+            default:
+
         }
         super.onActivityResult(requestCode, resultCode, data);
 
