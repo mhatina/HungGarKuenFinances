@@ -4,6 +4,7 @@ package cz.brno.holan.jiri.hunggarkuenfinancials;
 public class Constant {
     public static final int SIGN_IN_CODE = 100;
     public static final int FILE_SELECT_CODE = 101;
+    public static final int NEW_ENTITY_CODE = 102;
 
     public static final int NUMBER_OF_TABS = 3;
     public static final int MEMBER_LIST_INDEX = 1;

@@ -64,21 +64,15 @@ public class MemberManager extends BaseManager {
 
     private static MemberManager ourInstance = null;
 
-    public static MemberManager getInstance(MainActivity activity) {
-        if (ourInstance == null)
-            ourInstance = new MemberManager(activity);
-        return ourInstance;
-    }
-
     public static MemberManager getInstance() {
+        if (ourInstance == null)
+            ourInstance = new MemberManager();
         return ourInstance;
     }
 
-    private MemberManager(MainActivity activity) {
+    private MemberManager() {
         mMembers = new ArrayList<>();
         mDatabase.child("members").keepSynced(true);
-
-        load(activity);
     }
 
     /**
@@ -242,8 +236,13 @@ public class MemberManager extends BaseManager {
                         }
 
                         ListView memberList = SlidingTabManager.createInstance().getMemberList();
-                        ((BaseAdapter) memberList.getAdapter()).notifyDataSetChanged();
-                        ((MembersAdapter) memberList.getAdapter()).sort(new MemberComparator());
+                        if (memberList != null) {
+                            MembersAdapter adapter = (MembersAdapter) memberList.getAdapter();
+                            if (adapter != null) {
+                                adapter.notifyDataSetChanged();
+                                adapter.sort(new MemberComparator());
+                            }
+                        }
                     }
 
                     @Override
@@ -410,10 +409,13 @@ public class MemberManager extends BaseManager {
 
                     // don't really like this
                     String[] formats = {"dd.M.yyyy", "dd.M.yy", "dd.MM.yyyy", "dd.MM.yy",
-                                        "dd/M/yyyy", "dd/M/yy", "dd/MM/yyyy", "dd/MM/yy",
-                                        "dd-M-yyyy", "dd-M-yy", "dd-MM-yyyy", "dd-MM-yy"};
+                            "dd/M/yyyy", "dd/M/yy", "dd/MM/yyyy", "dd/MM/yy",
+                            "dd-M-yyyy", "dd-M-yy", "dd-MM-yyyy", "dd-MM-yy"};
                     if (split[i].endsWith("."))
                         split[i] += Calendar.getInstance().get(Calendar.YEAR);
+                    else if (split[i].length() <= 5) {
+                        split[i] += split[i].contains("/") ? "/" : "-" + Calendar.getInstance().get(Calendar.YEAR);
+                    }
                     for (String format : formats) {
                         dateFormat = new SimpleDateFormat(format);
                         try {

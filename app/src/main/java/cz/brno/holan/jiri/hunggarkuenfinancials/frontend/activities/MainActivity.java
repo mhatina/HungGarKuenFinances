@@ -43,11 +43,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
-import java.io.InvalidClassException;
-import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
@@ -70,7 +69,7 @@ public class MainActivity extends AppCompatActivity
     public static final String SIGNED_IN_AS = "signed_in_as";
     public static final int MEMBER_CONTEXT_GROUP_ID = 0;
 
-    public static boolean calledFirebasePersistance = false;
+    public static boolean calledFirebasePersistence = false;
 
     private String TAG = "MainActivity";
 
@@ -123,9 +122,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (!calledFirebasePersistance) {
+        if (!calledFirebasePersistence) {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-            calledFirebasePersistance = true;
+            calledFirebasePersistence = true;
         }
 
         super.onCreate(savedInstanceState);
@@ -149,13 +148,11 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
 
-        MemberManager.getInstance(this);
-        ProductManager.getInstance();
-
-        // TODO login
-//        Intent intent = new Intent(this, LoginActivity.class);
-//        intent.putExtra(LoginActivity.AUTO_FINISH, true);
-//        startActivityForResult(intent, 1);
+        if (!LoginActivity.isSignedIn) {
+            LoginActivity.autoFinish = true;
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivityForResult(intent, Constant.SIGN_IN_CODE);
+        }
     }
 
     @Override
@@ -178,26 +175,30 @@ public class MainActivity extends AppCompatActivity
                 } catch (IOException e) {
                     throw new NullPointerException("Cannot open file: " + uri.getPath());
                 }
-
+            case Constant.NEW_ENTITY_CODE:
+                ListView memberList = getMemberListView();
+                if (memberList != null)
+                    memberList.setAdapter(new MembersAdapter(this, R.layout.layout_member, MemberManager.getInstance().getMembers()));
+                else {
+                    // todo create own exception
+                    Log.warning(getBaseContext(), new Exception("Cannot refresh member list."));
+                }
                 break;
             case Constant.SIGN_IN_CODE:
                 setSignedInAs(data);
+                MemberManager.getInstance().load(this);
+                ProductManager.getInstance().load(this);
                 break;
             default:
 
         }
         super.onActivityResult(requestCode, resultCode, data);
-
-        ListView memberList = getMemberListView();
-        if (memberList != null)
-            memberList.setAdapter(new MembersAdapter(this, R.layout.layout_member, MemberManager.getInstance().getMembers()));
-        else {
-            // todo create own exception
-            Log.warning(getBaseContext(), new Exception("Cannot refresh member list."));
-        }
     }
 
     private void setSignedInAs(Intent data) {
+        if (data == null)
+            return;
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View view = navigationView.getHeaderView(0);
         TextView textView = (TextView) view.findViewById(R.id.drawer_sign_in_info);
@@ -210,8 +211,8 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            // TODO login
-//            startActivityForResult(new Intent(this, LoginActivity.class), 1);
+            LoginActivity.autoFinish = false;
+            startActivityForResult(new Intent(this, LoginActivity.class), Constant.SIGN_IN_CODE);
         }
     }
 
