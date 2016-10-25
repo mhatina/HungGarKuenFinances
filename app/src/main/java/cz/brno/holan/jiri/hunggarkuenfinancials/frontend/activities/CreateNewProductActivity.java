@@ -15,17 +15,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities;
+package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities;
 
-/**
- * Created by mhatina on 3/8/16.
- */
-public class Payment extends BaseEntity {
 
-    public Payment() {
+import android.os.Bundle;
+
+import cz.brno.holan.jiri.hunggarkuenfinancials.R;
+
+public class CreateNewProductActivity extends CreateNewEntityActivity {
+
+    public CreateNewProductActivity() {
+        super(R.layout.layout_product_new);
     }
 
-    public Payment(long id) {
-        super(id);
+    @Override
+    public void init() {
+        setTitle(getString(R.string.new_product_title));
+    }
+
+    @Override
+    public void initForEdit() {
+        setTitle(getString(R.string.edit_product_title));
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public boolean save() {
+        return false;
     }
 }

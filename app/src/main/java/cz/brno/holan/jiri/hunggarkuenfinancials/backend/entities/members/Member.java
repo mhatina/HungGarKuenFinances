@@ -58,7 +58,6 @@ public class Member extends BaseEntity {
 
     private int updatePropertiesSwitch = 0;
 
-    private ArrayList<Payment> payments;
     private ContactManager contactManager = new ContactManager();
 
     public Member() {

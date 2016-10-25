@@ -68,6 +68,10 @@
     <!-- product related -->
     <string name="week">/week</string>
     <string name="in_stock">%s in stock</string>
+    <string name="new_product_name_hint">Product name</string>
+    <string name="new_product_price_hint">Price</string>
+    <string name="new_product_title">New product</string>
+    <string name="edit_product_title">Edit product</string>
 
     <!-- tab titles -->
     <string name="members_title">Members</string>

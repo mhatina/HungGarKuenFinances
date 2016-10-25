@@ -19,7 +19,6 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
 import android.content.Context;
 import android.net.Uri;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -78,7 +77,7 @@ public class MemberManager extends BaseManager {
     /**
      * Get all members
      *
-     * @return
+     * @return list of all members
      */
     public List<Member> getMembers() {
         return getMembers(null, null);
@@ -149,7 +148,7 @@ public class MemberManager extends BaseManager {
     /**
      * Add new member
      *
-     * @param member
+     * @param member new member
      */
     public void addMember(Member member) {
         mMembers.add(member);
@@ -160,7 +159,7 @@ public class MemberManager extends BaseManager {
     /**
      * Delete member
      *
-     * @param member
+     * @param member member to remove
      */
     public void deleteMember(Member member) {
         mMembers.remove(member);
@@ -171,8 +170,8 @@ public class MemberManager extends BaseManager {
     /**
      * Replace oldMember with newMember, copying ID and contact manager of old
      *
-     * @param oldMember
-     * @param newMember
+     * @param oldMember member who is about to be deleted
+     * @param newMember new member
      */
     public void replaceMember(Member oldMember, Member newMember) {
         newMember.setId(oldMember.getId());
@@ -185,8 +184,8 @@ public class MemberManager extends BaseManager {
     /**
      * Find member by id
      *
-     * @param id
-     * @return
+     * @param id member's id
+     * @return member with given id
      */
     public Member findMember(long id) {
         int size = mMembers.size();
@@ -215,6 +214,9 @@ public class MemberManager extends BaseManager {
 
     @Override
     public void load(final MainActivity activity) {
+        if (!mMembers.isEmpty())
+            return;
+
         mDatabase.child("members").addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
@@ -346,7 +348,7 @@ public class MemberManager extends BaseManager {
 
         try {
             inputStream = context.getContentResolver().openInputStream(uri);
-            BufferedReader reader = null;
+            BufferedReader reader;
             if (inputStream != null) {
                 reader = new BufferedReader(new InputStreamReader(inputStream));
             } else {
@@ -354,7 +356,8 @@ public class MemberManager extends BaseManager {
             }
 
             SimpleDateFormat dateFormat;
-            String line = reader.readLine();
+            String line;
+            reader.readLine();
             while (true) {
                 String name = "";
                 String surname = "";

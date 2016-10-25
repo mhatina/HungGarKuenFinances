@@ -22,6 +22,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -39,11 +40,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
@@ -54,10 +53,15 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.Log;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.FileUtils;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.Payment;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Product;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.PaymentManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ProductManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.PaymentsAdapter;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ProductsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.MemberDetailDialog;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.SlidingTabsFragment;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.SlidingTabManager;
@@ -70,8 +74,6 @@ public class MainActivity extends AppCompatActivity
     public static final int MEMBER_CONTEXT_GROUP_ID = 0;
 
     public static boolean calledFirebasePersistence = false;
-
-    private String TAG = "MainActivity";
 
     private BaseEntity mContextEntity;
 
@@ -89,7 +91,7 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
     }
 
@@ -98,16 +100,8 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Class<?> activity = null;
-                ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+                Class<?> activity = getCreateNewActivityClass();
                 SearchView searchView = (SearchView) findViewById(R.id.search);
-                if (viewPager.getCurrentItem() == Constant.MEMBER_LIST_INDEX) {
-                    activity = CreateNewMemberActivity.class;
-                } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
-
-                } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
-
-                }
 
                 if (activity != null) {
                     searchView.setIconified(true);
@@ -168,7 +162,7 @@ public class MainActivity extends AppCompatActivity
                     if (viewPager.getCurrentItem() == Constant.MEMBER_LIST_INDEX) {
                         MemberManager.getInstance().importFromFile(this, uri);
                     } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
-//                    PaymentManager.getInstance().importFromFile(this, path);
+                        PaymentManager.getInstance().importFromFile(this, uri);
                     } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
                         ProductManager.getInstance().importFromFile(this, uri);
                     }
@@ -247,7 +241,7 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -287,21 +281,20 @@ public class MainActivity extends AppCompatActivity
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         AdapterView.AdapterContextMenuInfo adapterMenuInfo = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        ListView memberList = getMemberListView();
-
-        if (memberList == null) {
-            return;
-        }
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         if (viewPager.getCurrentItem() == Constant.MEMBER_LIST_INDEX) {
             Member member;
-            mContextEntity = member = (Member) memberList.getItemAtPosition(adapterMenuInfo.position);
+            mContextEntity = member = (Member) getMemberListView().getItemAtPosition(adapterMenuInfo.position);
             menu.setHeaderTitle(member.getName() + " " + member.getSurname());
         } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
-
+            Payment payment;
+            mContextEntity = payment = (Payment) getPaymentListView().getItemAtPosition(adapterMenuInfo.position);
+//            menu.setHeaderTitle();
         } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
-
+            Product product;
+            mContextEntity = product = (Product) getProductListView().getItemAtPosition(adapterMenuInfo.position);
+            menu.setHeaderTitle(product.getName());
         }
 
         menu.removeGroup(MemberDetailDialog.MEMBER_DETAIL_CONTEXT_GROUP_ID);
@@ -312,29 +305,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getTitle().equals(getString(R.string.edit))) {
-            Intent intent = new Intent(this, CreateNewMemberActivity.class);
+            Intent intent = new Intent(this, getCreateNewActivityClass());
             intent.putExtra(CreateNewMemberActivity.EDIT_ENTITY, mContextEntity.getId());
             startActivityForResult(intent, 1);
         } else if (item.getTitle().equals(getString(R.string.delete))) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.delete_member_title)
-                    .setMessage(R.string.sure_to_delete_member)
-                    .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (mContextEntity instanceof Member) {
-                                MemberManager.getInstance().deleteMember((Member) mContextEntity);
-                                ArrayAdapter<Member> arrayAdapter = (ArrayAdapter<Member>) getMemberListView().getAdapter();
-                                arrayAdapter.remove((Member) mContextEntity);
-                                mContextEntity = null;
-                            }
-                        }
-                    })
-                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .show();
+            showDeleteDialog(R.string.delete_member_title, R.string.sure_to_delete_member);
         } else {
             return false;
         }
@@ -342,8 +317,62 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private Class<?> getCreateNewActivityClass() {
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        if (viewPager.getCurrentItem() == Constant.MEMBER_LIST_INDEX) {
+            return CreateNewMemberActivity.class;
+        } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
+            return null;
+        } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
+            return CreateNewProductActivity.class;
+        }
+
+        return null;
+    }
+
+    private void showDeleteDialog(int titleResource, int messageResource) {
+        new AlertDialog.Builder(this)
+                .setTitle(titleResource)
+                .setMessage(messageResource)
+                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (mContextEntity == null) {
+                            return;
+                        }
+
+                        if (mContextEntity instanceof Member) {
+                            MemberManager.getInstance().deleteMember((Member) mContextEntity);
+                            ((MembersAdapter) getMemberListView().getAdapter()).notifyDataSetChanged();
+                            mContextEntity = null;
+                        } else if (mContextEntity instanceof Product) {
+                            ProductManager.getInstance().deleteProduct((Product) mContextEntity);
+                            ((ProductsAdapter) getProductListView().getAdapter()).notifyDataSetChanged();
+                            mContextEntity = null;
+                        } else if (mContextEntity instanceof Payment) {
+                            PaymentManager.getInstance().deletePayment((Payment) mContextEntity);
+                            ((PaymentsAdapter) getPaymentListView().getAdapter()).notifyDataSetChanged();
+                            mContextEntity = null;
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
     public ListView getMemberListView() {
         return SlidingTabManager.createInstance().getMemberList();
+    }
+
+    public ListView getPaymentListView() {
+        return SlidingTabManager.createInstance().getPaymentList();
+    }
+
+    public ListView getProductListView() {
+        return SlidingTabManager.createInstance().getProductList();
     }
 
     private void filterMemberList(String query) {

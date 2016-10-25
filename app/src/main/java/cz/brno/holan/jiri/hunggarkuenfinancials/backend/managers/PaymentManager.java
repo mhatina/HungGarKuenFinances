@@ -17,64 +17,34 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
+
 import android.content.Context;
 import android.net.Uri;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.OneTimeOnly;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Periodic;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Product;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.Payment;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity;
 
-public class ProductManager extends BaseManager {
-    private ArrayList<Product> mProducts;
-    private long newProductId;
+public class PaymentManager extends BaseManager {
+    private ArrayList<Payment> mPayments;
+    private long newPaymentId;
 
-    private static ProductManager ourInstance = new ProductManager();
+    private static PaymentManager ourInstance = new PaymentManager();
 
-    public static ProductManager getInstance() {
+    public static PaymentManager getInstance() {
         return ourInstance;
     }
 
-    private ProductManager() {
-        mProducts = new ArrayList<>();
-        mDatabase.child("products").keepSynced(true);
-        // TODO remove
-        addProduct(new Periodic(0, "Training", 3000, 0, 3));
-        addProduct(new OneTimeOnly(0, "T-shirt", 250));
+    private PaymentManager() {
+        mPayments = new ArrayList<>();
+        mDatabase.child("payments").keepSynced(true);
     }
 
-    public List<Product> getProducts() {
-        return mProducts;
-    }
+    public void deletePayment(Payment payment) {
 
-    public void addProduct(Product product) {
-        mProducts.add(product);
-    }
-
-    public void deleteProduct(Product product) {
-        mProducts.remove(product);
-        delete(product);
-    }
-
-
-    @Override
-    public String toString() {
-        String exportText = "";
-        for (Product product : mProducts) {
-            exportText += product.toString() + "\n";
-        }
-
-        return exportText;
-    }
-
-    @Override
-    public String exportDescription() {
-        return null;
     }
 
     @Override
@@ -95,6 +65,11 @@ public class ProductManager extends BaseManager {
     @Override
     public void delete(BaseEntity entity) {
 
+    }
+
+    @Override
+    public String exportDescription() {
+        return null;
     }
 
     @Override

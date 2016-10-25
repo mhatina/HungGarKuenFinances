@@ -29,9 +29,6 @@ import java.util.List;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.Payment;
 
-/**
- * Created by mhatina on 24/08/16.
- */
 public class PaymentsAdapter extends ArrayAdapter<Payment> {
     public PaymentsAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
@@ -60,7 +57,7 @@ public class PaymentsAdapter extends ArrayAdapter<Payment> {
         Payment payment = getItem(position);
 
         if (payment != null) {
-            viewHolder.textView.setText(String.valueOf(payment.getID()));
+            viewHolder.textView.setText(String.valueOf(payment.getId()));
         }
 
         return convertView;
