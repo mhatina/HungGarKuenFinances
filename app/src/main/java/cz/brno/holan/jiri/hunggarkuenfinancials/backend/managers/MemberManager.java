@@ -436,6 +436,8 @@ public class MemberManager extends BaseManager {
                 }
 
                 Member member = createMember(getTypeByBirthDate(birthDate), name, surname, birthDate);
+                if (mMembers.indexOf(member) != -1)
+                    continue;
                 if (!phone.isEmpty())
                     member.getContactManager().addContact(
                             member.getContactManager().createContact(context, Phone.ICON_PATH, phone, "")

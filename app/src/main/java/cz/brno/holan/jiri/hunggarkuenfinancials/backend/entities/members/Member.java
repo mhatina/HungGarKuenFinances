@@ -84,16 +84,18 @@ public class Member extends BaseEntity {
 
         Member member = (Member) o;
 
-        if (getId() != member.getId()) return false;
-        if (!name.equals(member.name)) return false;
-        return surname.equals(member.surname);
+        if (name != null ? !name.equals(member.name) : member.name != null) return false;
+        if (surname != null ? !surname.equals(member.surname) : member.surname != null)
+            return false;
+        return birthDate != null ? birthDate.equals(member.birthDate) : member.birthDate == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + surname.hashCode();
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (surname != null ? surname.hashCode() : 0);
+        result = 31 * result + (birthDate != null ? birthDate.hashCode() : 0);
         return result;
     }
 
