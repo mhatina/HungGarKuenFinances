@@ -120,26 +120,14 @@ public class SlidingTabManager {
     }
 
     public ListView getMemberList() {
-        if (mMemberList == null) {
-            mMemberList = (ListView) viewPager.getChildAt(Constant.MEMBER_LIST_INDEX);
-        }
-
         return mMemberList;
     }
 
     public ListView getPaymentList() {
-        if (mPaymentList == null) {
-            mPaymentList = (ListView) viewPager.getChildAt(Constant.PAYMENT_LIST_INDEX);
-        }
-
         return mPaymentList;
     }
 
     public ListView getProductList() {
-        if (mProductList == null) {
-            mProductList = (ListView) viewPager.getChildAt(Constant.PRODUCT_LIST_INDEX);
-        }
-
         return mProductList;
     }
 }

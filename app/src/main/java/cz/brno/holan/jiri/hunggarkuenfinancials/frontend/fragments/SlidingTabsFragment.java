@@ -30,9 +30,6 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.SlidingTabManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.SlidingTabLayout;
 
-/**
- * Created by mhatina on 25/08/16.
- */
 public class SlidingTabsFragment extends Fragment {
 
     public static final String TAG = "SlidingTabsFragment";
@@ -76,7 +73,7 @@ public class SlidingTabsFragment extends Fragment {
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            tabManager.destroyList(container, position, object);
+//            tabManager.destroyList(container, position, object);
         }
     }
 }

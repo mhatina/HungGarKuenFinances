@@ -317,6 +317,12 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public void onContextMenuClosed(Menu menu) {
+        super.onContextMenuClosed(menu);
+        mContextEntity = null;
+    }
+
     private Class<?> getCreateNewActivityClass() {
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         if (viewPager.getCurrentItem() == Constant.MEMBER_LIST_INDEX) {
