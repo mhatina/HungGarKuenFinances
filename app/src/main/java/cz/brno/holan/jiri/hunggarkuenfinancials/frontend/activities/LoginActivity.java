@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -70,7 +71,7 @@ public class LoginActivity extends AppCompatActivity implements
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestIdToken("126168175263-q0c3qplnh6o1r7k8v49h94k6ng89nvgo.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
 
@@ -131,6 +132,8 @@ public class LoginActivity extends AppCompatActivity implements
             } else {
                 // Google Sign In failed, update UI appropriately
                 updateUI(null);
+                cz.brno.holan.jiri.hunggarkuenfinancials.Log.error(this, "Failed to log in",
+                        new GoogleAuthException("Log in error: " + result.getStatus().getStatusCode()));
             }
         } else if (requestCode == Constant.SIGN_IN_CODE) {
             setResult(Constant.SIGN_IN_CODE);

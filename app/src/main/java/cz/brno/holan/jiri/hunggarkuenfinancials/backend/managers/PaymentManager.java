@@ -21,6 +21,8 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 import android.content.Context;
 import android.net.Uri;
 
+import com.google.firebase.database.DatabaseReference;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -40,7 +42,7 @@ public class PaymentManager extends BaseManager {
 
     private PaymentManager() {
         mPayments = new ArrayList<>();
-        mDatabase.child("payments").keepSynced(true);
+        getDatabaseReference().keepSynced(true);
     }
 
     public void deletePayment(Payment payment) {
@@ -65,6 +67,11 @@ public class PaymentManager extends BaseManager {
     @Override
     public void delete(BaseEntity entity) {
 
+    }
+
+    @Override
+    public DatabaseReference getDatabaseReference() {
+        return mDatabase.child("payments");
     }
 
     @Override

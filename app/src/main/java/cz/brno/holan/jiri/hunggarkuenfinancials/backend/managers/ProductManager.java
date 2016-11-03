@@ -20,6 +20,8 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 import android.content.Context;
 import android.net.Uri;
 
+import com.google.firebase.database.DatabaseReference;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +44,7 @@ public class ProductManager extends BaseManager {
 
     private ProductManager() {
         mProducts = new ArrayList<>();
-        mDatabase.child("products").keepSynced(true);
+        getDatabaseReference().keepSynced(true);
         // TODO remove
         addProduct(new Periodic(0, "Training", 3000, 0, 3));
         addProduct(new OneTimeOnly(0, "T-shirt", 250));
@@ -95,6 +97,11 @@ public class ProductManager extends BaseManager {
     @Override
     public void delete(BaseEntity entity) {
 
+    }
+
+    @Override
+    public DatabaseReference getDatabaseReference() {
+        return mDatabase.child("products");
     }
 
     @Override

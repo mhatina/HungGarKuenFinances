@@ -69,9 +69,9 @@ public class MemberManager extends BaseManager {
         return ourInstance;
     }
 
-    private MemberManager() {
+    protected MemberManager() {
         mMembers = new ArrayList<>();
-        mDatabase.child("members").keepSynced(true);
+        getDatabaseReference().keepSynced(true);
     }
 
     /**
@@ -129,7 +129,7 @@ public class MemberManager extends BaseManager {
      */
     public Member createMember(int type, String name, String surname, Date birth_date) {
         newMemberId++;
-        mDatabase.child("members").child("id").setValue(newMemberId);
+        getDatabaseReference().child("id").setValue(newMemberId);
 
         switch (type) {
             case Adult.ICON_PATH:
@@ -217,7 +217,7 @@ public class MemberManager extends BaseManager {
         if (!mMembers.isEmpty())
             return;
 
-        mDatabase.child("members").addListenerForSingleValueEvent(
+        getDatabaseReference().addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -268,7 +268,7 @@ public class MemberManager extends BaseManager {
     @Override
     public void upload(BaseEntity entity) {
         Member member = (Member) entity;
-        DatabaseReference reference = mDatabase.child("members").child(member.getClass().getSimpleName())
+        DatabaseReference reference = getDatabaseReference().child(member.getClass().getSimpleName())
                 .child(String.valueOf(member.getId()));
 
         reference.child("id").setValue(member.getId());
@@ -286,7 +286,7 @@ public class MemberManager extends BaseManager {
     @Override
     public void update(BaseEntity entity) {
         Member member = (Member) entity;
-        DatabaseReference reference = mDatabase.child("members").child(member.getClass().getSimpleName())
+        DatabaseReference reference = getDatabaseReference().child(member.getClass().getSimpleName())
                 .child(String.valueOf(member.getId()));
 
         if ((member.getUpdatePropertiesSwitch() & Member.NAME_) > 0)
@@ -308,9 +308,14 @@ public class MemberManager extends BaseManager {
     @Override
     public void delete(BaseEntity entity) {
         Member member = (Member) entity;
-        mDatabase.child("members").child(member.getClass().getSimpleName())
+        getDatabaseReference().child(member.getClass().getSimpleName())
                 .child(String.valueOf(member.getId()))
                 .removeValue();
+    }
+
+    @Override
+    public DatabaseReference getDatabaseReference() {
+        return mDatabase.child("members");
     }
 
     private int getTypeByBirthDate(Date birthDate) {

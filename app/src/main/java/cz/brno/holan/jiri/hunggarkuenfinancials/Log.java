@@ -34,7 +34,7 @@ public class Log {
     public static void error(Context context, String title, Throwable exception) {
         new AlertDialog.Builder(context)
                 .setTitle(title)
-                .setMessage(exception.getMessage())
+                .setMessage(exception.getMessage() + "\nReport by connecting to internet.")
                 .setNegativeButton(R.string.dismiss, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

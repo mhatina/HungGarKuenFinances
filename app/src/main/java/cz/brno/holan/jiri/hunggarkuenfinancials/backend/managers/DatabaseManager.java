@@ -23,13 +23,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity;
 
-/**
- * Created by mhatina on 03/10/16.
- */
 public interface DatabaseManager {
     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
     void load(MainActivity activity);
     void upload(BaseEntity entity);
     void update(BaseEntity entity);
     void delete(BaseEntity entity);
+    DatabaseReference getDatabaseReference();
 }
