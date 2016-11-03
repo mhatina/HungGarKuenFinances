@@ -19,6 +19,7 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.widget.ListView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -342,6 +343,11 @@ public class MemberManager extends BaseManager {
     }
 
     @Override
+    public String importDescription() {
+        return "Import members";
+    }
+
+    @Override
     public void importFromFile(Context context, Uri uri) throws IOException {
         InputStream inputStream = null;
         String mimeType = context.getContentResolver().getType(uri);
@@ -364,15 +370,7 @@ public class MemberManager extends BaseManager {
             String line;
             reader.readLine();
             while (true) {
-                String name = "";
-                String surname = "";
-                String address = "";
-                String phone = "";
-                String mail = "";
                 String[] split = null;
-                Date birthDate = null;
-                Date paidUntil = null;
-                boolean checkPaidUntil = false;
 
                 line = reader.readLine();
                 if (line == null)
@@ -389,77 +387,7 @@ public class MemberManager extends BaseManager {
                 if (split.length == 0)
                     continue;
 
-                for (int i = 0; i < split.length; i++) {
-                    if (split[i].isEmpty())
-                        continue;
-
-                    String withoutAccent = split[i];
-                    withoutAccent = Normalizer.normalize(withoutAccent, Normalizer.Form.NFD);
-                    withoutAccent = withoutAccent.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
-
-                    if (withoutAccent.contains("@")) {
-                        mail = split[i];
-                        i++;
-                        continue;
-                    } else if (withoutAccent.matches(Constant.PHONE_REGEX)) {
-                        phone = split[i];
-                        continue;
-                    } else if (withoutAccent.matches(Constant.SIMPLE_ADDRESS_REGEX)) {
-                        address = split[i];
-                        continue;
-                    } else if (withoutAccent.matches(Constant.NAME_REGEX)) {
-                        if (name.isEmpty())
-                            name = split[i];
-                        else
-                            surname = split[i];
-                        continue;
-                    }
-
-                    // don't really like this
-                    String[] formats = {"dd.M.yyyy", "dd.M.yy", "dd.MM.yyyy", "dd.MM.yy",
-                            "dd/M/yyyy", "dd/M/yy", "dd/MM/yyyy", "dd/MM/yy",
-                            "dd-M-yyyy", "dd-M-yy", "dd-MM-yyyy", "dd-MM-yy"};
-                    if (split[i].endsWith("."))
-                        split[i] += Calendar.getInstance().get(Calendar.YEAR);
-                    else if (split[i].length() <= 5) {
-                        split[i] += split[i].contains("/") ? "/" : "-" + Calendar.getInstance().get(Calendar.YEAR);
-                    }
-                    for (String format : formats) {
-                        dateFormat = new SimpleDateFormat(format);
-                        try {
-                            if (!checkPaidUntil) {
-                                paidUntil = dateFormat.parse(split[i]);
-                            } else {
-                                birthDate = dateFormat.parse(split[i]);
-                            }
-                            break;
-                        } catch (ParseException e) {
-                            // either bad format, or not a date
-                        }
-                    }
-                    checkPaidUntil = true;
-                }
-
-                Member member = createMember(getTypeByBirthDate(birthDate), name, surname, birthDate);
-                if (mMembers.indexOf(member) != -1)
-                    continue;
-                if (!phone.isEmpty())
-                    member.getContactManager().addContact(
-                            member.getContactManager().createContact(context, Phone.ICON_PATH, phone, "")
-                    );
-                if (!mail.isEmpty())
-                    member.getContactManager().addContact(
-                            member.getContactManager().createContact(context, Mail.ICON_PATH, mail, "")
-                    );
-                if (!address.isEmpty())
-                    member.getContactManager().addContact(
-                            member.getContactManager().createContact(context, Address.ICON_PATH, address, "")
-                    );
-                if (paidUntil != null) {
-                    member.setPaidUntil(paidUntil);
-                    member.updateStatus();
-                }
-                addMember(member);
+                addMember(parseLine(context, split));
             }
         } catch (NullPointerException e) {
             Log.warning(context, e);
@@ -470,8 +398,128 @@ public class MemberManager extends BaseManager {
         }
     }
 
-    @Override
-    public String importDescription() {
-        return "Import members";
+    private Member parseLine(Context context, String[] lineSplit) {
+        String name = "";
+        String surname = "";
+        String address = "";
+        String phone = "";
+        String mail = "";
+        Date birthDate = null;
+        Date paidUntil = null;
+        boolean filledPaidUntil = false;
+
+        for (int i = 0; i < lineSplit.length; i++) {
+            if (lineSplit[i].isEmpty())
+                continue;
+
+            String withoutAccent = normalizeString(lineSplit[i]);
+
+            if (withoutAccent.contains("@")) {
+                mail = lineSplit[i];
+                i++;
+                continue;
+            } else if (withoutAccent.matches(Constant.PHONE_REGEX)) {
+                phone = lineSplit[i];
+                continue;
+            } else if (withoutAccent.matches(Constant.SIMPLE_ADDRESS_REGEX)) {
+                address = lineSplit[i];
+                continue;
+            } else if (withoutAccent.matches(Constant.NAME_REGEX)) {
+                if (name.isEmpty())
+                    name = lineSplit[i];
+                else
+                    surname = lineSplit[i];
+                continue;
+            }
+
+            if (!filledPaidUntil && paidUntil == null) {
+                paidUntil = parseDates(lineSplit[i]);
+            } else if (birthDate == null) {
+                birthDate = parseDates(lineSplit[i]);
+            }
+            filledPaidUntil = true;
+        }
+
+        return createMember(context, name, surname, address, phone, mail, birthDate, paidUntil);
+    }
+
+    private Member createMember(@Nullable Context context, @Nullable String name, @Nullable String surname,
+                                String address, String phone, String mail, Date birthDate, Date paidUntil) {
+        Member member = createMember(getTypeByBirthDate(birthDate), name, surname, birthDate);
+        if (mMembers.indexOf(member) != -1)
+            return null;
+        if (!phone.isEmpty())
+            member.getContactManager().addContact(
+                    member.getContactManager().createContact(context, Phone.ICON_PATH, phone, "")
+            );
+        if (!mail.isEmpty())
+            member.getContactManager().addContact(
+                    member.getContactManager().createContact(context, Mail.ICON_PATH, mail, "")
+            );
+        if (!address.isEmpty())
+            member.getContactManager().addContact(
+                    member.getContactManager().createContact(context, Address.ICON_PATH, address, "")
+            );
+        if (paidUntil != null) {
+            member.setPaidUntil(paidUntil);
+            member.updateStatus();
+        }
+
+        return member;
+    }
+
+    private Date parseDates(String s) {
+        // don't really like this
+        String[] formats = {"dd.M.yyyy", "dd.MM.yyyy", "dd/M/yyyy", "dd/MM/yyyy",
+                "dd-M-yyyy", "dd-MM-yyyy"};
+        s = addYearToDate(s);
+        s = extendYearToFullLength(s);
+        for (String format : formats) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+
+            try {
+                return dateFormat.parse(s);
+            } catch (ParseException e) {
+                // either bad format, or not a date
+            }
+        }
+
+        return null;
+    }
+
+    private String extendYearToFullLength(String s) {
+        int lastIndexOfDot = 0;
+        if (s.contains("."))
+            lastIndexOfDot = s.lastIndexOf('.');
+        else if (s.contains("/"))
+            lastIndexOfDot = s.lastIndexOf('/');
+        else
+            lastIndexOfDot = s.lastIndexOf('-');
+
+        if (s.substring(lastIndexOfDot + 1).length() <= 2) {
+            int year = Integer.valueOf(s.substring(lastIndexOfDot + 1));
+            int currentShortYear = Integer.valueOf(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)).substring(2));
+            year += year > currentShortYear ? 1900 : 2000;
+            s = s.substring(0, lastIndexOfDot + 1) + year;
+        }
+
+        return s;
+    }
+
+    private String addYearToDate(String s) {
+        if (s.endsWith("."))
+            s += Calendar.getInstance().get(Calendar.YEAR);
+        else if (s.length() <= 5) {
+            s += s.contains("/") ? "/" : "-" + Calendar.getInstance().get(Calendar.YEAR);
+        }
+
+        return s;
+    }
+
+    private String normalizeString(String s) {
+        String withoutAccent = s;
+        withoutAccent = Normalizer.normalize(withoutAccent, Normalizer.Form.NFD);
+        withoutAccent = withoutAccent.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+        return withoutAccent;
     }
 }

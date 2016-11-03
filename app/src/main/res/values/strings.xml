@@ -72,6 +72,12 @@
     <string name="new_product_price_hint">Price</string>
     <string name="new_product_title">New product</string>
     <string name="edit_product_title">Edit product</string>
+    <string name="delete_product_title">Delete product</string>
+    <string name="sure_to_delete_product">Are you sure you want to delete product?</string>
+
+    <!-- payment related -->
+    <string name="delete_payment_title">Delete payment</string>
+    <string name="sure_to_delete_payment">Are you sure you want to delete payment?</string>
 
     <!-- tab titles -->
     <string name="members_title">Members</string>

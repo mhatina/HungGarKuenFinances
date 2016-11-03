@@ -26,14 +26,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 
-/**
- * Created by mhatina on 03/10/16.
- */
 public abstract class CreateNewEntityActivity extends AppCompatActivity {
-
-    public static final String EDIT_ENTITY = "EDIT_ENTITY";
 
     private int activityContentResourceId;
 
@@ -47,7 +43,7 @@ public abstract class CreateNewEntityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_new);
         addViewToActivity(activityContentResourceId);
 
-        if (getIntent().hasExtra(EDIT_ENTITY)) {
+        if (getIntent().hasExtra(Constant.EDIT_ENTITY)) {
             initForEdit();
         } else {
             init();

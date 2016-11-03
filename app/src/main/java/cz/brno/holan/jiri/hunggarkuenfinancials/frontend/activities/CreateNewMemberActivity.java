@@ -42,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.Log;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Contact;
@@ -87,7 +88,7 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
         TextInputLayout surname = (TextInputLayout) findViewById(R.id.create_new_member_surname);
         TextInputLayout note = (TextInputLayout) findViewById(R.id.create_new_note);
         ListView contact_list = (ListView) findViewById(R.id.create_new_contact_list);
-        Member member = MemberManager.getInstance().findMember(getIntent().getLongExtra(EDIT_ENTITY, 0));
+        Member member = MemberManager.getInstance().findMember(getIntent().getLongExtra(Constant.EDIT_ENTITY, 0));
 
         setTitle(getString(R.string.edit_member_title));
 
@@ -227,8 +228,8 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
 
         if (name == null || surname == null || joined_date == null) {
             return false;
-        } else if (getIntent().hasExtra(EDIT_ENTITY)) {
-            member = manager.findMember(getIntent().getLongExtra(EDIT_ENTITY, 0));
+        } else if (getIntent().hasExtra(Constant.EDIT_ENTITY)) {
+            member = manager.findMember(getIntent().getLongExtra(Constant.EDIT_ENTITY, 0));
             if (member.getIconPath() != (int) type.getTag()) {
                 Member newMember = manager.createMember((int) type.getTag(), name, surname, birth_date);
                 manager.replaceMember(member, newMember);

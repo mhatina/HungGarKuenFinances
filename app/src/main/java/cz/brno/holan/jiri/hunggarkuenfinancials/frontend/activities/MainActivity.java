@@ -306,10 +306,18 @@ public class MainActivity extends AppCompatActivity
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getTitle().equals(getString(R.string.edit))) {
             Intent intent = new Intent(this, getCreateNewActivityClass());
-            intent.putExtra(CreateNewMemberActivity.EDIT_ENTITY, mContextEntity.getId());
+            intent.putExtra(Constant.EDIT_ENTITY, mContextEntity.getId());
             startActivityForResult(intent, 1);
         } else if (item.getTitle().equals(getString(R.string.delete))) {
-            showDeleteDialog(R.string.delete_member_title, R.string.sure_to_delete_member);
+            ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+
+            if (viewPager.getCurrentItem() == Constant.MEMBER_LIST_INDEX) {
+                showDeleteDialog(R.string.delete_member_title, R.string.sure_to_delete_member);
+            } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
+                showDeleteDialog(R.string.delete_payment_title, R.string.sure_to_delete_payment);
+            } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
+                showDeleteDialog(R.string.delete_product_title, R.string.sure_to_delete_product);
+            }
         } else {
             return false;
         }
@@ -320,7 +328,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onContextMenuClosed(Menu menu) {
         super.onContextMenuClosed(menu);
-        mContextEntity = null;
     }
 
     private Class<?> getCreateNewActivityClass() {
