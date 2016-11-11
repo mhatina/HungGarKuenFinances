@@ -50,7 +50,7 @@ public class PaymentManager extends BaseManager {
     }
 
     @Override
-    public void load(MainActivity activity) {
+    public void load() {
 
     }
 

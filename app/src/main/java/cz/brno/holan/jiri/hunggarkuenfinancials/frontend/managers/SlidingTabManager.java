@@ -21,6 +21,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
@@ -68,9 +70,19 @@ public class SlidingTabManager {
     }
 
     public Object createInstance(FragmentActivity context, ViewGroup container, int position) {
+        final SwipeRefreshLayout swipeRefreshLayout;
         if (mMemberList == null) {
             mMemberList = prepareTabObject(context, container, new MembersAdapter(context, R.layout.layout_member, MemberManager.getInstance().getMembers()));
             mMemberList.setOnItemClickListener(new MemberListOnItemClickListener(mMemberList, context.getFragmentManager()));
+
+            swipeRefreshLayout = (SwipeRefreshLayout) mMemberList.getParent();
+            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    MemberManager.getInstance().load();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            });
         }
         if (mProductList == null) {
             mProductList = prepareTabObject(context, container, new ProductsAdapter(context, R.layout.layout_product, ProductManager.getInstance().getProducts()));
@@ -79,11 +91,11 @@ public class SlidingTabManager {
 
         switch (position) {
             case Constant.MEMBER_LIST_INDEX:
-                return mMemberList;
+                return mMemberList.getParent();
             case Constant.PAYMENT_LIST_INDEX:
                 return null;
             case Constant.PRODUCT_LIST_INDEX:
-                return mProductList;
+                return mProductList.getParent();
             default:
                 View view = context.getLayoutInflater().inflate(R.layout.pager_item,
                         container, false);
@@ -100,11 +112,13 @@ public class SlidingTabManager {
     private ListView prepareTabObject(FragmentActivity context, ViewGroup container, ListAdapter adapter) {
         ListView listView;
 
-        listView = new ListView(context);
+        View view = context.getLayoutInflater().inflate(R.layout.layout_tab_list, container, false);
+        listView = (ListView) view.findViewById(R.id.tab_list);
+
         listView.setAdapter(adapter);
         context.registerForContextMenu(listView);
 
-        container.addView(listView);
+        container.addView(view);
         return listView;
     }
 

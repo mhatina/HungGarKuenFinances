@@ -71,8 +71,7 @@ public class LoginActivity extends AppCompatActivity implements
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                // todo change id
-                .requestIdToken("126168175263-q0c3qplnh6o1r7k8v49h94k6ng89nvgo.apps.googleusercontent.com")
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 

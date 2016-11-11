@@ -80,7 +80,7 @@ public class ProductManager extends BaseManager {
     }
 
     @Override
-    public void load(MainActivity activity) {
+    public void load() {
 
     }
 

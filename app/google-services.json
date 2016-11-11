@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "126168175263-v6bao2ssfb55mbtmeudqluod82u16s8n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cz.brno.holan.jiri.hunggarkuenfinancials",
+            "certificate_hash": "D90EA3819142465A116FC64238504C119DE9C372"
+          }
+        },
+        {
+          "client_id": "126168175263-l0626hnn0uibi53uvfoh2qkusu0pro94.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cz.brno.holan.jiri.hunggarkuenfinancials",
+            "certificate_hash": "97910E8FB53C42B638DF8C853FE855D6EB0380FD"
+          }
+        },
+        {
           "client_id": "126168175263-q0c3qplnh6o1r7k8v49h94k6ng89nvgo.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +45,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "126168175263-q0c3qplnh6o1r7k8v49h94k6ng89nvgo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

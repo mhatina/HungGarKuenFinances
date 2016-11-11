@@ -214,9 +214,8 @@ public class MemberManager extends BaseManager {
     }
 
     @Override
-    public void load(final MainActivity activity) {
-        if (!mMembers.isEmpty())
-            return;
+    public void load() {
+        mMembers.clear();
 
         getDatabaseReference().addListenerForSingleValueEvent(
                 new ValueEventListener() {

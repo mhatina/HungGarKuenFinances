@@ -180,8 +180,8 @@ public class MainActivity extends AppCompatActivity
                 break;
             case Constant.SIGN_IN_CODE:
                 setSignedInAs(data);
-                MemberManager.getInstance().load(this);
-                ProductManager.getInstance().load(this);
+                MemberManager.getInstance().load();
+                ProductManager.getInstance().load();
                 break;
             default:
 
