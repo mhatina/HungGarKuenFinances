@@ -17,8 +17,9 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -27,12 +28,11 @@ import android.view.ViewGroup;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.SlidingTabManager;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.SlidingTabLayout;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.EntityTabManager;
 
-public class SlidingTabsFragment extends Fragment {
+public class EntityTabsFragment extends Fragment {
 
-    public static final String TAG = "SlidingTabsFragment";
+    public static final String TAG = "EntityTabsFragment";
     ViewPager viewPager;
 
     @Override
@@ -45,15 +45,15 @@ public class SlidingTabsFragment extends Fragment {
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         viewPager.setAdapter(new SwipeViewAdapter());
 
-        ((SlidingTabLayout) view.findViewById(R.id.sliding_tabs)).setViewPager(viewPager);
+        ((TabLayout) view.findViewById(R.id.sliding_tabs)).setupWithViewPager(viewPager);
     }
 
     public class SwipeViewAdapter extends PagerAdapter {
-        private SlidingTabManager tabManager = SlidingTabManager.createInstance(viewPager);
+        private EntityTabManager tabManager = EntityTabManager.getInstance();
 
         @Override
         public int getCount() {
-            return Constant.NUMBER_OF_TABS;
+            return Constant.NUMBER_OF_ENTITY_TABS;
         }
 
         @Override
@@ -73,7 +73,7 @@ public class SlidingTabsFragment extends Fragment {
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-//            tabManager.destroyList(container, position, object);
+//            tabManager.destroyView(container, position, object);
         }
     }
 }

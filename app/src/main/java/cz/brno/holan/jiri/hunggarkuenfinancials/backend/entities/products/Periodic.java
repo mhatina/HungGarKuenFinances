@@ -17,26 +17,13 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products;
 
-/**
- * Created by mhatina on 01/10/16.
- */
 public class Periodic extends Product {
 
-    long validTime;
     int perWeek;
 
-    public Periodic(long id, String name, int value, long validTime, int perWeek) {
+    public Periodic(long id, String name, int value, int perWeek) {
         super(id, name, value);
-        this.validTime = validTime;
         this.perWeek = perWeek;
-    }
-
-    public long getValidTime() {
-        return validTime;
-    }
-
-    public void setValidTime(long validTime) {
-        this.validTime = validTime;
     }
 
     public int getPerWeek() {
@@ -50,7 +37,6 @@ public class Periodic extends Product {
     @Override
     public String toString() {
         return super.toString() +
-                ", validTime=" + validTime +
                 ", perWeek=" + perWeek;
     }
 }

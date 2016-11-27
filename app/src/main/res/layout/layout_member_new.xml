@@ -20,8 +20,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+    android:padding="10dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,7 +32,7 @@
             android:id="@+id/create_new_member_type"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@android:drawable/screen_background_light_transparent"
+            android:background="@null"
             android:clickable="true"
             android:src="@drawable/beginner_icon" />
 

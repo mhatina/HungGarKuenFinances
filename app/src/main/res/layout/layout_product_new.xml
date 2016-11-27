@@ -15,38 +15,147 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="10dp">
 
-    <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout
-        android:id="@+id/create_new_product_name"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/create_new_product_name_text"
+        <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout
+            android:id="@+id/create_new_product_name"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="@string/new_product_name_hint"
-            android:nextFocusDown="@+id/create_new_product_price_text" />
-    </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:layout_weight="5">
 
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/create_new_product_name_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/new_product_name_hint"
+                android:inputType="textPersonName"
+                android:nextFocusDown="@+id/create_new_product_detail_number_picker"/>
+        </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
+
+        <ImageButton
+            android:id="@+id/create_new_product_periodic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:background="@null"
+            android:src="@drawable/repeat_icon"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true">
+        android:orientation="horizontal">
 
-        <View
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/create_new_product_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Times a week"
+                android:gravity="center"/>
 
+            <NumberPicker
+                android:id="@+id/create_new_product_detail_number_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:nextFocusDown="@+id/create_new_product_valid_time_text"/>
+        </LinearLayout>
+
+        <GridLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5">
+
+            <ImageButton
+                android:id="@+id/create_new_product_adult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_row="0"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@null"
+                android:src="@drawable/adult_icon"/>
+
+            <ImageButton
+                android:id="@+id/create_new_product_youngster"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_row="0"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@null"
+                android:src="@drawable/youngster_icon"/>
+
+            <ImageButton
+                android:id="@+id/create_new_product_junior"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_row="1"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@null"
+                android:src="@drawable/junior_icon"/>
+
+            <ImageButton
+                android:id="@+id/create_new_product_child"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_row="1"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@null"
+                android:src="@drawable/child_icon"/>
+        </GridLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout
+            android:id="@+id/create_new_product_valid_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/create_new_product_valid_time_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Valid for"
+                android:inputType="number"
+                android:nextFocusDown="@+id/create_new_product_price_text"/>
+        </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
+
+        <Spinner
+            android:id="@+id/create_new_product_validity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+        </Spinner>
 
         <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout
             android:id="@+id/create_new_product_price"
@@ -60,10 +169,31 @@
                 android:layout_height="match_parent"
                 android:gravity="end"
                 android:hint="@string/new_product_price_hint"
-                android:nextFocusDown="@+id/create_new_member_surname_text"
-                android:textSize="50sp" />
+                android:inputType="number"
+                android:nextFocusDown="@+id/create_new_note_text"/>
         </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
-
     </LinearLayout>
 
-</RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/blue_grey_200"/>
+
+    <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout
+        android:id="@+id/create_new_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:counterEnabled="true"
+        app:counterMaxLength="512">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/create_new_note_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top"
+            android:hint="Note"
+            android:lines="5"
+            android:maxLength="512"/>
+    </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
+
+</LinearLayout>

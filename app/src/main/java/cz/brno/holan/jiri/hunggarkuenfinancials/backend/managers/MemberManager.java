@@ -54,9 +54,8 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Youngster;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.comparators.FilterComparator;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.comparators.MemberComparator;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.SlidingTabManager;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.EntityTabManager;
 
 public class MemberManager extends BaseManager {
     private ArrayList<Member> mMembers;
@@ -237,7 +236,7 @@ public class MemberManager extends BaseManager {
                             loadMember(postSnapshot, Member.class);
                         }
 
-                        ListView memberList = SlidingTabManager.createInstance().getMemberList();
+                        ListView memberList = EntityTabManager.getInstance().getMemberList();
                         if (memberList != null) {
                             MembersAdapter adapter = (MembersAdapter) memberList.getAdapter();
                             if (adapter != null) {

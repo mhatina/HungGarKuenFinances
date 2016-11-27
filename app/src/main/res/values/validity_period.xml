@@ -18,7 +18,10 @@
   -->
 
 <resources>
-    <string name="app_name">Hung Gar Kuen</string>
-    <string name="action_settings">Nastavení</string>
-    <string name="action_about">O aplikaci</string>
+    <string-array name="validity_periods">
+        <item>day(s)</item>
+        <item>week(s)</item>
+        <item>month(s)</item>
+        <item>year(s)</item>
+    </string-array>
 </resources>

@@ -46,7 +46,7 @@ public class ProductManager extends BaseManager {
         mProducts = new ArrayList<>();
         getDatabaseReference().keepSynced(true);
         // TODO remove
-        addProduct(new Periodic(0, "Training", 3000, 0, 3));
+        addProduct(new Periodic(0, "Training", 3000, 3));
         addProduct(new OneTimeOnly(0, "T-shirt", 250));
     }
 

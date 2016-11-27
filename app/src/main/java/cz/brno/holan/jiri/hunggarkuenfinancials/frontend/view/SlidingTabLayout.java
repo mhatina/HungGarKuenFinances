@@ -48,6 +48,8 @@ public class SlidingTabLayout extends HorizontalScrollView {
     private int mTabViewLayoutId;
     private int mTabViewTextViewId;
 
+    private int mWidth;
+
     private ViewPager mViewPager;
     private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
 
@@ -96,10 +98,15 @@ public class SlidingTabLayout extends HorizontalScrollView {
         mTabViewTextViewId = textViewId;
     }
 
+    public void setWidth(int width) {
+        this.mWidth = width;
+    }
+
     public void setViewPager(ViewPager viewPager) {
         mTabStrip.removeAllViews();
 
         mViewPager = viewPager;
+        mWidth = getResources().getDisplayMetrics().widthPixels / mViewPager.getAdapter().getCount();
         if (viewPager != null) {
             viewPager.setOnPageChangeListener(new InternalViewPagerListener());
             populateTabStrip();
@@ -127,9 +134,8 @@ public class SlidingTabLayout extends HorizontalScrollView {
         }
 
         int padding = (int) (TAB_VIEW_PADDING_DIPS * getResources().getDisplayMetrics().density);
-        int width = getResources().getDisplayMetrics().widthPixels / mViewPager.getAdapter().getCount();
         textView.setPadding(padding, padding, padding, padding);
-        textView.setWidth(width);
+        textView.setWidth(mWidth);
 
         return textView;
     }

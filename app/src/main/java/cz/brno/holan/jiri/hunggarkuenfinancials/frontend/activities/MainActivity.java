@@ -63,8 +63,8 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.PaymentsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ProductsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.MemberDetailDialog;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.SlidingTabsFragment;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.SlidingTabManager;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.EntityTabsFragment;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.EntityTabManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.provider.SearchProvider;
 
 public class MainActivity extends AppCompatActivity
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity
 
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            SlidingTabsFragment fragment = new SlidingTabsFragment();
+            EntityTabsFragment fragment = new EntityTabsFragment();
             transaction.replace(R.id.slide_tabs_fragment, fragment);
             transaction.commit();
         }
@@ -377,15 +377,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     public ListView getMemberListView() {
-        return SlidingTabManager.createInstance().getMemberList();
+        return EntityTabManager.getInstance().getMemberList();
     }
 
     public ListView getPaymentListView() {
-        return SlidingTabManager.createInstance().getPaymentList();
+        return EntityTabManager.getInstance().getPaymentList();
     }
 
     public ListView getProductListView() {
-        return SlidingTabManager.createInstance().getProductList();
+        return EntityTabManager.getInstance().getProductList();
     }
 
     private void filterMemberList(String query) {

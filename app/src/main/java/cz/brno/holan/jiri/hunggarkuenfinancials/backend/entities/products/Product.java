@@ -19,13 +19,12 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 
-/**
- * Created by mhatina on 3/8/16.
- */
 public class Product extends BaseEntity {
-    String name;
-    int price;
-    boolean isAvailable;
+
+    private String name;
+    private long validTime;
+    private int price;
+    private boolean isAvailable;
 
     public Product(long id, String name, int value) {
         super(id);
@@ -43,6 +42,14 @@ public class Product extends BaseEntity {
 
     public int getPrice() {
         return price;
+    }
+
+    public long getValidTime() {
+        return validTime;
+    }
+
+    public void setValidTime(long validTime) {
+        this.validTime = validTime;
     }
 
     public void setPrice(int price) {

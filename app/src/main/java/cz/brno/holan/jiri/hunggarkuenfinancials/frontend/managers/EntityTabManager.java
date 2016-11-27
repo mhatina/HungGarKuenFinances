@@ -20,9 +20,7 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
@@ -37,21 +35,14 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ProductsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.MemberListOnItemClickListener;
 
-public class SlidingTabManager {
+public class EntityTabManager {
     private ListView mMemberList = null;
     private ListView mPaymentList = null;
     private ListView mProductList = null;
 
-    private ViewPager viewPager;
+    private static EntityTabManager ourInstance = new EntityTabManager();
 
-    private static SlidingTabManager ourInstance = new SlidingTabManager();
-
-    public static SlidingTabManager createInstance(ViewPager viewPager) {
-        ourInstance.viewPager = viewPager;
-        return ourInstance;
-    }
-
-    public static SlidingTabManager createInstance() {
+    public static EntityTabManager getInstance() {
         return ourInstance;
     }
 
