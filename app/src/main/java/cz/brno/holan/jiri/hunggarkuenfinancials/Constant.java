@@ -16,4 +16,19 @@ public class Constant {
     public static final String SIMPLE_ADDRESS_REGEX = "[a-zA-Z]+[ ]+[0-9]+[a-zA-Z]*[, ]*[a-zA-Z]*[, ]*[a-zA-Z ]*";
 
     public static final String EDIT_ENTITY = "EDIT_ENTITY";
+
+    public static final int ADULT_GROUP = 0x1;
+    public static final int YOUNGSTER_GROUP = 0x2;
+    public static final int JUNIOR_GROUP = 0x4;
+    public static final int CHILD_GROUP = 0x8;
+
+    public static final long DAY = 1000 * 60 * 60 * 24;
+    public static final long WEEK = DAY * 7;
+    public static final long MONTH = WEEK * 30;
+    public static final long YEAR = MONTH * 12;
+
+    public static final int DAY_SELECTION = 0;
+    public static final int WEEK_SELECTION = 1;
+    public static final int MONTH_SELECTION = 2;
+    public static final int YEAR_SELECTION = 3;
 }

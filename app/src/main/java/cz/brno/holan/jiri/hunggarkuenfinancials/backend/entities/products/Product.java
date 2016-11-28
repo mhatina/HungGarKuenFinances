@@ -22,9 +22,11 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 public class Product extends BaseEntity {
 
     private String name;
+    private String note;
     private long validTime;
+    private int validGroup;
     private int price;
-    private boolean isAvailable;
+    private int group;
 
     public Product(long id, String name, int value) {
         super(id);
@@ -56,12 +58,28 @@ public class Product extends BaseEntity {
         this.price = price;
     }
 
-    public boolean isAvailable() {
-        return isAvailable;
+    public int getGroup() {
+        return group;
     }
 
-    public void setIsAvailable(boolean isAvailable) {
-        this.isAvailable = isAvailable;
+    public void setGroup(int group) {
+        this.group = group;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public int getValidGroup() {
+        return validGroup;
+    }
+
+    public void setValidGroup(int validGroup) {
+        this.validGroup = validGroup;
     }
 
     @Override
@@ -86,7 +104,6 @@ public class Product extends BaseEntity {
     @Override
     public String toString() {
         return "name='" + name + '\'' +
-               ", price=" + price +
-               ", isAvailable=" + isAvailable;
+               ", price=" + price;
     }
 }

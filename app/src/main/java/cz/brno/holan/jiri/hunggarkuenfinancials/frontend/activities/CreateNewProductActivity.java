@@ -27,7 +27,13 @@ import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.OneTimeOnly;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Periodic;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Product;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ProductManager;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 
 public class CreateNewProductActivity extends CreateNewEntityActivity implements ImageButton.OnClickListener {
 
@@ -42,7 +48,41 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
 
     @Override
     public void initForEdit() {
+        TextInputLayout name = (TextInputLayout) findViewById(R.id.create_new_product_name);
+        TextInputLayout valid_for = (TextInputLayout) findViewById(R.id.create_new_product_valid_time);
+        TextInputLayout price = (TextInputLayout) findViewById(R.id.create_new_product_price);
+        TextInputLayout note = (TextInputLayout) findViewById(R.id.create_new_note);
+        Spinner validity = (Spinner) findViewById(R.id.create_new_product_validity);
+        NumberPicker detail = (NumberPicker) findViewById(R.id.create_new_product_detail_number_picker);
+        ImageButton button = (ImageButton) findViewById(R.id.create_new_product_periodic);
+        Product product = ProductManager.getInstance().findProduct(getIntent().getLongExtra(Constant.EDIT_ENTITY, 0));
+
         setTitle(getString(R.string.edit_product_title));
+
+        name.getEditText().setText(product.getName());
+        valid_for.getEditText().setText(String.valueOf(product.getValidTime()));
+        price.getEditText().setText(product.getPrice());
+        note.getEditText().setText(product.getNote());
+        toggleButton(button, product.getClass().equals(OneTimeOnly.class));
+
+        button = (ImageButton) findViewById(R.id.create_new_product_adult);
+        toggleButton(button, (product.getGroup() & Constant.ADULT_GROUP) > 0);
+
+        button = (ImageButton) findViewById(R.id.create_new_product_youngster);
+        toggleButton(button, (product.getGroup() & Constant.YOUNGSTER_GROUP) > 0);
+
+        button = (ImageButton) findViewById(R.id.create_new_product_junior);
+        toggleButton(button, (product.getGroup() & Constant.JUNIOR_GROUP) > 0);
+
+        button = (ImageButton) findViewById(R.id.create_new_product_child);
+        toggleButton(button, (product.getGroup() & Constant.CHILD_GROUP) > 0);
+
+        if (product.getClass() == Periodic.class)
+            detail.setValue(((Periodic) product).getPerWeek());
+        else
+            detail.setValue(((OneTimeOnly) product).getStock());
+
+        validity.setSelection(product.getValidGroup());
     }
 
     @Override
@@ -74,7 +114,7 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
                 R.array.validity_periods, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         validityPeriod.setAdapter(adapter);
-        validityPeriod.setSelection(2);
+        validityPeriod.setSelection(Constant.MONTH_SELECTION);
     }
 
     @Override
@@ -85,18 +125,15 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
     @Override
     public void onClick(View view) {
         ImageButton button = (ImageButton) view;
+
+        toggleButton(button, button.getColorFilter() != null);
+    }
+
+    private void toggleButton(ImageButton button, boolean toggle) {
         TextView textView = (TextView) findViewById(R.id.create_new_product_detail);
         NumberPicker numberPicker = (NumberPicker) findViewById(R.id.create_new_product_detail_number_picker);
 
-        if (button.getColorFilter() == null) {
-            if (button.getId() == R.id.create_new_product_periodic) {
-                textView.setText("In stock");
-                numberPicker.setMinValue(0);
-                numberPicker.setMaxValue(1000);
-            }
-
-            button.setColorFilter(Color.rgb(200, 200, 200));
-        } else {
+        if (toggle) {
             if (button.getId() == R.id.create_new_product_periodic) {
                 textView.setText("Times a week");
                 numberPicker.setMinValue(1);
@@ -104,6 +141,14 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
             }
 
             button.setColorFilter(null);
+        } else {
+            if (button.getId() == R.id.create_new_product_periodic) {
+                textView.setText("In stock");
+                numberPicker.setMinValue(0);
+                numberPicker.setMaxValue(1000);
+            }
+
+            button.setColorFilter(Color.rgb(200, 200, 200));
         }
     }
 }

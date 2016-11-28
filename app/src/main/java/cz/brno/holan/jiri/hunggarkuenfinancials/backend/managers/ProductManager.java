@@ -63,6 +63,15 @@ public class ProductManager extends BaseManager {
         delete(product);
     }
 
+    public Product findProduct(long id) {
+        int size = mProducts.size();
+        for (int i = 0; i < size; i++) {
+            if (mProducts.get(i).getId() == id)
+                return mProducts.get(i);
+        }
+
+        return null;
+    }
 
     @Override
     public String toString() {
