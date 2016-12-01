@@ -119,6 +119,45 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
 
     @Override
     public boolean save() {
+        Product product;
+        ProductManager manager = ProductManager.getInstance();
+
+        TextInputLayout name_layout = (TextInputLayout) findViewById(R.id.create_new_product_name);
+        TextInputLayout valid_for_layout = (TextInputLayout) findViewById(R.id.create_new_product_valid_time);
+        TextInputLayout price_layout = (TextInputLayout) findViewById(R.id.create_new_product_price);
+        TextInputLayout note_layout = (TextInputLayout) findViewById(R.id.create_new_note);
+        Spinner validity_spinner = (Spinner) findViewById(R.id.create_new_product_validity);
+        NumberPicker detail_picker = (NumberPicker) findViewById(R.id.create_new_product_detail_number_picker);
+        ImageButton button = (ImageButton) findViewById(R.id.create_new_product_periodic);
+        Class<?> classType = button.getColorFilter() == null ? Periodic.class : OneTimeOnly.class;
+
+        String name = name_layout.getEditText().getText().toString();
+        int price = Integer.getInteger(price_layout.getEditText().getText().toString())
+
+        if (name_layout == null) {
+            return false;
+        } else if (getIntent().hasExtra(Constant.EDIT_ENTITY)) {
+            product = manager.findProduct(getIntent().getLongExtra(Constant.EDIT_ENTITY, 0));
+
+            if (product.getClass().equals(classType)) {
+                Product newProduct = manager.createProduct(classType, name_layout, price);
+                manager.replaceProduct(product, newProduct);
+                product = newProduct;
+            } else {
+                product.setName(name);
+                product.setPrice(price);
+            }
+
+            manager.update(product);
+        } else {
+            product = manager.createProduct(classType, name, price);
+
+            manager.addProduct(product);
+        }
+
+        setResult(0);
+        finish();
+
         return false;
     }
 
