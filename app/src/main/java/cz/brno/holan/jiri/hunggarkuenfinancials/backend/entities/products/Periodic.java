@@ -19,24 +19,24 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products;
 
 public class Periodic extends Product {
 
-    int perWeek;
+    public Periodic() {
+    }
 
     public Periodic(long id, String name, int value, int perWeek) {
         super(id, name, value);
-        this.perWeek = perWeek;
     }
 
     public int getPerWeek() {
-        return perWeek;
+        return detail;
     }
 
     public void setPerWeek(int perWeek) {
-        this.perWeek = perWeek;
+        this.detail = perWeek;
     }
 
     @Override
     public String toString() {
         return super.toString() +
-                ", perWeek=" + perWeek;
+                ", perWeek=" + detail;
     }
 }

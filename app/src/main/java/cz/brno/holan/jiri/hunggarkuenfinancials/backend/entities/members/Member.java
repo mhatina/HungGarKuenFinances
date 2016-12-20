@@ -17,21 +17,14 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members;
 
-import java.util.ArrayList;
 import java.util.Date;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.Payment;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Address;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Mail;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Phone;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.enums.MemberStatus;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ContactManager;
 
-/**
- * Created by mhatina on 3/8/16.
- */
 public class Member extends BaseEntity {
 
     public static final int ICON_PATH = R.drawable.lam_ga_hung_kuen_logo;
@@ -40,13 +33,6 @@ public class Member extends BaseEntity {
     public static final int PAYMENT_INACTIVE = android.R.drawable.presence_offline;
     public static final long BEFORE_END_OF_PAYMENT_PERIOD = 3 * 24 * 60 * 60 * 1000; // #days * 24h * 60min * 60sec * 1000msec
     public static final long INACTIVATION_PERIOD = 14 * 24 * 60 * 60 * 1000; // #days * 24h * 60min * 60sec * 1000msec
-
-    public static final int NAME_ = 0x1;
-    public static final int SURNAME_ = 0x2;
-    public static final int BIRTH_DATE_ = 0x4;
-    public static final int JOINED_DATE_ = 0x8;
-    public static final int PAID_UNTIL_ = 0x16;
-    public static final int NOTE_ = 0x32;
 
     private String name;
     private String surname;
@@ -106,7 +92,7 @@ public class Member extends BaseEntity {
     public void setName(String name) {
         if (this.name == null || !this.name.equals(name)) {
             this.name = name;
-            updatePropertiesSwitch |= NAME_;
+            updatePropertiesSwitch |= Constant.NAME_SWITCH;
         }
     }
 
@@ -117,7 +103,7 @@ public class Member extends BaseEntity {
     public void setSurname(String surname) {
         if (this.surname == null || !this.surname.equals(surname)) {
             this.surname = surname;
-            updatePropertiesSwitch |= SURNAME_;
+            updatePropertiesSwitch |= Constant.SURNAME_SWITCH;
         }
     }
 
@@ -128,7 +114,7 @@ public class Member extends BaseEntity {
     public void setBirthDate(Date birthDate) {
         if (this.birthDate == null || !this.birthDate.equals(birthDate)) {
             this.birthDate = birthDate;
-            updatePropertiesSwitch |= BIRTH_DATE_;
+            updatePropertiesSwitch |= Constant.BIRTH_DATE_SWITCH;
         }
     }
 
@@ -139,7 +125,7 @@ public class Member extends BaseEntity {
     public void setJoinedDate(Date joinedDate) {
         if (this.joinedDate == null || !this.joinedDate.equals(joinedDate)) {
             this.joinedDate = joinedDate;
-            updatePropertiesSwitch |= JOINED_DATE_;
+            updatePropertiesSwitch |= Constant.JOINED_DATE_SWITCH;
         }
     }
 
@@ -175,7 +161,7 @@ public class Member extends BaseEntity {
     public void setPaidUntil(Date paidUntil) {
         if (this.paidUntil == null || !this.paidUntil.equals(paidUntil)) {
             this.paidUntil = paidUntil;
-            updatePropertiesSwitch |= PAID_UNTIL_;
+            updatePropertiesSwitch |= Constant.PAID_UNTIL_SWITCH;
         }
     }
 
@@ -186,7 +172,7 @@ public class Member extends BaseEntity {
     public void setNote(String note) {
         if (this.note == null || !this.note.equals(note)) {
             this.note = note;
-            updatePropertiesSwitch |= NOTE_;
+            updatePropertiesSwitch |= Constant.NOTE_SWITCH;
         }
     }
 

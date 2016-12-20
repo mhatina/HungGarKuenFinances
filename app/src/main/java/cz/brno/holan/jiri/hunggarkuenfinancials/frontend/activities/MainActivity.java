@@ -169,13 +169,17 @@ public class MainActivity extends AppCompatActivity
                 } catch (IOException e) {
                     throw new NullPointerException("Cannot open file: " + uri.getPath());
                 }
+            case Constant.EDIT_ENTITY_CODE:
             case Constant.NEW_ENTITY_CODE:
-                ListView memberList = getMemberListView();
-                if (memberList != null)
-                    memberList.setAdapter(new MembersAdapter(this, R.layout.layout_member, MemberManager.getInstance().getMembers()));
-                else {
+                if (viewPager.getCurrentItem() == Constant.MEMBER_LIST_INDEX) {
+                    getMemberListView().setAdapter(new MembersAdapter(this, R.layout.layout_member, MemberManager.getInstance().getMembers()));
+                } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
+                    getProductListView().setAdapter(new ProductsAdapter(this, R.layout.layout_product, ProductManager.getInstance().getProducts()));
+                } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
+
+                } else {
                     // todo create own exception
-                    Log.warning(getBaseContext(), new Exception("Cannot refresh member list."));
+                    Log.warning(getBaseContext(), new Exception("Cannot refresh list."));
                 }
                 break;
             case Constant.SIGN_IN_CODE:
@@ -290,7 +294,7 @@ public class MainActivity extends AppCompatActivity
         } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
             Payment payment;
             mContextEntity = payment = (Payment) getPaymentListView().getItemAtPosition(adapterMenuInfo.position);
-//            menu.setHeaderTitle();
+//            menu.setHeaderTitle(payment.get);
         } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
             Product product;
             mContextEntity = product = (Product) getProductListView().getItemAtPosition(adapterMenuInfo.position);
@@ -307,7 +311,7 @@ public class MainActivity extends AppCompatActivity
         if (item.getTitle().equals(getString(R.string.edit))) {
             Intent intent = new Intent(this, getCreateNewActivityClass());
             intent.putExtra(Constant.EDIT_ENTITY, mContextEntity.getId());
-            startActivityForResult(intent, 1);
+            startActivityForResult(intent, Constant.EDIT_ENTITY_CODE);
         } else if (item.getTitle().equals(getString(R.string.delete))) {
             ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 

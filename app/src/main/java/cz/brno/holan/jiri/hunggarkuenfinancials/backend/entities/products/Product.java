@@ -17,6 +17,7 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 
 public class Product extends BaseEntity {
@@ -27,6 +28,12 @@ public class Product extends BaseEntity {
     private int validGroup;
     private int price;
     private int group;
+    protected int detail;
+
+    private int updatePropertiesSwitch = 0;
+
+    public Product() {
+    }
 
     public Product(long id, String name, int value) {
         super(id);
@@ -39,7 +46,10 @@ public class Product extends BaseEntity {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (this.name == null || !this.name.equals(name)) {
+            this.name = name;
+            updatePropertiesSwitch |= Constant.NAME_SWITCH;
+        }
     }
 
     public int getPrice() {
@@ -51,11 +61,17 @@ public class Product extends BaseEntity {
     }
 
     public void setValidTime(long validTime) {
-        this.validTime = validTime;
+        if (this.validTime != validTime) {
+            this.validTime = validTime;
+            updatePropertiesSwitch |= Constant.VALID_TIME_SWITCH;
+        }
     }
 
     public void setPrice(int price) {
-        this.price = price;
+        if (this.price != price) {
+            this.price = price;
+            updatePropertiesSwitch |= Constant.PRICE_SWITCH;
+        }
     }
 
     public int getGroup() {
@@ -63,7 +79,18 @@ public class Product extends BaseEntity {
     }
 
     public void setGroup(int group) {
-        this.group = group;
+        if (this.group != group) {
+            this.group = group;
+            updatePropertiesSwitch |= Constant.GROUP_SWITCH;
+        }
+    }
+
+    public void toggleGroup(int group, boolean state) {
+        boolean defaultState = (this.group & group) != 0;
+        if (defaultState != state) {
+            this.group ^= group;
+            updatePropertiesSwitch |= Constant.GROUP_SWITCH;
+        }
     }
 
     public String getNote() {
@@ -71,7 +98,10 @@ public class Product extends BaseEntity {
     }
 
     public void setNote(String note) {
-        this.note = note;
+        if (this.note == null || !this.note.equals(note)) {
+            this.note = note;
+            updatePropertiesSwitch |= Constant.NOTE_SWITCH;
+        }
     }
 
     public int getValidGroup() {
@@ -79,7 +109,29 @@ public class Product extends BaseEntity {
     }
 
     public void setValidGroup(int validGroup) {
-        this.validGroup = validGroup;
+        if (this.validGroup != validGroup) {
+            this.validGroup = validGroup;
+            updatePropertiesSwitch |= Constant.VALID_GROUP_SWITCH;
+        }
+    }
+
+    public int getDetail() {
+        return detail;
+    }
+
+    public void setDetail(int detail) {
+        if (this.detail != detail) {
+            this.detail = detail;
+            updatePropertiesSwitch |= Constant.DETAIL_SWITCH;
+        }
+    }
+
+    public int getUpdatePropertiesSwitch() {
+        return updatePropertiesSwitch;
+    }
+
+    public void clearUpdatePropertiesSwitch() {
+        this.updatePropertiesSwitch = 0;
     }
 
     @Override

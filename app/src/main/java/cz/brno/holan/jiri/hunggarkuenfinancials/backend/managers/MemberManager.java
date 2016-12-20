@@ -223,17 +223,12 @@ public class MemberManager extends BaseManager {
 
                         newMemberId = dataSnapshot.child("id").getValue(long.class);
 
-                        for (DataSnapshot postSnapshot : dataSnapshot.child("Adult").getChildren()) {
-                            loadMember(postSnapshot, Adult.class);
-                        }
-                        for (DataSnapshot postSnapshot : dataSnapshot.child("Junior").getChildren()) {
-                            loadMember(postSnapshot, Junior.class);
-                        }
-                        for (DataSnapshot postSnapshot : dataSnapshot.child("Child").getChildren()) {
-                            loadMember(postSnapshot, Child.class);
-                        }
-                        for (DataSnapshot postSnapshot : dataSnapshot.child("Member").getChildren()) {
-                            loadMember(postSnapshot, Member.class);
+                        Class<?>[] classes = new Class[]{Adult.class, Youngster.class, Junior.class, Child.class, Member.class};
+
+                        for (Class<?> aClass : classes) {
+                            for (DataSnapshot postSnapshot : dataSnapshot.child(aClass.getSimpleName()).getChildren()) {
+                                loadMember(postSnapshot, aClass);
+                            }
                         }
 
                         ListView memberList = EntityTabManager.getInstance().getMemberList();
@@ -288,17 +283,17 @@ public class MemberManager extends BaseManager {
         DatabaseReference reference = getDatabaseReference().child(member.getClass().getSimpleName())
                 .child(String.valueOf(member.getId()));
 
-        if ((member.getUpdatePropertiesSwitch() & Member.NAME_) > 0)
+        if ((member.getUpdatePropertiesSwitch() & Constant.NAME_SWITCH) > 0)
             reference.child("name").setValue(member.getName());
-        if ((member.getUpdatePropertiesSwitch() & Member.SURNAME_) > 0)
+        if ((member.getUpdatePropertiesSwitch() & Constant.SURNAME_SWITCH) > 0)
             reference.child("surname").setValue(member.getSurname());
-        if ((member.getUpdatePropertiesSwitch() & Member.BIRTH_DATE_) > 0)
+        if ((member.getUpdatePropertiesSwitch() & Constant.BIRTH_DATE_SWITCH) > 0)
             reference.child("birthDate").setValue(member.getBirthDate());
-        if ((member.getUpdatePropertiesSwitch() & Member.JOINED_DATE_) > 0)
+        if ((member.getUpdatePropertiesSwitch() & Constant.JOINED_DATE_SWITCH) > 0)
             reference.child("joinedDate").setValue(member.getJoinedDate());
-        if ((member.getUpdatePropertiesSwitch() & Member.PAID_UNTIL_) > 0)
+        if ((member.getUpdatePropertiesSwitch() & Constant.PAID_UNTIL_SWITCH) > 0)
             reference.child("paidUntil").setValue(member.getPaidUntil());
-        if ((member.getUpdatePropertiesSwitch() & Member.NOTE_) > 0)
+        if ((member.getUpdatePropertiesSwitch() & Constant.NOTE_SWITCH) > 0)
             reference.child("note").setValue(member.getNote());
 
         member.clearUpdatePropertiesSwitch();

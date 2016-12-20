@@ -5,6 +5,7 @@ public class Constant {
     public static final int SIGN_IN_CODE = 100;
     public static final int FILE_SELECT_CODE = 101;
     public static final int NEW_ENTITY_CODE = 102;
+    public static final int EDIT_ENTITY_CODE = 103;
 
     public static final int NUMBER_OF_ENTITY_TABS = 3;
     public static final int MEMBER_LIST_INDEX = 1;
@@ -17,10 +18,23 @@ public class Constant {
 
     public static final String EDIT_ENTITY = "EDIT_ENTITY";
 
-    public static final int ADULT_GROUP = 0x1;
-    public static final int YOUNGSTER_GROUP = 0x2;
-    public static final int JUNIOR_GROUP = 0x4;
-    public static final int CHILD_GROUP = 0x8;
+    public static final int NUMBER_OF_GROUPS = 4;
+    public static final int ADULT_GROUP     = 0b0001;
+    public static final int YOUNGSTER_GROUP = 0b0010;
+    public static final int JUNIOR_GROUP    = 0b0100;
+    public static final int CHILD_GROUP     = 0b1000;
+
+    public static final int NAME_SWITCH         = 0b1;
+    public static final int SURNAME_SWITCH      = 0b10;
+    public static final int BIRTH_DATE_SWITCH   = 0b100;
+    public static final int JOINED_DATE_SWITCH  = 0b1000;
+    public static final int PAID_UNTIL_SWITCH   = 0b10000;
+    public static final int NOTE_SWITCH         = 0b100000;
+    public static final int VALID_TIME_SWITCH   = 0b1000000;
+    public static final int VALID_GROUP_SWITCH  = 0b10000000;
+    public static final int PRICE_SWITCH        = 0b100000000;
+    public static final int GROUP_SWITCH        = 0b1000000000;
+    public static final int DETAIL_SWITCH       = 0b10000000000;
 
     public static final long DAY = 1000 * 60 * 60 * 24;
     public static final long WEEK = DAY * 7;

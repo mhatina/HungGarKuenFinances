@@ -19,16 +19,24 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.Comparator;
 import java.util.List;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Adult;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Child;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Junior;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Youngster;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.OneTimeOnly;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Periodic;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Product;
@@ -69,9 +77,42 @@ public class ProductsAdapter extends ArrayAdapter<Product> {
                 String stock = getContext().getString(R.string.in_stock, String.valueOf(((OneTimeOnly) product).getStock()));
                 viewHolder.detail.setText(stock);
             }
+
+            viewHolder.groups.removeAllViews();
+            int group = Constant.ADULT_GROUP;
+            int dimensionInDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30,
+                    convertView.getResources().getDisplayMetrics());
+            for (int i = 0; i < Constant.NUMBER_OF_GROUPS; i++) {
+                if ((product.getGroup() & group) != 0) {
+                    ImageView image = new ImageView(convertView.getContext());
+                    image.setImageResource(getGroupResource(group));
+
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dimensionInDp, dimensionInDp);
+                    image.setLayoutParams(layoutParams);
+
+                    viewHolder.groups.addView(image);
+                }
+
+                group <<= 1;
+            }
         }
 
         return convertView;
+    }
+
+    private int getGroupResource(int group) {
+        switch (group) {
+            case Constant.ADULT_GROUP:
+                return Adult.ICON_PATH;
+            case Constant.YOUNGSTER_GROUP:
+                return Youngster.ICON_PATH;
+            case Constant.JUNIOR_GROUP:
+                return Junior.ICON_PATH;
+            case Constant.CHILD_GROUP:
+                return Child.ICON_PATH;
+            default:
+                return 0;
+        }
     }
 
     @Override
@@ -83,11 +124,13 @@ public class ProductsAdapter extends ArrayAdapter<Product> {
         public TextView name;
         public TextView price;
         public TextView detail;
+        public LinearLayout groups;
 
         ViewHolder(View view) {
             name = (TextView) view.findViewById(R.id.product_layout_name);
             price = (TextView) view.findViewById(R.id.product_layout_price);
             detail = (TextView) view.findViewById(R.id.product_layout_detail);
+            groups = (LinearLayout) view.findViewById(R.id.product_layout_groups);
         }
     }
 }

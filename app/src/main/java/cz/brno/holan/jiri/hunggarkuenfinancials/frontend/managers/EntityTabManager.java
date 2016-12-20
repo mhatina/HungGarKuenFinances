@@ -30,8 +30,10 @@ import android.widget.TextView;
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
+import cz.brno.holan.jiri.hunggarkuenfinancials. backend.managers.PaymentManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ProductManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.PaymentsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ProductsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.MemberListOnItemClickListener;
 
@@ -61,12 +63,11 @@ public class EntityTabManager {
     }
 
     public Object createInstance(FragmentActivity context, ViewGroup container, int position) {
-        final SwipeRefreshLayout swipeRefreshLayout;
         if (mMemberList == null) {
             mMemberList = prepareTabObject(context, container, new MembersAdapter(context, R.layout.layout_member, MemberManager.getInstance().getMembers()));
             mMemberList.setOnItemClickListener(new MemberListOnItemClickListener(mMemberList, context.getFragmentManager()));
 
-            swipeRefreshLayout = (SwipeRefreshLayout) mMemberList.getParent();
+            final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) mMemberList.getParent();
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
@@ -78,6 +79,27 @@ public class EntityTabManager {
         if (mProductList == null) {
             mProductList = prepareTabObject(context, container, new ProductsAdapter(context, R.layout.layout_product, ProductManager.getInstance().getProducts()));
             // TODO setOnItemClickListener
+
+            final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) mProductList.getParent();
+            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    ProductManager.getInstance().load();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            });
+        }
+        if (mPaymentList == null) {
+//            mPaymentList = prepareTabObject(context, container, new PaymentsAdapter(context, R.layout.layout_payment, PaymentManager.getInstance().getPayments()));
+//
+//            final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) mPaymentList.getParent();
+//            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//                @Override
+//                public void onRefresh() {
+//                    PaymentManager.getInstance().load();
+//                    swipeRefreshLayout.setRefreshing(false);
+//                }
+//            });
         }
 
         switch (position) {

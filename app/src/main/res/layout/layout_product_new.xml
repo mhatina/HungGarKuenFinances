@@ -167,7 +167,6 @@
                 android:id="@+id/create_new_product_price_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="end"
                 android:hint="@string/new_product_price_hint"
                 android:inputType="number"
                 android:nextFocusDown="@+id/create_new_note_text"/>

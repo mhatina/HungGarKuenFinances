@@ -22,10 +22,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
@@ -60,8 +63,9 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
         setTitle(getString(R.string.edit_product_title));
 
         name.getEditText().setText(product.getName());
-        valid_for.getEditText().setText(String.valueOf(product.getValidTime()));
-        price.getEditText().setText(product.getPrice());
+        if (product.getValidTime() != -1)
+            valid_for.getEditText().setText(String.valueOf(product.getValidTime()));
+        price.getEditText().setText(String.valueOf(product.getPrice()));
         note.getEditText().setText(product.getNote());
         toggleButton(button, product.getClass().equals(OneTimeOnly.class));
 
@@ -89,20 +93,11 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ImageButton button = (ImageButton) findViewById(R.id.create_new_product_periodic);
-        button.setOnClickListener(this);
-
-        button = (ImageButton) findViewById(R.id.create_new_product_adult);
-        button.setOnClickListener(this);
-
-        button = (ImageButton) findViewById(R.id.create_new_product_youngster);
-        button.setOnClickListener(this);
-
-        button = (ImageButton) findViewById(R.id.create_new_product_junior);
-        button.setOnClickListener(this);
-
-        button = (ImageButton) findViewById(R.id.create_new_product_child);
-        button.setOnClickListener(this);
+        setOnClickListener(R.id.create_new_product_periodic);
+        setOnClickListener(R.id.create_new_product_adult);
+        setOnClickListener(R.id.create_new_product_youngster);
+        setOnClickListener(R.id.create_new_product_junior);
+        setOnClickListener(R.id.create_new_product_child);
 
         NumberPicker numberPicker = (NumberPicker) findViewById(R.id.create_new_product_detail_number_picker);
         numberPicker.setMinValue(1);
@@ -115,6 +110,11 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         validityPeriod.setAdapter(adapter);
         validityPeriod.setSelection(Constant.MONTH_SELECTION);
+    }
+
+    private void setOnClickListener(int resource) {
+        ImageButton button = (ImageButton) findViewById(resource);
+        button.setOnClickListener(this);
     }
 
     @Override
@@ -131,16 +131,16 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
         ImageButton button = (ImageButton) findViewById(R.id.create_new_product_periodic);
         Class<?> classType = button.getColorFilter() == null ? Periodic.class : OneTimeOnly.class;
 
-        String name = name_layout.getEditText().getText().toString();
-        int price = Integer.getInteger(price_layout.getEditText().getText().toString())
+        String name = verifyName(name_layout);
+        int price = verifyPrice(price_layout);
 
-        if (name_layout == null) {
+        if (name == null || price == -1) {
             return false;
         } else if (getIntent().hasExtra(Constant.EDIT_ENTITY)) {
             product = manager.findProduct(getIntent().getLongExtra(Constant.EDIT_ENTITY, 0));
 
             if (product.getClass().equals(classType)) {
-                Product newProduct = manager.createProduct(classType, name_layout, price);
+                Product newProduct = manager.createProduct(classType, name, price, detail_picker.getValue());
                 manager.replaceProduct(product, newProduct);
                 product = newProduct;
             } else {
@@ -148,9 +148,49 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
                 product.setPrice(price);
             }
 
+            if (valid_for_layout.getEditText().getText().length() != 0) {
+                long valid_for = Long.valueOf(valid_for_layout.getEditText().getText().toString());
+                product.setValidTime(valid_for);
+            } else {
+                product.setValidTime(-1);
+            }
+
+            button = (ImageButton) findViewById(R.id.create_new_product_adult);
+            product.toggleGroup(Constant.ADULT_GROUP, button.getColorFilter() == null);
+            button = (ImageButton) findViewById(R.id.create_new_product_youngster);
+            product.toggleGroup(Constant.YOUNGSTER_GROUP, button.getColorFilter() == null);
+            button = (ImageButton) findViewById(R.id.create_new_product_junior);
+            product.toggleGroup(Constant.JUNIOR_GROUP, button.getColorFilter() == null);
+            button = (ImageButton) findViewById(R.id.create_new_product_child);
+            product.toggleGroup(Constant.CHILD_GROUP, button.getColorFilter() == null);
+
+            product.setValidGroup(validity_spinner.getSelectedItemPosition());
+            product.setDetail(detail_picker.getValue());
+            product.setNote(note_layout.getEditText().getText().toString());
+
             manager.update(product);
         } else {
-            product = manager.createProduct(classType, name, price);
+            product = manager.createProduct(classType, name, price, detail_picker.getValue());
+
+            if (valid_for_layout.getEditText().getText().length() != 0) {
+                long valid_for = Long.valueOf(valid_for_layout.getEditText().getText().toString());
+                product.setValidTime(valid_for);
+            } else {
+                product.setValidTime(-1);
+            }
+
+            button = (ImageButton) findViewById(R.id.create_new_product_adult);
+            product.toggleGroup(Constant.ADULT_GROUP, button.getColorFilter() == null);
+            button = (ImageButton) findViewById(R.id.create_new_product_youngster);
+            product.toggleGroup(Constant.YOUNGSTER_GROUP, button.getColorFilter() == null);
+            button = (ImageButton) findViewById(R.id.create_new_product_junior);
+            product.toggleGroup(Constant.JUNIOR_GROUP, button.getColorFilter() == null);
+            button = (ImageButton) findViewById(R.id.create_new_product_child);
+            product.toggleGroup(Constant.CHILD_GROUP, button.getColorFilter() == null);
+
+            product.setValidGroup(validity_spinner.getSelectedItemPosition());
+            product.setDetail(detail_picker.getValue());
+            product.setNote(note_layout.getEditText().getText().toString());
 
             manager.addProduct(product);
         }
@@ -159,6 +199,33 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
         finish();
 
         return false;
+    }
+
+    public String verifyName(TextInputLayout layout) {
+        EditText text = layout.getEditText();
+        if (text != null && text.getText().length() != 0)
+            return capitalize(text.getText().toString());
+        else
+            layout.setError(getString(R.string.required_error));
+        return null;
+    }
+
+    public int verifyPrice(TextInputLayout layout) {
+        EditText text = layout.getEditText();
+        if (text != null && text.getText().length() != 0) {
+            int price = Integer.valueOf(text.getText().toString());
+            if (price >= 0)
+                return price;
+        } else
+            layout.setError(getString(R.string.required_error));
+        return -1;
+    }
+
+    private String capitalize(String str) {
+        String capitalized = str.substring(0, 1).toUpperCase();
+        capitalized += str.substring(1);
+
+        return capitalized;
     }
 
     @Override
