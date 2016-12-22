@@ -23,8 +23,8 @@
     android:paddingRight="10dp">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -32,6 +32,7 @@
             android:id="@+id/product_layout_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:text="Product name"
             android:textSize="30sp" />
 
@@ -51,16 +52,16 @@
         <TextView
             android:id="@+id/product_layout_detail"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="detail"
             android:gravity="center"
+            android:text="detail"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/product_layout_price"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Product price"

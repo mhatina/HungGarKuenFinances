@@ -103,6 +103,12 @@ public class MemberDetailDialog extends DialogFragment implements MenuItem.OnMen
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                     }
+                })
+                .setPositiveButton(R.string.pay, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // TODO open new payment activity
+                    }
                 });
 
         return builder.create();

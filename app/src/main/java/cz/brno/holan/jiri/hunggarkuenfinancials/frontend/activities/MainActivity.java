@@ -174,9 +174,9 @@ public class MainActivity extends AppCompatActivity
                 if (viewPager.getCurrentItem() == Constant.MEMBER_LIST_INDEX) {
                     getMemberListView().setAdapter(new MembersAdapter(this, R.layout.layout_member, MemberManager.getInstance().getMembers()));
                 } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
-                    getProductListView().setAdapter(new ProductsAdapter(this, R.layout.layout_product, ProductManager.getInstance().getProducts()));
-                } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
 
+                } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
+                    getProductListView().setAdapter(new ProductsAdapter(this, R.layout.layout_product, ProductManager.getInstance().getProducts()));
                 } else {
                     // todo create own exception
                     Log.warning(getBaseContext(), new Exception("Cannot refresh list."));
@@ -395,14 +395,23 @@ public class MainActivity extends AppCompatActivity
     private void filterMemberList(String query) {
         String[] split = query.split(" ");
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         ListView listView = getMemberListView();
         if (listView != null)
             listView.setAdapter(
                     new MembersAdapter(
-                            viewPager.getContext(),
+                            this,
                             R.layout.layout_member,
                             MemberManager.getInstance().getMembers(split[0], split.length > 1 ? split[1] : null)));
+    }
+
+    private void filterProductList(String query) {
+        ListView listView = getProductListView();
+        if (listView != null)
+            listView.setAdapter(
+                    new ProductsAdapter(
+                            this,
+                            R.layout.layout_product,
+                            ProductManager.getInstance().getProducts(query)));
     }
 
     private class OnSearchTextListener implements SearchView.OnQueryTextListener {
@@ -415,6 +424,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         public boolean onQueryTextChange(String newText) {
             filterMemberList(newText);
+            filterProductList(newText);
             return true;
         }
     }

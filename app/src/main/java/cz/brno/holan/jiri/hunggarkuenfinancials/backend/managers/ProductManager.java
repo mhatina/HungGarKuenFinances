@@ -35,7 +35,6 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.OneTimeOnly;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Periodic;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Product;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ProductsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.EntityTabManager;
 
@@ -54,8 +53,22 @@ public class ProductManager extends BaseManager {
         getDatabaseReference().keepSynced(true);
     }
 
+    public List<Product> getProducts(String filter) {
+        if (filter == null)
+            return mProducts;
+
+        List<Product> list = new ArrayList<>();
+        for (Product product : mProducts) {
+            if (product.getName().toUpperCase().startsWith(filter.toUpperCase())
+                || String.valueOf(product.getPrice()).startsWith(filter))
+                list.add(product);
+        }
+
+        return list;
+    }
+
     public List<Product> getProducts() {
-        return mProducts;
+        return getProducts(null);
     }
 
     public void addProduct(Product product) {

@@ -82,6 +82,7 @@
     <string name="delete_member_title">Delete member</string>
     <string name="sure_to_delete_member">Are you sure you want to delete member?</string>
     <string name="member_details_title">Member details</string>
+    <string name="pay">Pay</string>
 
     <!-- product related -->
     <string name="week">/week</string>
@@ -92,6 +93,7 @@
     <string name="edit_product_title">Edit product</string>
     <string name="delete_product_title">Delete product</string>
     <string name="sure_to_delete_product">Are you sure you want to delete product?</string>
+    <string name="product_details_title">Product details</string>
 
     <!-- payment related -->
     <string name="delete_payment_title">Delete payment</string>

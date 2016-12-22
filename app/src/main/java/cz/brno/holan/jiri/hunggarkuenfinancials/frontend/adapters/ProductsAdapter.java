@@ -100,6 +100,7 @@ public class ProductsAdapter extends ArrayAdapter<Product> {
         return convertView;
     }
 
+    // TODO move to utils
     private int getGroupResource(int group) {
         switch (group) {
             case Constant.ADULT_GROUP:

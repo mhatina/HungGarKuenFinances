@@ -36,6 +36,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.PaymentsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ProductsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.MemberListOnItemClickListener;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.ProductListOnItemClickListener;
 
 public class EntityTabManager {
     private ListView mMemberList = null;
@@ -78,7 +79,7 @@ public class EntityTabManager {
         }
         if (mProductList == null) {
             mProductList = prepareTabObject(context, container, new ProductsAdapter(context, R.layout.layout_product, ProductManager.getInstance().getProducts()));
-            // TODO setOnItemClickListener
+            mProductList.setOnItemClickListener(new ProductListOnItemClickListener(mProductList, context.getFragmentManager()));
 
             final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) mProductList.getParent();
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

@@ -67,7 +67,7 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
             valid_for.getEditText().setText(String.valueOf(product.getValidTime()));
         price.getEditText().setText(String.valueOf(product.getPrice()));
         note.getEditText().setText(product.getNote());
-        toggleButton(button, product.getClass().equals(OneTimeOnly.class));
+        toggleButton(button, product.getClass().equals(Periodic.class));
 
         button = (ImageButton) findViewById(R.id.create_new_product_adult);
         toggleButton(button, (product.getGroup() & Constant.ADULT_GROUP) > 0);
@@ -139,7 +139,7 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
         } else if (getIntent().hasExtra(Constant.EDIT_ENTITY)) {
             product = manager.findProduct(getIntent().getLongExtra(Constant.EDIT_ENTITY, 0));
 
-            if (product.getClass().equals(classType)) {
+            if (!product.getClass().equals(classType)) {
                 Product newProduct = manager.createProduct(classType, name, price, detail_picker.getValue());
                 manager.replaceProduct(product, newProduct);
                 product = newProduct;
