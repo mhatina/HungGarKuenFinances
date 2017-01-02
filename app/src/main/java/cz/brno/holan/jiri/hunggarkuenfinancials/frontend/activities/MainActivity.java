@@ -44,6 +44,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.leakcanary.LeakCanary;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
@@ -220,8 +221,10 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.main, menu);
 
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setOnCloseListener(new OnSearchCloseListener());
-        searchView.setOnQueryTextListener(new OnSearchTextListener());
+        if (searchView != null) {
+            searchView.setOnCloseListener(new OnSearchCloseListener());
+            searchView.setOnQueryTextListener(new OnSearchTextListener());
+        }
 
         return true;
     }
@@ -339,7 +342,7 @@ public class MainActivity extends AppCompatActivity
         if (viewPager.getCurrentItem() == Constant.MEMBER_LIST_INDEX) {
             return CreateNewMemberActivity.class;
         } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
-            return null;
+            return CreateNewPaymentActivity.class;
         } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
             return CreateNewProductActivity.class;
         }
@@ -425,6 +428,7 @@ public class MainActivity extends AppCompatActivity
         public boolean onQueryTextChange(String newText) {
             filterMemberList(newText);
             filterProductList(newText);
+            // TODO filter payment
             return true;
         }
     }

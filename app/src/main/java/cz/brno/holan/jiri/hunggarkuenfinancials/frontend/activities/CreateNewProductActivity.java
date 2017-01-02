@@ -47,12 +47,20 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
     @Override
     public void init() {
         setTitle(getString(R.string.new_product_title));
+
+        Spinner validityPeriod = (Spinner) findViewById(R.id.create_new_product_validity);
+        NumberPicker numberPicker = (NumberPicker) findViewById(R.id.create_new_product_detail_number_picker);
+        numberPicker.setMinValue(1);
+        numberPicker.setMaxValue(7);
+        numberPicker.setValue(2);
+
+        validityPeriod.setSelection(Constant.MONTH_SELECTION);
     }
 
     @Override
     public void initForEdit() {
         TextInputLayout name = (TextInputLayout) findViewById(R.id.create_new_product_name);
-        TextInputLayout valid_for = (TextInputLayout) findViewById(R.id.create_new_product_valid_time);
+        TextInputLayout validFor = (TextInputLayout) findViewById(R.id.create_new_product_valid_time);
         TextInputLayout price = (TextInputLayout) findViewById(R.id.create_new_product_price);
         TextInputLayout note = (TextInputLayout) findViewById(R.id.create_new_note);
         Spinner validity = (Spinner) findViewById(R.id.create_new_product_validity);
@@ -64,7 +72,7 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
 
         name.getEditText().setText(product.getName());
         if (product.getValidTime() != -1)
-            valid_for.getEditText().setText(String.valueOf(product.getValidTime()));
+            validFor.getEditText().setText(String.valueOf(product.getValidTime()));
         price.getEditText().setText(String.valueOf(product.getPrice()));
         note.getEditText().setText(product.getNote());
         toggleButton(button, product.getClass().equals(Periodic.class));
@@ -99,17 +107,11 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
         setOnClickListener(R.id.create_new_product_junior);
         setOnClickListener(R.id.create_new_product_child);
 
-        NumberPicker numberPicker = (NumberPicker) findViewById(R.id.create_new_product_detail_number_picker);
-        numberPicker.setMinValue(1);
-        numberPicker.setMaxValue(7);
-        numberPicker.setValue(2);
-
         Spinner validityPeriod = (Spinner) findViewById(R.id.create_new_product_validity);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.validity_periods, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         validityPeriod.setAdapter(adapter);
-        validityPeriod.setSelection(Constant.MONTH_SELECTION);
     }
 
     private void setOnClickListener(int resource) {
@@ -132,7 +134,7 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
         Class<?> classType = button.getColorFilter() == null ? Periodic.class : OneTimeOnly.class;
 
         String name = verifyName(name_layout);
-        int price = verifyPrice(price_layout);
+        float price = verifyPrice(price_layout);
 
         if (name == null || price == -1) {
             return false;
@@ -210,10 +212,10 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
         return null;
     }
 
-    public int verifyPrice(TextInputLayout layout) {
+    public float verifyPrice(TextInputLayout layout) {
         EditText text = layout.getEditText();
         if (text != null && text.getText().length() != 0) {
-            int price = Integer.valueOf(text.getText().toString());
+            float price = Float.valueOf(text.getText().toString());
             if (price >= 0)
                 return price;
         } else

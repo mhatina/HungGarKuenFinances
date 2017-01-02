@@ -22,7 +22,7 @@ public class Periodic extends Product {
     public Periodic() {
     }
 
-    public Periodic(long id, String name, int value, int perWeek) {
+    public Periodic(long id, String name, float value, int perWeek) {
         super(id, name, value);
     }
 

@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.Payment;
@@ -45,8 +46,35 @@ public class PaymentManager extends BaseManager {
         getDatabaseReference().keepSynced(true);
     }
 
-    public void deletePayment(Payment payment) {
+    public List<Payment> getPayments() {
+        return mPayments;
+    }
 
+    public void addPayment(Payment payment) {
+        newPaymentId++;
+        getDatabaseReference().child("id").setValue(newPaymentId);
+        payment.setId(newPaymentId);
+
+        mPayments.add(payment);
+        upload(payment);
+    }
+
+    public void deletePayment(Payment payment) {
+        mPayments.remove(payment);
+        delete(payment);
+    }
+
+    public Payment findPayment(long id) {
+        for (Payment payment : mPayments) {
+            if (payment.getId() == id)
+                return payment;
+        }
+
+        return null;
+    }
+
+    public Payment createPayment(List<Long> memberIds, long productId) {
+        return new Payment(-1, memberIds, productId);
     }
 
     @Override

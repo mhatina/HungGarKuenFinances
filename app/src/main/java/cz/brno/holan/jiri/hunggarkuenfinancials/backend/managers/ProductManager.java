@@ -67,6 +67,16 @@ public class ProductManager extends BaseManager {
         return list;
     }
 
+    public List<Product> getProducts(int groups) {
+        List<Product> list = new ArrayList<>();
+        for (Product product : mProducts) {
+            if ((product.getGroup() & groups) > 0)
+                list.add(product);
+        }
+
+        return list;
+    }
+
     public List<Product> getProducts() {
         return getProducts(null);
     }
@@ -91,7 +101,7 @@ public class ProductManager extends BaseManager {
         return null;
     }
 
-    public Product createProduct(Class<?> type, String name, int price, int detail) {
+    public Product createProduct(Class<?> type, String name, float price, int detail) {
         newProductId++;
         getDatabaseReference().child("id").setValue(newProductId);
 

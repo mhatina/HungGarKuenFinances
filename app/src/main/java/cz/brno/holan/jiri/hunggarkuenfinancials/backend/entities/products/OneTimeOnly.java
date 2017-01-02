@@ -22,7 +22,7 @@ public class OneTimeOnly extends Product {
     public OneTimeOnly() {
     }
 
-    public OneTimeOnly(long id, String name, int value, int stock) {
+    public OneTimeOnly(long id, String name, float value, int stock) {
         super(id, name, value);
         detail = stock;
     }

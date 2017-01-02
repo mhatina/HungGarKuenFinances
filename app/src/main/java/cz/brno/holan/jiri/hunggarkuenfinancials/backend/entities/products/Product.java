@@ -26,7 +26,7 @@ public class Product extends BaseEntity {
     private String note;
     private long validTime;
     private int validGroup;
-    private int price;
+    private float price;
     private int group;
     protected int detail;
 
@@ -35,7 +35,7 @@ public class Product extends BaseEntity {
     public Product() {
     }
 
-    public Product(long id, String name, int value) {
+    public Product(long id, String name, float value) {
         super(id);
         this.name = name;
         this.price = value;
@@ -52,7 +52,7 @@ public class Product extends BaseEntity {
         }
     }
 
-    public int getPrice() {
+    public float getPrice() {
         return price;
     }
 
@@ -67,7 +67,7 @@ public class Product extends BaseEntity {
         }
     }
 
-    public void setPrice(int price) {
+    public void setPrice(float price) {
         if (this.price != price) {
             this.price = price;
             updatePropertiesSwitch |= Constant.PRICE_SWITCH;
@@ -148,8 +148,12 @@ public class Product extends BaseEntity {
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + price;
+        int result = name.hashCode();
+        result = 31 * result + (int) (validTime ^ (validTime >>> 32));
+        result = 31 * result + validGroup;
+        result = 31 * result + (price != +0.0f ? Float.floatToIntBits(price) : 0);
+        result = 31 * result + group;
+        result = 31 * result + detail;
         return result;
     }
 

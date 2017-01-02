@@ -65,6 +65,15 @@
                 android:value=".frontend.activities.MainActivity" />
         </activity>
         <activity
+            android:name=".frontend.activities.CreateNewPaymentActivity"
+            android:label="@string/title_activity_create_new"
+            android:parentActivityName=".frontend.activities.MainActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".frontend.activities.MainActivity" />
+        </activity>
+        <activity
             android:name=".frontend.activities.LoginActivity"
             android:label="@string/title_activity_login"
             android:parentActivityName=".frontend.activities.MainActivity">

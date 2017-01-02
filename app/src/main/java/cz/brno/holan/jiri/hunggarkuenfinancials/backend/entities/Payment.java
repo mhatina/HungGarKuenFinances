@@ -17,15 +17,101 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities;
 
-/**
- * Created by mhatina on 3/8/16.
- */
+import java.util.List;
+
 public class Payment extends BaseEntity {
+
+    private List<Long> memberIds;
+    private long productId;
+    private int price;
+    private int payed;
+    private float discount;
+    private String note;
+
+    private int updatePropertiesSwitch = 0;
 
     public Payment() {
     }
 
-    public Payment(long id) {
+    public Payment(long id, List<Long> memberIds, long productId) {
         super(id);
+        this.memberIds = memberIds;
+        this.productId = productId;
+    }
+
+    public int getUpdatePropertiesSwitch() {
+        return updatePropertiesSwitch;
+    }
+
+    public void clearUpdatePropertiesSwitch() {
+        this.updatePropertiesSwitch = 0;
+    }
+
+    public List<Long> getMemberIds() {
+        return memberIds;
+    }
+
+    public void setMemberIds(List<Long> memberIds) {
+        this.memberIds = memberIds;
+    }
+
+    public long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(long productId) {
+        this.productId = productId;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public int getPayed() {
+        return payed;
+    }
+
+    public void setPayed(int payed) {
+        this.payed = payed;
+    }
+
+    public float getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(float discount) {
+        this.discount = discount;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Payment payment = (Payment) o;
+
+        if (getId() != payment.getId()) return false;
+        if (memberIds != payment.memberIds) return false;
+        return productId == payment.productId;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = memberIds.hashCode();
+        result = 31 * result + (int) (productId ^ (productId >>> 32));
+        return result;
     }
 }
