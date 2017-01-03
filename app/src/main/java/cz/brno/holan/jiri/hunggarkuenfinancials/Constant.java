@@ -1,11 +1,6 @@
 package cz.brno.holan.jiri.hunggarkuenfinancials;
 
 
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Adult;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Child;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Junior;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Youngster;
-
 public class Constant {
     public static final int SIGN_IN_CODE = 100;
     public static final int FILE_SELECT_CODE = 101;
@@ -30,21 +25,20 @@ public class Constant {
     public static final int CHILD_GROUP     = 0b1000;
 
     public static final int NAME_SWITCH         = 0b1;
-    public static final int SURNAME_SWITCH      = 0b10;
-    public static final int BIRTH_DATE_SWITCH   = 0b100;
-    public static final int JOINED_DATE_SWITCH  = 0b1000;
-    public static final int PAID_UNTIL_SWITCH   = 0b10000;
-    public static final int NOTE_SWITCH         = 0b100000;
-    public static final int VALID_TIME_SWITCH   = 0b1000000;
-    public static final int VALID_GROUP_SWITCH  = 0b10000000;
-    public static final int PRICE_SWITCH        = 0b100000000;
-    public static final int GROUP_SWITCH        = 0b1000000000;
-    public static final int DETAIL_SWITCH       = 0b10000000000;
-
-    public static final long DAY = 1000 * 60 * 60 * 24;
-    public static final long WEEK = DAY * 7;
-    public static final long MONTH = WEEK * 30;
-    public static final long YEAR = MONTH * 12;
+    public static final int SURNAME_SWITCH      = NAME_SWITCH << 1;
+    public static final int BIRTH_DATE_SWITCH   = SURNAME_SWITCH << 1;
+    public static final int JOINED_DATE_SWITCH  = BIRTH_DATE_SWITCH << 1;
+    public static final int PAID_UNTIL_SWITCH   = JOINED_DATE_SWITCH << 1;
+    public static final int NOTE_SWITCH         = PAID_UNTIL_SWITCH << 1;
+    public static final int VALID_TIME_SWITCH   = NOTE_SWITCH << 1;
+    public static final int VALID_GROUP_SWITCH  = VALID_TIME_SWITCH << 1;
+    public static final int PRICE_SWITCH        = VALID_GROUP_SWITCH << 1;
+    public static final int GROUP_SWITCH        = PRICE_SWITCH << 1;
+    public static final int DETAIL_SWITCH       = GROUP_SWITCH << 1;
+    public static final int MEMBER_IDS_SWITCH   = DETAIL_SWITCH << 1;
+    public static final int PRODUCT_ID_SWITCH   = MEMBER_IDS_SWITCH << 1;
+    public static final int PAID_SWITCH         = PRODUCT_ID_SWITCH << 1;
+    public static final int DISCOUNT_SWITCH     = PAID_SWITCH << 1;
 
     public static final int DAY_SELECTION = 0;
     public static final int WEEK_SELECTION = 1;

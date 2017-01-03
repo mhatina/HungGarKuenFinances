@@ -159,16 +159,16 @@
         android:orientation="horizontal">
 
         <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout
-            android:id="@+id/create_new_payment_payed"
+            android:id="@+id/create_new_payment_paid"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
             <android.support.design.widget.TextInputEditText
-                android:id="@+id/create_new_payment_payed_text"
+                android:id="@+id/create_new_payment_paid_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Payed"
+                android:hint="Paid"
                 android:inputType="numberDecimal"/>
         </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
 

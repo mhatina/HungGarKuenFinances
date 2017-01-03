@@ -19,12 +19,14 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities;
 
 import java.util.List;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
+
 public class Payment extends BaseEntity {
 
     private List<Long> memberIds;
     private long productId;
     private int price;
-    private int payed;
+    private int paid;
     private float discount;
     private String note;
 
@@ -52,7 +54,10 @@ public class Payment extends BaseEntity {
     }
 
     public void setMemberIds(List<Long> memberIds) {
-        this.memberIds = memberIds;
+        if (this.memberIds == null || !this.memberIds.equals(memberIds)) {
+            this.memberIds = memberIds;
+            updatePropertiesSwitch |= Constant.MEMBER_IDS_SWITCH;
+        }
     }
 
     public long getProductId() {
@@ -60,7 +65,10 @@ public class Payment extends BaseEntity {
     }
 
     public void setProductId(long productId) {
-        this.productId = productId;
+        if (this.productId != productId) {
+            this.productId = productId;
+            updatePropertiesSwitch |= Constant.PRODUCT_ID_SWITCH;
+        }
     }
 
     public int getPrice() {
@@ -68,15 +76,21 @@ public class Payment extends BaseEntity {
     }
 
     public void setPrice(int price) {
-        this.price = price;
+        if (this.price != price) {
+            this.price = price;
+            updatePropertiesSwitch |= Constant.PRICE_SWITCH;
+        }
     }
 
-    public int getPayed() {
-        return payed;
+    public int getPaid() {
+        return paid;
     }
 
-    public void setPayed(int payed) {
-        this.payed = payed;
+    public void setPaid(int paid) {
+        if (this.paid != paid) {
+            this.paid = paid;
+            updatePropertiesSwitch |= Constant.PAID_SWITCH;
+        }
     }
 
     public float getDiscount() {
@@ -84,7 +98,10 @@ public class Payment extends BaseEntity {
     }
 
     public void setDiscount(float discount) {
-        this.discount = discount;
+        if (this.discount != discount) {
+            this.discount = discount;
+            updatePropertiesSwitch |= Constant.DISCOUNT_SWITCH;
+        }
     }
 
     public String getNote() {
@@ -92,7 +109,10 @@ public class Payment extends BaseEntity {
     }
 
     public void setNote(String note) {
-        this.note = note;
+        if (this.note == null || !this.note.equals(note)) {
+            this.note = note;
+            updatePropertiesSwitch |= Constant.NOTE_SWITCH;
+        }
     }
 
     @Override

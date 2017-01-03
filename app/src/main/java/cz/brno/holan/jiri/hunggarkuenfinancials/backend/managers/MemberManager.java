@@ -300,14 +300,6 @@ public class MemberManager extends BaseManager {
     }
 
     @Override
-    public void delete(BaseEntity entity) {
-        Member member = (Member) entity;
-        getDatabaseReference().child(member.getClass().getSimpleName())
-                .child(String.valueOf(member.getId()))
-                .removeValue();
-    }
-
-    @Override
     public DatabaseReference getDatabaseReference() {
         return mDatabase.child("members");
     }

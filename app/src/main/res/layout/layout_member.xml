@@ -72,7 +72,7 @@
             android:tint="@color/warning_red"
             android:visibility="invisible"/>
 
-        <!-- @android:drawable/presence_online => member has payed -->
+        <!-- @android:drawable/presence_online => member has paid -->
         <!-- @android:drawable/presence_away => member should pay -->
         <!-- @android:drawable/presence_offline => inactive member -->
         <ImageView

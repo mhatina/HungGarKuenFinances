@@ -23,10 +23,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
+
 public abstract class BaseManager implements DatabaseManager, ExportManager, ImportManager {
 
     public BaseManager() {
 
+    }
+
+    @Override
+    public void delete(BaseEntity entity) {
+        getDatabaseReference().child(entity.getClass().getSimpleName())
+                .child(String.valueOf(entity.getId()))
+                .removeValue();
     }
 
     @Override

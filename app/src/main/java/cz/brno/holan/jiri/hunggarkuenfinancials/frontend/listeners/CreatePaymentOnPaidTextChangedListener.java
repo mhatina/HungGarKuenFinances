@@ -23,11 +23,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
-public class CreatePaymentOnPayedTextChangedListener implements TextWatcher {
+public class CreatePaymentOnPaidTextChangedListener implements TextWatcher {
     private EditText owns;
     private EditText price;
 
-    public CreatePaymentOnPayedTextChangedListener(EditText owns, EditText price) {
+    public CreatePaymentOnPaidTextChangedListener(EditText owns, EditText price) {
         this.owns = owns;
         this.price = price;
     }

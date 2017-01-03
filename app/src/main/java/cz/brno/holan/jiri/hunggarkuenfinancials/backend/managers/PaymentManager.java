@@ -20,16 +20,22 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
 import android.content.Context;
 import android.net.Uri;
+import android.widget.ListView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.Payment;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.PaymentsAdapter;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.EntityTabManager;
 
 public class PaymentManager extends BaseManager {
     private ArrayList<Payment> mPayments;
@@ -74,27 +80,79 @@ public class PaymentManager extends BaseManager {
     }
 
     public Payment createPayment(List<Long> memberIds, long productId) {
-        return new Payment(-1, memberIds, productId);
+        newPaymentId++;
+        getDatabaseReference().child("id").setValue(newPaymentId);
+
+        return new Payment(newPaymentId, memberIds, productId);
     }
 
     @Override
     public void load() {
+        mPayments.clear();
 
+        getDatabaseReference().addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        newPaymentId = dataSnapshot.child("id").getValue(long.class);
+
+                            for (DataSnapshot postSnapshot : dataSnapshot.child(Payment.class.getSimpleName()).getChildren()) {
+                                Payment payment = postSnapshot.getValue(Payment.class);
+                                mPayments.add(payment);
+                            }
+
+                        ListView paymentList = EntityTabManager.getInstance().getPaymentList();
+                        if (paymentList != null) {
+                            PaymentsAdapter adapter = (PaymentsAdapter) paymentList.getAdapter();
+                            if (adapter != null) {
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
 
     @Override
     public void upload(BaseEntity entity) {
+        Payment payment = (Payment) entity;
+        DatabaseReference reference = getDatabaseReference().child(payment.getClass().getSimpleName())
+                .child(String.valueOf(payment.getId()));
 
+        reference.child("id").setValue(payment.getId());
+        reference.child("memberIds").setValue(payment.getMemberIds());
+        reference.child("productId").setValue(payment.getProductId());
+        reference.child("note").setValue(payment.getNote());
+        reference.child("price").setValue(payment.getPrice());
+        reference.child("payed").setValue(payment.getPaid());
+        reference.child("discount").setValue(payment.getDiscount());
     }
 
     @Override
     public void update(BaseEntity entity) {
+        Payment payment = (Payment) entity;
+        DatabaseReference reference = getDatabaseReference().child(payment.getClass().getSimpleName())
+                .child(String.valueOf(payment.getId()));
 
-    }
+        if ((payment.getUpdatePropertiesSwitch() & Constant.MEMBER_IDS_SWITCH) > 0)
+            reference.child("memberIds").setValue(payment.getMemberIds());
+        if ((payment.getUpdatePropertiesSwitch() & Constant.PRODUCT_ID_SWITCH) > 0)
+            reference.child("productId").setValue(payment.getProductId());
+        if ((payment.getUpdatePropertiesSwitch() & Constant.NOTE_SWITCH) > 0)
+            reference.child("note").setValue(payment.getNote());
+        if ((payment.getUpdatePropertiesSwitch() & Constant.PRICE_SWITCH) > 0)
+            reference.child("price").setValue(payment.getPrice());
+        if ((payment.getUpdatePropertiesSwitch() & Constant.PAID_SWITCH) > 0)
+            reference.child("payed").setValue(payment.getPaid());
+        if ((payment.getUpdatePropertiesSwitch() & Constant.DISCOUNT_SWITCH) > 0)
+            reference.child("discount").setValue(payment.getDiscount());
 
-    @Override
-    public void delete(BaseEntity entity) {
-
+        payment.clearUpdatePropertiesSwitch();
     }
 
     @Override

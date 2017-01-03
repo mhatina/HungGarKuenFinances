@@ -20,14 +20,10 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.SparseBooleanArray;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
@@ -49,12 +45,11 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.PaymentManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ProductManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.comparators.MemberAlphabeticComparator;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.comparators.MemberComparator;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.CreatePaymentMembersAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.CreatePaymentProductsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.CreatePaymentOnDiscountChangedListener;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.CreatePaymentOnMemberTextChangedListener;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.CreatePaymentOnPayedTextChangedListener;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.CreatePaymentOnPaidTextChangedListener;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.CreatePaymentOnPriceTextChangedListener;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.CreatePaymentOnProductTextChangedListener;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
@@ -117,7 +112,7 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
         TextInputLayout productLayout = (TextInputLayout) findViewById(R.id.create_new_payment_product);
         TextInputLayout priceLayout = (TextInputLayout) findViewById(R.id.create_new_payment_price);
         TextInputLayout discountLayout = (TextInputLayout) findViewById(R.id.create_new_payment_discount);
-        TextInputLayout payedLayout = (TextInputLayout) findViewById(R.id.create_new_payment_payed);
+        TextInputLayout payedLayout = (TextInputLayout) findViewById(R.id.create_new_payment_paid);
         TextInputLayout ownsLayout = (TextInputLayout) findViewById(R.id.create_new_payment_owns);
         ImageButton memberButton = (ImageButton) findViewById(R.id.create_new_payment_member_list);
         ImageButton productButton = (ImageButton) findViewById(R.id.create_new_payment_product_list);
@@ -140,7 +135,7 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
         discountLayout.getEditText().addTextChangedListener(discountListener);
         priceLayout.getEditText().addTextChangedListener(priceListener);
         payedLayout.getEditText().addTextChangedListener(
-                new CreatePaymentOnPayedTextChangedListener(ownsLayout.getEditText(), priceLayout.getEditText()));
+                new CreatePaymentOnPaidTextChangedListener(ownsLayout.getEditText(), priceLayout.getEditText()));
 
         memberButton.setOnClickListener(this);
         productButton.setOnClickListener(this);

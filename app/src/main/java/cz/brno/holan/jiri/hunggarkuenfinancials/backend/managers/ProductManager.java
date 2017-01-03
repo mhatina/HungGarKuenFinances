@@ -215,14 +215,6 @@ public class ProductManager extends BaseManager {
     }
 
     @Override
-    public void delete(BaseEntity entity) {
-        Product product = (Product) entity;
-        getDatabaseReference().child(product.getClass().getSimpleName())
-                .child(String.valueOf(product.getId()))
-                .removeValue();
-    }
-
-    @Override
     public DatabaseReference getDatabaseReference() {
         return mDatabase.child("products");
     }
