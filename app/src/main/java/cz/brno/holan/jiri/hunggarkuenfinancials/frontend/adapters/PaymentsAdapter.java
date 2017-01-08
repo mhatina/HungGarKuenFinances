@@ -30,6 +30,7 @@ import java.util.List;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.Payment;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Product;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ProductManager;
 
@@ -65,14 +66,23 @@ public class PaymentsAdapter extends ArrayAdapter<Payment> {
             List<Long> memberIds = payment.getMemberIds();
             String owns = convertView.getResources().getString(R.string.payment_fully_paid_for);
             SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy HH:mm");
+            Product product = ProductManager.getInstance().findProduct(payment.getProductId());
+
             for (long id : memberIds) {
                 MemberManager manager = MemberManager.getInstance();
                 Member member = manager.findMember(id);
+
+                if (member == null)
+                    continue;
+
                 members += member.getName() + " " + member.getSurname();
 
                 if (id != memberIds.get(memberIds.size() - 1))
                     members += ", ";
             }
+
+            if (members.isEmpty())
+                members = convertView.getResources().getString(R.string.payment_id_deleted);
 
             if (payment.getPrice() != payment.getPaid()) {
                 owns = convertView.getResources().getString(R.string.payment_still_owns)
@@ -82,7 +92,9 @@ public class PaymentsAdapter extends ArrayAdapter<Payment> {
 
             viewHolder.members.setText(members);
             viewHolder.paidPrice.setText(convertView.getResources().getString(R.string.currency, String.valueOf(payment.getPaid())));
-            viewHolder.product.setText(ProductManager.getInstance().findProduct(payment.getProductId()).getName());
+            viewHolder.product.setText(product == null
+                    ? convertView.getResources().getString(R.string.payment_id_deleted)
+                    : product.getName());
             viewHolder.owns.setText(owns);
             viewHolder.created.setText(format.format(payment.getCreated()));
         }

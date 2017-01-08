@@ -120,4 +120,6 @@
 
     <string name="firebase_status_fmt">Firebase User: %s</string>
     <string name="google_status_fmt">Google User: %s</string>
+    <string name="filter">Filter</string>
+    <string name="payment_id_deleted">Deleted</string>
 </resources>

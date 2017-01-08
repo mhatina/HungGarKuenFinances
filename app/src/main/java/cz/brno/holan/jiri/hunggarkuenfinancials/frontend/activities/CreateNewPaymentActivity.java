@@ -94,22 +94,29 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
         Button dateButton = (Button) findViewById(R.id.create_new_payment_date);
 
         Payment payment = PaymentManager.getInstance().findPayment(getIntent().getLongExtra(Constant.EDIT_ENTITY, 0));
-        String members = "";
         Product product = ProductManager.getInstance().findProduct(payment.getProductId());
+        String members = "";
 
         List<Long> ids = payment.getMemberIds();
         for (long id : ids) {
             Member member = MemberManager.getInstance().findMember(id);
+            if (member == null)
+                continue;
             members += member.getName() + " " + member.getSurname();
 
             if (ids.size() != 1 || id != ids.get(ids.size() - 1))
                 members += ", ";
         }
 
+        if (members.isEmpty())
+            members = getResources().getString(R.string.payment_id_deleted);
+
         setTitle("Edit payment");
 
         membersLayout.getEditText().setText(members);
-        productLayout.getEditText().setText(product.getName());
+        productLayout.getEditText().setText(product == null
+                ? getResources().getString(R.string.payment_id_deleted)
+                : product.getName());
         priceLayout.getEditText().setText(String.valueOf(product.getPrice()));
 
         float discount = (1 - (payment.getPrice() / product.getPrice())) * 100;
