@@ -64,6 +64,7 @@ public class MembersAdapter extends ArrayAdapter<Member> {
             viewHolder.firstName.setText(member.getName());
             viewHolder.surname.setText(member.getSurname());
             viewHolder.icon.setImageResource(member.getIconPath());
+            viewHolder.beginner.setVisibility(member.isBeginner() ? View.VISIBLE : View.GONE);
 
             setPaymentStatus(viewHolder, member);
         }
@@ -106,6 +107,7 @@ public class MembersAdapter extends ArrayAdapter<Member> {
         public ImageView icon;
         public ImageView paymentStatus;
         public ImageView paymentWarning;
+        public ImageView beginner;
 
         ViewHolder(View view) {
             firstName = (TextView) view.findViewById(R.id.member_layout_first_name);
@@ -113,6 +115,7 @@ public class MembersAdapter extends ArrayAdapter<Member> {
             icon = (ImageView) view.findViewById(R.id.member_layout_icon);
             paymentStatus = (ImageView) view.findViewById(R.id.member_layout_payment_status);
             paymentWarning = (ImageView) view.findViewById(R.id.member_layout_payment_warning);
+            beginner = (ImageView) view.findViewById(R.id.member_layout_beginner);
         }
     }
 }

@@ -34,6 +34,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.lang.reflect.Field;
@@ -63,6 +64,7 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
 
     private ContactManager contactManager;
     private Contact contextContact;
+    private boolean beginner = true;
 
     public CreateNewMemberActivity() {
         super(R.layout.layout_member_new);
@@ -87,20 +89,22 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
         TextInputLayout name = (TextInputLayout) findViewById(R.id.create_new_member_name);
         TextInputLayout surname = (TextInputLayout) findViewById(R.id.create_new_member_surname);
         TextInputLayout note = (TextInputLayout) findViewById(R.id.create_new_note);
-        ListView contact_list = (ListView) findViewById(R.id.create_new_contact_list);
+        ListView contactList = (ListView) findViewById(R.id.create_new_contact_list);
+        ImageView beginner = (ImageView) findViewById(R.id.create_new_member_beginner);
         Member member = MemberManager.getInstance().findMember(getIntent().getLongExtra(Constant.EDIT_ENTITY, 0));
 
         setTitle(getString(R.string.edit_member_title));
 
         contactManager = member.getContactManager();
         setImageButtonResource(type, member.getIconPath());
+        beginner.setVisibility(member.isBeginner() ? View.VISIBLE : View.GONE);
         setEditTextContent(name, member.getName());
         setEditTextContent(surname, member.getSurname());
         if (member.getBirthDate() != null)
             setDate(R.id.create_new_day_of_birth, R.id.create_new_month_of_birth, R.id.create_new_year_of_birth, member.getBirthDate());
         setDate(R.id.create_new_day_of_joining, R.id.create_new_month_of_joining, R.id.create_new_year_of_joining, member.getJoinedDate());
         setEditTextContent(note, member.getNote());
-        contact_list.setAdapter(new ContactsAdapter(this, R.layout.layout_contact, member.getContactManager().getContacts()));
+        contactList.setAdapter(new ContactsAdapter(this, R.layout.layout_contact, member.getContactManager().getContacts()));
     }
 
     @Override
@@ -175,6 +179,7 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         ImageButton button = (ImageButton) findViewById(R.id.create_new_member_type);
+        ImageView beginnerView = (ImageView) findViewById(R.id.create_new_member_beginner);
 
         switch (item.getItemId()) {
             case R.id.type_adult:
@@ -189,6 +194,10 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
             case R.id.type_child:
                 setImageButtonResource(button, Child.ICON_PATH);
                 return true;
+            case R.id.type_beginner:
+                beginner = !item.isChecked();
+                item.setChecked(beginner);
+                beginnerView.setVisibility(beginner ? View.VISIBLE : View.GONE);
             default:
                 return false;
         }
@@ -197,6 +206,7 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
     public void showMemberTypePopup(View v) {
         PopupMenu popup = new PopupMenu(this, v);
         MenuInflater inflater = popup.getMenuInflater();
+
         popup.setOnMenuItemClickListener(this);
         inflater.inflate(R.menu.member_type, popup.getMenu());
 
@@ -210,6 +220,10 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
         } catch (NoSuchFieldException e) {
             return;
         }
+
+        MenuItem item = popup.getMenu().findItem(R.id.type_beginner);
+        item.setChecked(beginner);
+
         popup.show();
     }
 
@@ -242,6 +256,7 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
             }
             member.setJoinedDate(joined_date);
             member.setNote(getEditTextContent(note));
+            member.setBeginner(beginner);
 
             manager.update(member);
         } else {
@@ -249,6 +264,7 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
             member.setContactManager(contactManager);
             member.setJoinedDate(joined_date);
             member.setNote(getEditTextContent(note));
+            member.setBeginner(beginner);
 
             manager.addMember(member);
         }

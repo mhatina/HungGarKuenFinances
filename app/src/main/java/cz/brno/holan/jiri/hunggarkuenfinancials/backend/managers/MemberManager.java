@@ -280,6 +280,7 @@ public class MemberManager extends BaseManager {
         reference.child("joinedDate").setValue(member.getJoinedDate());
         reference.child("paidUntil").setValue(member.getPaidUntil());
         reference.child("note").setValue(member.getNote());
+        reference.child("beginner").setValue(member.isBeginner());
 
         member.getContactManager().uploadContacts(reference);
     }
@@ -302,6 +303,8 @@ public class MemberManager extends BaseManager {
             reference.child("paidUntil").setValue(member.getPaidUntil());
         if ((member.getUpdatePropertiesSwitch() & Constant.NOTE_SWITCH) > 0)
             reference.child("note").setValue(member.getNote());
+        if ((member.getUpdatePropertiesSwitch() & Constant.BEGINNER_SWITCH) > 0)
+            reference.child("beginner").setValue(member.isBeginner());
 
         member.clearUpdatePropertiesSwitch();
     }

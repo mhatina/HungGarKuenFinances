@@ -215,6 +215,7 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
                 MemberManager manager = MemberManager.getInstance();
                 Member member = manager.findMember(id);
                 member.setPaidUntil(valid);
+                manager.update(member);
             }
         }
 

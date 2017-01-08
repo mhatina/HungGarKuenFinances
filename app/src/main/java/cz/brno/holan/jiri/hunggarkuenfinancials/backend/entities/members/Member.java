@@ -41,6 +41,7 @@ public class Member extends BaseEntity {
     private Date paidUntil;
     private MemberStatus status;
     private String note;
+    private boolean beginner;
 
     private int updatePropertiesSwitch = 0;
 
@@ -60,6 +61,7 @@ public class Member extends BaseEntity {
         this.paidUntil = new Date(System.currentTimeMillis());
         this.birthDate = birthDate;
         this.joinedDate = new Date(System.currentTimeMillis());
+        this.beginner = true;
         updateStatus();
     }
 
@@ -178,6 +180,15 @@ public class Member extends BaseEntity {
             this.note = note;
             updatePropertiesSwitch |= Constant.NOTE_SWITCH;
         }
+    }
+
+    public boolean isBeginner() {
+        return beginner;
+    }
+
+    public void setBeginner(boolean beginner) {
+        this.beginner = beginner;
+        updatePropertiesSwitch |= Constant.BEGINNER_SWITCH;
     }
 
     public int getUpdatePropertiesSwitch() {

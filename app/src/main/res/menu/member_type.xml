@@ -17,16 +17,28 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/type_adult"
-        android:title="Adult"
-        android:icon="@drawable/adult_icon" />
-    <item android:id="@+id/type_youngster"
-        android:title="Youngster"
-        android:icon="@drawable/youngster_icon"/>
-    <item android:id="@+id/type_junior"
-        android:title="Junior"
-        android:icon="@drawable/junior_icon"/>
-    <item android:id="@+id/type_child"
-        android:title="Child"
-        android:icon="@drawable/child_icon"/>
+    <item
+        android:id="@+id/type_adult"
+        android:icon="@drawable/adult_icon"
+        android:title="Adult"/>
+    <item
+        android:id="@+id/type_youngster"
+        android:icon="@drawable/youngster_icon"
+        android:title="Youngster"/>
+    <item
+        android:id="@+id/type_junior"
+        android:icon="@drawable/junior_icon"
+        android:title="Junior"/>
+    <item
+        android:id="@+id/type_child"
+        android:icon="@drawable/child_icon"
+        android:title="Child"/>
+    <group
+        android:id="@+id/beginner_group"
+        android:checkableBehavior="all">
+        <item
+            android:id="@+id/type_beginner"
+            android:checked="true"
+            android:title="Beginner"/>
+    </group>
 </menu>

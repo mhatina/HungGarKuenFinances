@@ -72,6 +72,7 @@ public class MemberDetailDialog extends DialogFragment implements MenuItem.OnMen
         view = inflater.inflate(R.layout.layout_member_detail, null);
         ListView contactList = (ListView) view.findViewById(R.id.member_detail_contact_list);
         ImageView type = (ImageView) view.findViewById(R.id.member_layout_icon);
+        ImageView beginner = (ImageView) view.findViewById(R.id.member_layout_beginner);
         TextView name = (TextView) view.findViewById(R.id.member_layout_first_name);
         TextView surname = (TextView) view.findViewById(R.id.member_layout_surname);
         TextView birthDate = (TextView) view.findViewById(R.id.member_detail_date_of_birth);
@@ -87,6 +88,7 @@ public class MemberDetailDialog extends DialogFragment implements MenuItem.OnMen
         );
 
         type.setImageResource(member.getIconPath());
+        beginner.setVisibility(member.isBeginner() ? View.VISIBLE : View.GONE);
         name.setText(member.getName());
         surname.setText(member.getSurname());
         setPaymentStatus(member);

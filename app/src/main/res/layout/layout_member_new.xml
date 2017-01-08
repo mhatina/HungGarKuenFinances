@@ -28,13 +28,27 @@
         android:orientation="horizontal"
         android:paddingTop="5dp">
 
-        <ImageButton
-            android:id="@+id/create_new_member_type"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@null"
-            android:clickable="true"
-            android:src="@drawable/beginner_icon" />
+        <RelativeLayout
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size">
+
+            <ImageButton
+                android:id="@+id/create_new_member_type"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:clickable="true"
+                android:src="@drawable/beginner_icon" />
+
+            <ImageView
+                android:id="@+id/create_new_member_beginner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:src="@android:drawable/presence_online" />
+
+        </RelativeLayout>
 
         <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout
             android:id="@+id/create_new_member_name"
