@@ -29,6 +29,7 @@ import android.widget.ListView;
 
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,8 +58,8 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 public class CreateNewPaymentActivity extends CreateNewEntityActivity implements View.OnClickListener {
 
     private Date validUntil;
-    private ArrayList<Long> memberIds;
-    private long productId;
+    private ArrayList<Long> memberIds = new ArrayList<>();;
+    private long productId = -1;
 
     public CreateNewPaymentActivity() {
         super(R.layout.layout_payment_new);
@@ -70,6 +71,15 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
         discountLayout.getEditText().setText(String.valueOf(0 + "%"));
 
         setTitle("New payment");
+
+        Member member;
+        if (getIntent().hasExtra(Constant.PREFILLED_ENTITY)) {
+            TextInputLayout membersLayout = (TextInputLayout) findViewById(R.id.create_new_payment_member);
+
+            member = MemberManager.getInstance().findMember(getIntent().getLongExtra(Constant.PREFILLED_ENTITY, 0));
+            memberIds.add(member.getId());
+            membersLayout.getEditText().setText(member.getName() + " " + member.getSurname());
+        }
     }
 
     @Override
@@ -78,6 +88,10 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
         TextInputLayout productLayout = (TextInputLayout) findViewById(R.id.create_new_payment_product);
         TextInputLayout priceLayout = (TextInputLayout) findViewById(R.id.create_new_payment_price);
         TextInputLayout discountLayout = (TextInputLayout) findViewById(R.id.create_new_payment_discount);
+        TextInputLayout paidLayout = (TextInputLayout) findViewById(R.id.create_new_payment_paid);
+        TextInputLayout ownsLayout = (TextInputLayout) findViewById(R.id.create_new_payment_owns);
+        TextInputLayout noteLayout = (TextInputLayout) findViewById(R.id.create_new_note);
+        Button dateButton = (Button) findViewById(R.id.create_new_payment_date);
 
         Payment payment = PaymentManager.getInstance().findPayment(getIntent().getLongExtra(Constant.EDIT_ENTITY, 0));
         String members = "";
@@ -100,13 +114,18 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
 
         float discount = (1 - (payment.getPrice() / product.getPrice())) * 100;
         discountLayout.getEditText().setText(String.valueOf(discount + "%"));
+
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        dateButton.setText(format.format(payment.getValidUntil()));
+
+        paidLayout.getEditText().setText(String.valueOf(payment.getPaid()));
+        ownsLayout.getEditText().setText(String.valueOf(payment.getPrice() - payment.getPaid()));
+        noteLayout.getEditText().setText(payment.getNote());
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        memberIds = new ArrayList<>();
 
         TextInputLayout membersLayout = (TextInputLayout) findViewById(R.id.create_new_payment_member);
         TextInputLayout productLayout = (TextInputLayout) findViewById(R.id.create_new_payment_product);
@@ -146,10 +165,86 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
     public boolean save() {
         TextInputLayout membersLayout = (TextInputLayout) findViewById(R.id.create_new_payment_member);
         TextInputLayout productLayout = (TextInputLayout) findViewById(R.id.create_new_payment_product);
-        TextInputLayout priceLayout = (TextInputLayout) findViewById(R.id.create_new_payment_price);
-        TextInputLayout discountLayout = (TextInputLayout) findViewById(R.id.create_new_payment_discount);
+        TextInputLayout noteLayout = (TextInputLayout) findViewById(R.id.create_new_note);
+        Button dateButton = (Button) findViewById(R.id.create_new_payment_date);
+
+        List<Long> memberIds = Utils.getMemberIdsFromString(membersLayout.getEditText().getText().toString(), this.memberIds);
+        if (memberIds.isEmpty()) {
+            membersLayout.setError(getString(R.string.required_error));
+            return false;
+        }
+
+        Product product = ProductManager.getInstance().findProduct(productId);
+        String productStr = productLayout.getEditText().getText().toString();
+        if (product == null || !productStr.equals(product.getName())) {
+            List<Product> list = ProductManager.getInstance().getProducts(productStr);
+            if (list.isEmpty()) {
+                productLayout.setError(getString(R.string.required_error));
+                return false;
+            }
+            product = list.get(0);
+        }
+
+        float price = verifyFloat(R.id.create_new_payment_price);
+        float paid = verifyFloat(R.id.create_new_payment_paid);
+        float discount = verifyFloat(R.id.create_new_payment_discount);
+        String note = noteLayout.getEditText().getText().toString();
+        Date valid = null;
+
+        if (price == -1 || paid == -1)
+            return false;
+
+        Payment payment = PaymentManager.getInstance().createPayment(memberIds, product.getId());
+        payment.setPrice(price);
+        payment.setPaid(paid);
+        payment.setDiscount(discount);
+        payment.setNote(note);
+        payment.setCreated(new Date(System.currentTimeMillis()));
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+            valid = format.parse(dateButton.getText().toString());
+            payment.setValidUntil(valid);
+        } catch (ParseException ex) {
+            // valid-until date is not necessary
+        }
+
+
+        PaymentManager.getInstance().addPayment(payment);
+        if (valid != null) {
+            for (long id : memberIds) {
+                MemberManager manager = MemberManager.getInstance();
+                Member member = manager.findMember(id);
+                member.setPaidUntil(valid);
+            }
+        }
+
+        setResult(0);
+        finish();
 
         return true;
+    }
+
+    private float verifyFloat(int resource) {
+        float f;
+        TextInputLayout layout = (TextInputLayout) findViewById(resource);
+        String str = layout.getEditText().getText().toString();
+
+        layout.setError(null);
+
+        // in case of discount, which contains '%'
+        str = str.replace("%", "");
+        if (str.isEmpty()) {
+            layout.setError(getString(R.string.required_error));
+            return -1;
+        }
+
+        try {
+            f = Float.valueOf(str);
+        } catch (NumberFormatException ex) {
+            layout.setError("Incorrect format");
+            return -1;
+        }
+        return f;
     }
 
     @Override

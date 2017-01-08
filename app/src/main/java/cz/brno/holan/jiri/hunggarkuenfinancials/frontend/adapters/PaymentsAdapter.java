@@ -24,10 +24,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.Payment;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ProductManager;
 
 public class PaymentsAdapter extends ArrayAdapter<Payment> {
     public PaymentsAdapter(Context context, int textViewResourceId) {
@@ -46,7 +50,7 @@ public class PaymentsAdapter extends ArrayAdapter<Payment> {
             LayoutInflater layoutInflater;
             layoutInflater = LayoutInflater.from(getContext());
 
-            convertView = layoutInflater.inflate(R.layout.layout_member, parent, false);
+            convertView = layoutInflater.inflate(R.layout.layout_payment, parent, false);
 
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
@@ -57,17 +61,49 @@ public class PaymentsAdapter extends ArrayAdapter<Payment> {
         Payment payment = getItem(position);
 
         if (payment != null) {
-            viewHolder.textView.setText(String.valueOf(payment.getId()));
+            String members = "";
+            List<Long> memberIds = payment.getMemberIds();
+            String owns = convertView.getResources().getString(R.string.payment_fully_paid_for);
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy HH:mm");
+            for (long id : memberIds) {
+                MemberManager manager = MemberManager.getInstance();
+                Member member = manager.findMember(id);
+                members += member.getName() + " " + member.getSurname();
+
+                if (id != memberIds.get(memberIds.size() - 1))
+                    members += ", ";
+            }
+
+            if (payment.getPrice() != payment.getPaid()) {
+                owns = convertView.getResources().getString(R.string.payment_still_owns)
+                        + " "
+                        + convertView.getResources().getString(R.string.currency, String.valueOf(payment.getPrice() - payment.getPaid()));
+            }
+
+            viewHolder.members.setText(members);
+            viewHolder.paidPrice.setText(convertView.getResources().getString(R.string.currency, String.valueOf(payment.getPaid())));
+            viewHolder.product.setText(ProductManager.getInstance().findProduct(payment.getProductId()).getName());
+            viewHolder.owns.setText(owns);
+            viewHolder.created.setText(format.format(payment.getCreated()));
         }
 
         return convertView;
     }
 
     public class ViewHolder {
-        public TextView textView;
+        public TextView members;
+        public TextView paidPrice;
+        public TextView product;
+        public TextView owns;
+        public TextView created;
 
         ViewHolder(View view) {
-            textView = (TextView) view.findViewById(R.id.member_layout_first_name);
+            members = (TextView) view.findViewById(R.id.payment_layout_members);
+            paidPrice = (TextView) view.findViewById(R.id.payment_layout_paid);
+            product = (TextView) view.findViewById(R.id.payment_layout_product);
+            owns = (TextView) view.findViewById(R.id.payment_layout_owns);
+            created = (TextView) view.findViewById(R.id.payment_layout_created);
+
         }
     }
 }

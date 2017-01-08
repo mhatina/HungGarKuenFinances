@@ -20,6 +20,7 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -35,12 +36,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.FirebaseDatabase;
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity
     public static boolean calledFirebasePersistence = false;
 
     private BaseEntity mContextEntity;
+    private boolean init = false;
 
     public MainActivity() {
         mContextEntity = null;
@@ -106,13 +111,46 @@ public class MainActivity extends AppCompatActivity
 
                 if (activity != null) {
                     searchView.setIconified(true);
-                    startActivity(new Intent(v.getContext(), activity));
+                    startActivityForResult(new Intent(v.getContext(), activity), Constant.NEW_ENTITY_CODE);
                 } else {
                     Log.warning(getBaseContext(),
                             new InvalidParameterException("Cannot open activity for creation of new entity."));
                 }
             }
         });
+    }
+
+    private void moveFloatingButton() {
+        boolean empty = false;
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+
+        if (viewPager.getCurrentItem() == Constant.MEMBER_LIST_INDEX) {
+            empty = MemberManager.getInstance().getMembers().isEmpty();
+        } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
+            empty = PaymentManager.getInstance().getPayments().isEmpty();
+        } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
+            empty = ProductManager.getInstance().getProducts().isEmpty();
+        }
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x / 2;
+        int height = size.y / 2;
+        int margin = (int) getResources().getDimension(R.dimen.fab_margin);
+
+        if (empty && fab.getHeight() != 0) {
+            fab.animate()
+                    .translationY(-height + margin + fab.getHeight())
+                    .translationX(-width + margin + fab.getWidth() / 2)
+                    .start();
+        } else {
+            fab.animate()
+                    .translationY(0)
+                    .translationX(0)
+                    .start();
+        }
     }
 
     @Override
@@ -148,6 +186,27 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, LoginActivity.class);
             startActivityForResult(intent, Constant.SIGN_IN_CODE);
         }
+
+        if (!init) {
+            final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                    moveFloatingButton();
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
+            init = true;
+        }
     }
 
     @Override
@@ -175,7 +234,8 @@ public class MainActivity extends AppCompatActivity
                 if (viewPager.getCurrentItem() == Constant.MEMBER_LIST_INDEX) {
                     getMemberListView().setAdapter(new MembersAdapter(this, R.layout.layout_member, MemberManager.getInstance().getMembers()));
                 } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
-
+                    getPaymentListView().setAdapter(new PaymentsAdapter(this, R.layout.layout_product, PaymentManager.getInstance().getPayments()));
+                    getMemberListView().setAdapter(new MembersAdapter(this, R.layout.layout_member, MemberManager.getInstance().getMembers()));
                 } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
                     getProductListView().setAdapter(new ProductsAdapter(this, R.layout.layout_product, ProductManager.getInstance().getProducts()));
                 } else {
@@ -187,11 +247,18 @@ public class MainActivity extends AppCompatActivity
                 setSignedInAs(data);
                 MemberManager.getInstance().load();
                 ProductManager.getInstance().load();
+                PaymentManager.getInstance().load();
                 break;
             default:
 
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+        moveFloatingButton();
     }
 
     private void setSignedInAs(Intent data) {
@@ -297,7 +364,8 @@ public class MainActivity extends AppCompatActivity
         } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
             Payment payment;
             mContextEntity = payment = (Payment) getPaymentListView().getItemAtPosition(adapterMenuInfo.position);
-//            menu.setHeaderTitle(payment.get);
+            String header = ProductManager.getInstance().findProduct(payment.getProductId()).getName();
+            menu.setHeaderTitle(header);
         } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
             Product product;
             mContextEntity = product = (Product) getProductListView().getItemAtPosition(adapterMenuInfo.position);

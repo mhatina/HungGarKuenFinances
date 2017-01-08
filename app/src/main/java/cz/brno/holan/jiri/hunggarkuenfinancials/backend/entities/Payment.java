@@ -17,6 +17,7 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities;
 
+import java.util.Date;
 import java.util.List;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
@@ -25,10 +26,12 @@ public class Payment extends BaseEntity {
 
     private List<Long> memberIds;
     private long productId;
-    private int price;
-    private int paid;
+    private float price;
+    private float paid;
     private float discount;
     private String note;
+    private Date validUntil;
+    private Date created;
 
     private int updatePropertiesSwitch = 0;
 
@@ -71,22 +74,22 @@ public class Payment extends BaseEntity {
         }
     }
 
-    public int getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(float price) {
         if (this.price != price) {
             this.price = price;
             updatePropertiesSwitch |= Constant.PRICE_SWITCH;
         }
     }
 
-    public int getPaid() {
+    public float getPaid() {
         return paid;
     }
 
-    public void setPaid(int paid) {
+    public void setPaid(float paid) {
         if (this.paid != paid) {
             this.paid = paid;
             updatePropertiesSwitch |= Constant.PAID_SWITCH;
@@ -112,6 +115,28 @@ public class Payment extends BaseEntity {
         if (this.note == null || !this.note.equals(note)) {
             this.note = note;
             updatePropertiesSwitch |= Constant.NOTE_SWITCH;
+        }
+    }
+
+    public Date getValidUntil() {
+        return validUntil;
+    }
+
+    public void setValidUntil(Date validUntil) {
+        if (this.validUntil == null || !this.validUntil.equals(validUntil)) {
+            this.validUntil = validUntil;
+            updatePropertiesSwitch |= Constant.VALID_TIME_SWITCH;
+        }
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        if (this.created == null || !this.created.equals(created)) {
+            this.created = created;
+            updatePropertiesSwitch |= Constant.CREATED_SWITCH;
         }
     }
 

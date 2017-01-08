@@ -21,6 +21,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.ContextMenu;
@@ -34,9 +35,11 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Contact;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.CreateNewPaymentActivity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ContactsAdapter;
 
@@ -107,7 +110,9 @@ public class MemberDetailDialog extends DialogFragment implements MenuItem.OnMen
                 .setPositiveButton(R.string.pay, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        // TODO open new payment activity
+                        Intent intent = new Intent(getActivity(), CreateNewPaymentActivity.class);
+                        intent.putExtra(Constant.PREFILLED_ENTITY, member.getId());
+                        startActivity(intent);
                     }
                 });
 

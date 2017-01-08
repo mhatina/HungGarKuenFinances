@@ -93,6 +93,8 @@ public class MemberManager extends BaseManager {
     public List<Member> getMembers(String filter1, String filter2) {
         if (filter1 != null) {
             ArrayList<Member> filteredList = new ArrayList<>();
+            if (filter1.isEmpty())
+                return filteredList;
 
             for (Member member : mMembers) {
                 if (member.getSurname().toUpperCase().startsWith(filter1.toUpperCase()))
@@ -102,6 +104,8 @@ public class MemberManager extends BaseManager {
             }
 
             if (filter2 != null) {
+                if (filter2.isEmpty())
+                    return filteredList;
                 for (int i = filteredList.size() - 1; i >= 0; i--) {
                     if (!filteredList.get(i).getSurname().toUpperCase().startsWith(filter2.toUpperCase())
                             && !filteredList.get(i).getName().toUpperCase().startsWith(filter2.toUpperCase()))
@@ -188,6 +192,9 @@ public class MemberManager extends BaseManager {
      * @return member with given id
      */
     public Member findMember(long id) {
+        if (id < 0)
+            return null;
+
         int size = mMembers.size();
         for (int i = 0; i < size; i++) {
             if (mMembers.get(i).getId() == id)

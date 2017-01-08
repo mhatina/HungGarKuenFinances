@@ -159,9 +159,13 @@ public class Member extends BaseEntity {
     }
 
     public void setPaidUntil(Date paidUntil) {
+        if (this.paidUntil != null && paidUntil.before(this.paidUntil))
+            return;
+
         if (this.paidUntil == null || !this.paidUntil.equals(paidUntil)) {
             this.paidUntil = paidUntil;
             updatePropertiesSwitch |= Constant.PAID_UNTIL_SWITCH;
+            updateStatus();
         }
     }
 

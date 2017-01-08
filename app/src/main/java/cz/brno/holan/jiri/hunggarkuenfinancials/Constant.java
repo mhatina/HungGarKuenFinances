@@ -17,6 +17,7 @@ public class Constant {
     public static final String SIMPLE_ADDRESS_REGEX = "[a-zA-Z]+[ ]+[0-9]+[a-zA-Z]*[, ]*[a-zA-Z]*[, ]*[a-zA-Z ]*";
 
     public static final String EDIT_ENTITY = "EDIT_ENTITY";
+    public static final String PREFILLED_ENTITY = "PREFILLED_ENTITY";
 
     public static final int NUMBER_OF_GROUPS = 4;
     public static final int ADULT_GROUP     = 0b0001;
@@ -39,6 +40,7 @@ public class Constant {
     public static final int PRODUCT_ID_SWITCH   = MEMBER_IDS_SWITCH << 1;
     public static final int PAID_SWITCH         = PRODUCT_ID_SWITCH << 1;
     public static final int DISCOUNT_SWITCH     = PAID_SWITCH << 1;
+    public static final int CREATED_SWITCH      = DISCOUNT_SWITCH << 1;
 
     public static final int DAY_SELECTION = 0;
     public static final int WEEK_SELECTION = 1;

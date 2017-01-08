@@ -129,8 +129,10 @@ public class PaymentManager extends BaseManager {
         reference.child("productId").setValue(payment.getProductId());
         reference.child("note").setValue(payment.getNote());
         reference.child("price").setValue(payment.getPrice());
-        reference.child("payed").setValue(payment.getPaid());
+        reference.child("paid").setValue(payment.getPaid());
         reference.child("discount").setValue(payment.getDiscount());
+        reference.child("validUntil").setValue(payment.getValidUntil());
+        reference.child("created").setValue(payment.getCreated());
     }
 
     @Override
@@ -148,9 +150,13 @@ public class PaymentManager extends BaseManager {
         if ((payment.getUpdatePropertiesSwitch() & Constant.PRICE_SWITCH) > 0)
             reference.child("price").setValue(payment.getPrice());
         if ((payment.getUpdatePropertiesSwitch() & Constant.PAID_SWITCH) > 0)
-            reference.child("payed").setValue(payment.getPaid());
+            reference.child("paid").setValue(payment.getPaid());
         if ((payment.getUpdatePropertiesSwitch() & Constant.DISCOUNT_SWITCH) > 0)
             reference.child("discount").setValue(payment.getDiscount());
+        if ((payment.getUpdatePropertiesSwitch() & Constant.VALID_TIME_SWITCH) > 0)
+            reference.child("validUntil").setValue(payment.getValidUntil());
+        if ((payment.getUpdatePropertiesSwitch() & Constant.CREATED_SWITCH) > 0)
+            reference.child("created").setValue(payment.getCreated());
 
         payment.clearUpdatePropertiesSwitch();
     }

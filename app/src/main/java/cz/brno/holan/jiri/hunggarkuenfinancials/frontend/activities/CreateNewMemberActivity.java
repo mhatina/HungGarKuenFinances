@@ -226,7 +226,8 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
         Date birth_date = verifyDate(R.id.create_new_day_of_birth, R.id.create_new_month_of_birth, R.id.create_new_year_of_birth, false);
         Date joined_date = verifyDate(R.id.create_new_day_of_joining, R.id.create_new_month_of_joining, R.id.create_new_year_of_joining, true);
 
-        if (name == null || surname == null || joined_date == null) {
+        TextInputLayout year = (TextInputLayout) findViewById(R.id.create_new_year_of_birth);
+        if (name == null || surname == null || joined_date == null || year.getError() != null) {
             return false;
         } else if (getIntent().hasExtra(Constant.EDIT_ENTITY)) {
             member = manager.findMember(getIntent().getLongExtra(Constant.EDIT_ENTITY, 0));
@@ -275,8 +276,8 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
         yearText.setError(null);
 
         if (getEditTextContent(dayText).isEmpty()
-                || getEditTextContent(monthText).isEmpty()
-                || getEditTextContent(yearText).isEmpty()) {
+                && getEditTextContent(monthText).isEmpty()
+                && getEditTextContent(yearText).isEmpty()) {
             if (required)
                 yearText.setError(getString(R.string.date_required_error));
             return null;

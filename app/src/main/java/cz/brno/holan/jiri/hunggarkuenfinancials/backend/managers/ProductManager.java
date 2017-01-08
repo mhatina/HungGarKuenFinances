@@ -58,6 +58,8 @@ public class ProductManager extends BaseManager {
             return mProducts;
 
         List<Product> list = new ArrayList<>();
+        if (filter.isEmpty())
+            return list;
         for (Product product : mProducts) {
             if (product.getName().toUpperCase().startsWith(filter.toUpperCase())
                 || String.valueOf(product.getPrice()).startsWith(filter))
@@ -92,6 +94,9 @@ public class ProductManager extends BaseManager {
     }
 
     public Product findProduct(long id) {
+        if (id < 0)
+            return null;
+
         int size = mProducts.size();
         for (int i = 0; i < size; i++) {
             if (mProducts.get(i).getId() == id)

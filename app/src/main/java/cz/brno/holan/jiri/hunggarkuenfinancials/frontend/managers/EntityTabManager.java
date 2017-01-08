@@ -91,23 +91,23 @@ public class EntityTabManager {
             });
         }
         if (mPaymentList == null) {
-//            mPaymentList = prepareTabObject(context, container, new PaymentsAdapter(context, R.layout.layout_payment, PaymentManager.getInstance().getPayments()));
-//
-//            final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) mPaymentList.getParent();
-//            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//                @Override
-//                public void onRefresh() {
-//                    PaymentManager.getInstance().load();
-//                    swipeRefreshLayout.setRefreshing(false);
-//                }
-//            });
+            mPaymentList = prepareTabObject(context, container, new PaymentsAdapter(context, R.layout.layout_payment, PaymentManager.getInstance().getPayments()));
+
+            final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) mPaymentList.getParent();
+            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    PaymentManager.getInstance().load();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            });
         }
 
         switch (position) {
             case Constant.MEMBER_LIST_INDEX:
                 return mMemberList.getParent();
             case Constant.PAYMENT_LIST_INDEX:
-                return null;
+                return mPaymentList.getParent();
             case Constant.PRODUCT_LIST_INDEX:
                 return mProductList.getParent();
             default:
@@ -142,6 +142,7 @@ public class EntityTabManager {
             case Constant.MEMBER_LIST_INDEX:
                 mMemberList = null;
             case Constant.PAYMENT_LIST_INDEX:
+                mPaymentList = null;
             case Constant.PRODUCT_LIST_INDEX:
                 mProductList = null;
         }

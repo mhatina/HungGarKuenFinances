@@ -18,6 +18,7 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
@@ -49,22 +50,49 @@ public class Utils {
         return 0;
     }
 
+    public static List<Long> getMemberIdsFromString(String members, List<Long> memberIds) {
+        for (long id : memberIds) {
+            Member member = MemberManager.getInstance().findMember(id);
+            String toReplace = member.getName() + " " + member.getSurname();
+            members = members.replace(toReplace, "");
+        }
+        members = members.replace(", ", ",");
+        String split[] = members.split(",");
+        if (split.length != 0)
+            for (String str : split) {
+                String memberSplit[] = str.split(" ");
+                if (memberSplit.length == 0)
+                    continue;
+
+                List<Member> list = MemberManager.getInstance().getMembers(memberSplit[0], memberSplit.length > 1 ? memberSplit[1] : null);
+                if (list.isEmpty())
+                    continue;
+                Member member = list.get(0);
+                memberIds.add(member.getId());
+            }
+        return memberIds;
+    }
+
     public static int getGroupsFromMemberString(String members, List<Long> memberIds) {
         int groups = 0;
         for (long id : memberIds) {
             Member member = MemberManager.getInstance().findMember(id);
             groups |= Utils.mapMemberClassToCode(member.getClass());
-            members.replace(member.getName() + " " + member.getSurname(), "");
+            String toReplace = member.getName() + " " + member.getSurname();
+            members = members.replace(toReplace, "");
         }
-        members.replace(", ", ",");
+        members = members.replace(", ", ",");
         String split[] = members.split(",");
-        if (split[0].length() != 0)
+        if (split.length != 0)
             for (String str : split) {
                 String memberSplit[] = str.split(" ");
-                if (memberSplit[0].length() == 0)
+                if (memberSplit.length == 0)
                     continue;
 
-                Member member = MemberManager.getInstance().getMembers(memberSplit[0], memberSplit[1]).get(0);
+                List<Member> list = MemberManager.getInstance().getMembers(memberSplit[0], memberSplit.length > 1 ? memberSplit[1] : null);
+                if (list.isEmpty())
+                    continue;
+                Member member = list.get(0);
                 groups |= Utils.mapMemberClassToCode(member.getClass());
             }
         return groups;
