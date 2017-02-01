@@ -45,8 +45,6 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ContactsAdapte
 
 public class MemberDetailDialog extends DialogFragment implements MenuItem.OnMenuItemClickListener {
 
-    public static final int MEMBER_DETAIL_CONTEXT_GROUP_ID = 1;
-
     private Member member = null;
     private View view;
     private Contact contextContact;
@@ -129,7 +127,7 @@ public class MemberDetailDialog extends DialogFragment implements MenuItem.OnMen
 
         contextContact = (Contact) contactList.getItemAtPosition(adapterMenuInfo.position);
         menu.setHeaderTitle(contextContact.getNote());
-        menu.removeGroup(MainActivity.MEMBER_CONTEXT_GROUP_ID);
+        menu.removeGroup(Constant.MEMBER_CONTEXT_GROUP_ID);
         menu.add(1, v.getId(), 0, contextContact.getRunDescription(getActivity()));
         menu.getItem(0).setOnMenuItemClickListener(this);
     }

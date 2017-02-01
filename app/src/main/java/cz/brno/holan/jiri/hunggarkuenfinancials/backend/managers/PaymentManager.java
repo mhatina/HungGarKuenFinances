@@ -34,6 +34,7 @@ import java.util.List;
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.Payment;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.PaymentsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.EntityTabManager;
 
@@ -54,6 +55,25 @@ public class PaymentManager extends BaseManager {
 
     public List<Payment> getPayments() {
         return mPayments;
+    }
+
+    public List<Payment> getPayments(String filter) {
+        String[] split = filter.split(" ");
+        ArrayList<Payment> list = new ArrayList<>();
+
+        for (Payment payment : mPayments) {
+            List<Member> members = MemberManager.getInstance().getMembers(split[0], split.length > 1 ? split[1] : null);
+            for (Member member : members) {
+                if (payment.getMemberIds().indexOf(member.getId()) != -1)
+                    list.add(payment);
+            }
+
+            if (list.indexOf(payment) == -1
+                    && ProductManager.getInstance().getProducts(filter).indexOf(payment.getProductId()) != -1) {
+                list.add(payment);
+            }
+        }
+        return list;
     }
 
     public void addPayment(Payment payment) {

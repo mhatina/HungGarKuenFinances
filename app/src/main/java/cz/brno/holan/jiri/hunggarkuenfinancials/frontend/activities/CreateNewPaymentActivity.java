@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
@@ -58,7 +59,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 public class CreateNewPaymentActivity extends CreateNewEntityActivity implements View.OnClickListener {
 
     private Date validUntil;
-    private ArrayList<Long> memberIds = new ArrayList<>();;
+    private ArrayList<Long> memberIds = new ArrayList<>();
     private long productId = -1;
 
     public CreateNewPaymentActivity() {
@@ -122,7 +123,7 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
         float discount = (1 - (payment.getPrice() / product.getPrice())) * 100;
         discountLayout.getEditText().setText(String.valueOf(discount + "%"));
 
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         dateButton.setText(format.format(payment.getValidUntil()));
 
         paidLayout.getEditText().setText(String.valueOf(payment.getPaid()));
@@ -201,22 +202,30 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
         if (price == -1 || paid == -1)
             return false;
 
-        Payment payment = PaymentManager.getInstance().createPayment(memberIds, product.getId());
+        Payment payment = null;
+        if (getIntent().hasExtra(Constant.EDIT_ENTITY)) {
+            payment = PaymentManager.getInstance().findPayment(getIntent().getLongExtra(Constant.EDIT_ENTITY, 0));
+            payment.setMemberIds(memberIds);
+            payment.setProductId(product.getId());
+        } else
+            payment = PaymentManager.getInstance().createPayment(memberIds, product.getId());
+
         payment.setPrice(price);
         payment.setPaid(paid);
         payment.setDiscount(discount);
         payment.setNote(note);
         payment.setCreated(new Date(System.currentTimeMillis()));
         try {
-            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             valid = format.parse(dateButton.getText().toString());
             payment.setValidUntil(valid);
         } catch (ParseException ex) {
             // valid-until date is not necessary
         }
 
+        if (!getIntent().hasExtra(Constant.EDIT_ENTITY))
+            PaymentManager.getInstance().addPayment(payment);
 
-        PaymentManager.getInstance().addPayment(payment);
         if (valid != null) {
             for (long id : memberIds) {
                 MemberManager manager = MemberManager.getInstance();
@@ -356,7 +365,7 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
                                 Button date = (Button) findViewById(R.id.create_new_payment_date);
                                 if (calendarView.getSelectedDate() != null) {
                                     validUntil = calendarView.getSelectedDate().getDate();
-                                    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+                                    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
                                     date.setText(format.format(validUntil));
                                 }

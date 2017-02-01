@@ -27,8 +27,22 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 
 public abstract class BaseManager implements DatabaseManager, ExportManager, ImportManager {
 
-    public BaseManager() {
+    protected int groupFilter;
 
+    public BaseManager() {
+        resetGroupFilter();
+    }
+
+    public int getGroupFilter() {
+        return groupFilter;
+    }
+
+    public void toggleGroupFilter(int groupFilter) {
+        this.groupFilter |= groupFilter;
+    }
+
+    public void resetGroupFilter() {
+        this.groupFilter = 0;
     }
 
     @Override

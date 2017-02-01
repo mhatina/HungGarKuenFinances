@@ -43,6 +43,7 @@ import java.util.List;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.Log;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.Utils;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Address;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Mail;
@@ -97,6 +98,11 @@ public class MemberManager extends BaseManager {
                 return filteredList;
 
             for (Member member : mMembers) {
+                if (groupFilter != 0
+                        && ((groupFilter & Utils.mapMemberClassToCode(member.getClass())) == 0
+                        || Boolean.compare(member.isBeginner(), false) != (groupFilter & Constant.BEGINNER_GROUP)))
+                    continue;
+
                 if (member.getSurname().toUpperCase().startsWith(filter1.toUpperCase()))
                     filteredList.add(member);
                 else if (member.getName().toUpperCase().startsWith(filter1.toUpperCase()))

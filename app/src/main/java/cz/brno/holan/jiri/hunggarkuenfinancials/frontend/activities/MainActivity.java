@@ -20,6 +20,7 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,24 +34,25 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.MenuPopupHelper;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
 import android.view.Display;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.leakcanary.LeakCanary;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.security.InvalidParameterException;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
@@ -74,9 +76,6 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.provider.SearchProvider
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    public static final String SIGNED_IN_AS = "signed_in_as";
-    public static final int MEMBER_CONTEXT_GROUP_ID = 0;
 
     public static boolean calledFirebasePersistence = false;
 
@@ -191,9 +190,7 @@ public class MainActivity extends AppCompatActivity
             final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
             viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-                }
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
                 @Override
                 public void onPageSelected(int position) {
@@ -201,9 +198,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 @Override
-                public void onPageScrollStateChanged(int state) {
-
-                }
+                public void onPageScrollStateChanged(int state) {}
             });
             init = true;
         }
@@ -248,17 +243,21 @@ public class MainActivity extends AppCompatActivity
                 MemberManager.getInstance().load();
                 ProductManager.getInstance().load();
                 PaymentManager.getInstance().load();
+                moveFloatingButton();
+
+                SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean("AdultFilter",     false);
+                editor.putBoolean("YoungsterFilter", false);
+                editor.putBoolean("JuniorFilter",    false);
+                editor.putBoolean("ChildFilter",     false);
+                editor.putBoolean("BeginnerFilter",  false);
+                editor.apply();
                 break;
             default:
 
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onEnterAnimationComplete() {
-        super.onEnterAnimationComplete();
-        moveFloatingButton();
     }
 
     private void setSignedInAs(Intent data) {
@@ -268,7 +267,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View view = navigationView.getHeaderView(0);
         TextView textView = (TextView) view.findViewById(R.id.drawer_sign_in_info);
-        textView.setText(data.getStringExtra(SIGNED_IN_AS));
+        textView.setText(data.getStringExtra(Constant.SIGNED_IN_AS));
     }
 
     @Override
@@ -308,6 +307,64 @@ public class MainActivity extends AppCompatActivity
                 return true;
             case R.id.action_settings:
                 return true;
+            case R.id.action_filter:
+                View menuItem = findViewById(R.id.action_filter);
+                PopupMenu popup = new PopupMenu(this, menuItem);
+                MenuInflater inflater = popup.getMenuInflater();
+
+                inflater.inflate(R.menu.filter, popup.getMenu());
+
+                try {
+                    Field field = popup.getClass().getDeclaredField("mPopup");
+                    field.setAccessible(true);
+                    MenuPopupHelper popupHelper = (MenuPopupHelper) field.get(popup);
+                    popupHelper.setForceShowIcon(true);
+                } catch (IllegalAccessException e) {
+                    return false;
+                } catch (NoSuchFieldException e) {
+                    return false;
+                }
+
+                final MenuItem adult = popup.getMenu().findItem(R.id.type_adult);
+                final MenuItem youngster = popup.getMenu().findItem(R.id.type_youngster);
+                final MenuItem junior = popup.getMenu().findItem(R.id.type_junior);
+                final MenuItem child = popup.getMenu().findItem(R.id.type_child);
+                final MenuItem beginner = popup.getMenu().findItem(R.id.type_beginner);
+
+                SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+
+                adult.setChecked(sharedPref.getBoolean("AdultFilter", false));
+                youngster.setChecked(sharedPref.getBoolean("YoungsterFilter", false));
+                junior.setChecked(sharedPref.getBoolean("JuniorFilter", false));
+                child.setChecked(sharedPref.getBoolean("ChildFilter", false));
+                beginner.setChecked(sharedPref.getBoolean("BeginnerFilter", false));
+
+
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        item.setChecked(!item.isChecked());
+
+                        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+                        item.setActionView(new View(getBaseContext()));
+                        return false;
+                    }
+                });
+                popup.setOnDismissListener(new PopupMenu.OnDismissListener() {
+                    @Override
+                    public void onDismiss(PopupMenu menu) {
+                        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putBoolean("AdultFilter",     adult.isChecked());
+                        editor.putBoolean("YoungsterFilter", youngster.isChecked());
+                        editor.putBoolean("JuniorFilter",    junior.isChecked());
+                        editor.putBoolean("ChildFilter",     child.isChecked());
+                        editor.putBoolean("BeginnerFilter",  beginner.isChecked());
+                        editor.apply();
+                    }
+                });
+
+                popup.show();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -372,7 +429,7 @@ public class MainActivity extends AppCompatActivity
             menu.setHeaderTitle(product.getName());
         }
 
-        menu.removeGroup(MemberDetailDialog.MEMBER_DETAIL_CONTEXT_GROUP_ID);
+        menu.removeGroup(Constant.MEMBER_DETAIL_CONTEXT_GROUP_ID);
         menu.add(0, v.getId(), 0, R.string.edit);
         menu.add(0, v.getId(), 0, R.string.delete);
     }
@@ -393,6 +450,7 @@ public class MainActivity extends AppCompatActivity
             } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
                 showDeleteDialog(R.string.delete_product_title, R.string.sure_to_delete_product);
             }
+            moveFloatingButton();
         } else {
             return false;
         }
@@ -485,6 +543,25 @@ public class MainActivity extends AppCompatActivity
                             ProductManager.getInstance().getProducts(query)));
     }
 
+    private void filterPaymentList(String query) {
+        ListView listView = getPaymentListView();
+        if (listView != null) {
+            listView.setAdapter(
+                    new PaymentsAdapter(
+                            this,
+                            R.layout.layout_payment,
+                            PaymentManager.getInstance().getPayments(query)
+                    )
+            );
+        }
+    }
+
+    private void filterEntities(String newText) {
+        filterMemberList(newText);
+        filterProductList(newText);
+        filterPaymentList(newText);
+    }
+
     private class OnSearchTextListener implements SearchView.OnQueryTextListener {
 
         @Override
@@ -494,9 +571,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public boolean onQueryTextChange(String newText) {
-            filterMemberList(newText);
-            filterProductList(newText);
-            // TODO filter payment
+            filterEntities(newText);
             return true;
         }
     }

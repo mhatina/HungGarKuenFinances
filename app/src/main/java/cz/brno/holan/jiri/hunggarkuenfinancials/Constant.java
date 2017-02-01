@@ -18,12 +18,17 @@ public class Constant {
 
     public static final String EDIT_ENTITY = "EDIT_ENTITY";
     public static final String PREFILLED_ENTITY = "PREFILLED_ENTITY";
+    public static final String SIGNED_IN_AS = "signed_in_as";
+
+    public static final int MEMBER_CONTEXT_GROUP_ID = 0;
+    public static final int MEMBER_DETAIL_CONTEXT_GROUP_ID = 1;
 
     public static final int NUMBER_OF_GROUPS = 4;
     public static final int ADULT_GROUP     = 1;
     public static final int YOUNGSTER_GROUP = 1 << 1;
     public static final int JUNIOR_GROUP    = 1 << 2;
     public static final int CHILD_GROUP     = 1 << 3;
+    public static final int BEGINNER_GROUP  = 1 << 4;
 
     public static final int NAME_SWITCH         = 1;
     public static final int SURNAME_SWITCH      = NAME_SWITCH << 1;
