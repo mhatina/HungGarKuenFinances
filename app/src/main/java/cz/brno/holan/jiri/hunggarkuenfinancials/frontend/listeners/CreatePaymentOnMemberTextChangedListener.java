@@ -67,9 +67,7 @@ public class CreatePaymentOnMemberTextChangedListener implements TextWatcher {
         List<Member> members = null;
 
         if (splitLast.length != 0)
-            members = MemberManager.getInstance().getMembers(splitLast[0],
-                splitLast.length != 1 ? splitLast[splitLast.length - 1] : null);
-
+            members = MemberManager.getInstance().getMembers(splitLast);
 
         if (members != null && members.size() != 0) {
             member = members.get(0);

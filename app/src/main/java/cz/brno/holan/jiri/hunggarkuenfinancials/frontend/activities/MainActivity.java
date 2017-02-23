@@ -17,6 +17,7 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -54,6 +55,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.security.InvalidParameterException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.Log;
@@ -124,11 +128,11 @@ public class MainActivity extends AppCompatActivity
         final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 
         if (viewPager.getCurrentItem() == Constant.MEMBER_LIST_INDEX) {
-            empty = MemberManager.getInstance().getMembers().isEmpty();
+            empty = MemberManager.getInstance().isShownMembersEmpty();
         } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
-            empty = PaymentManager.getInstance().getPayments().isEmpty();
+            empty = PaymentManager.getInstance().isShownPaymentsEmpty();
         } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
-            empty = ProductManager.getInstance().getProducts().isEmpty();
+            empty = ProductManager.getInstance().isShownMembersEmpty();
         }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -361,6 +365,8 @@ public class MainActivity extends AppCompatActivity
                         editor.putBoolean("ChildFilter",     child.isChecked());
                         editor.putBoolean("BeginnerFilter",  beginner.isChecked());
                         editor.apply();
+
+                        filterEntities(null);
                     }
                 });
 
@@ -521,8 +527,49 @@ public class MainActivity extends AppCompatActivity
         return EntityTabManager.getInstance().getProductList();
     }
 
+    private void filterEntities(String newText) {
+        applyAllGroupFilters();
+
+        filterMemberList(newText);
+        filterProductList(newText);
+        filterPaymentList(newText);
+
+        moveFloatingButton();
+    }
+
+    private void applyAllGroupFilters() {
+        resetGroupFilters();
+
+        applyGroupFilterOnManager("AdultFilter", Constant.ADULT_GROUP);
+        applyGroupFilterOnManager("YoungsterFilter", Constant.YOUNGSTER_GROUP);
+        applyGroupFilterOnManager("JuniorFilter", Constant.JUNIOR_GROUP);
+        applyGroupFilterOnManager("ChildFilter", Constant.CHILD_GROUP);
+        applyGroupFilterOnManager("BeginnerFilter", Constant.BEGINNER_GROUP);
+    }
+
+    private void resetGroupFilters() {
+        MemberManager.getInstance().resetGroupFilter();
+        ProductManager.getInstance().resetGroupFilter();
+        PaymentManager.getInstance().resetGroupFilter();
+    }
+
+    private void applyGroupFilterOnManager(String preference, int groupCode) {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);;
+        if (sharedPref.getBoolean(preference, false)) {
+            MemberManager.getInstance().toggleGroupFilter(groupCode);
+            ProductManager.getInstance().toggleGroupFilter(groupCode);
+            PaymentManager.getInstance().toggleGroupFilter(groupCode);
+        }
+    }
+
     private void filterMemberList(String query) {
-        String[] split = query.split(" ");
+        List<Member> members;
+        if (query != null) {
+            String[] split = query.split(" ");
+            members = MemberManager.getInstance().getMembers(split);
+        } else {
+            members = MemberManager.getInstance().getMembers();
+        }
 
         ListView listView = getMemberListView();
         if (listView != null)
@@ -530,7 +577,7 @@ public class MainActivity extends AppCompatActivity
                     new MembersAdapter(
                             this,
                             R.layout.layout_member,
-                            MemberManager.getInstance().getMembers(split[0], split.length > 1 ? split[1] : null)));
+                            members));
     }
 
     private void filterProductList(String query) {
@@ -546,20 +593,20 @@ public class MainActivity extends AppCompatActivity
     private void filterPaymentList(String query) {
         ListView listView = getPaymentListView();
         if (listView != null) {
+            List<Payment> payments;
+            if (query == null)
+                payments = PaymentManager.getInstance().getPayments();
+            else
+                payments = PaymentManager.getInstance().getPayments(query.split(" "));
+
             listView.setAdapter(
                     new PaymentsAdapter(
                             this,
                             R.layout.layout_payment,
-                            PaymentManager.getInstance().getPayments(query)
+                            payments
                     )
             );
         }
-    }
-
-    private void filterEntities(String newText) {
-        filterMemberList(newText);
-        filterProductList(newText);
-        filterPaymentList(newText);
     }
 
     private class OnSearchTextListener implements SearchView.OnQueryTextListener {

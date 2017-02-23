@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.Utils;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.OneTimeOnly;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Periodic;
@@ -40,6 +41,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.EntityTabManag
 
 public class ProductManager extends BaseManager {
     private ArrayList<Product> mProducts;
+    private ArrayList<Product> mShownProducts;
     private long newProductId;
 
     private static ProductManager ourInstance = new ProductManager();
@@ -50,37 +52,42 @@ public class ProductManager extends BaseManager {
 
     private ProductManager() {
         mProducts = new ArrayList<>();
+        mShownProducts = new ArrayList<>();
         getDatabaseReference().keepSynced(true);
     }
 
-    public List<Product> getProducts(String filter) {
-        if (filter == null)
-            return mProducts;
+    public List<Product> getProducts(String... filter) {
+        Utils.copyContent(mShownProducts, mProducts);
+        groupFilter &= Constant.BEGINNER_GROUP - 1;
 
-        List<Product> list = new ArrayList<>();
-        if (filter.isEmpty())
-            return list;
-        for (Product product : mProducts) {
-            if (product.getName().toUpperCase().startsWith(filter.toUpperCase())
-                || String.valueOf(product.getPrice()).startsWith(filter))
-                list.add(product);
+        String singleFilter = filter != null && filter.length != 0 ? filter[0] : null;
+        for (int i = mProducts.size() - 1; i >= 0; i--) {
+            Product product = mProducts.get(i);
+            if (groupFilter != 0 && (groupFilter & product.getGroup()) == 0)
+                mShownProducts.remove(product);
+            else if (singleFilter == null)
+                ;
+            else if (!product.getName().toUpperCase().startsWith(singleFilter.toUpperCase())
+                && !String.valueOf(product.getPrice()).startsWith(singleFilter))
+                mShownProducts.remove(product);
         }
 
-        return list;
+        return mShownProducts;
     }
 
     public List<Product> getProducts(int groups) {
-        List<Product> list = new ArrayList<>();
+        mShownProducts.clear();
+
         for (Product product : mProducts) {
             if ((product.getGroup() & groups) > 0)
-                list.add(product);
+                mShownProducts.add(product);
         }
 
-        return list;
+        return mShownProducts;
     }
 
-    public List<Product> getProducts() {
-        return getProducts(null);
+    public boolean isShownMembersEmpty() {
+        return mShownProducts.isEmpty();
     }
 
     public void addProduct(Product product) {
@@ -142,6 +149,7 @@ public class ProductManager extends BaseManager {
     @Override
     public void load() {
         mProducts.clear();
+        mShownProducts.clear();
 
         getDatabaseReference().addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -177,6 +185,7 @@ public class ProductManager extends BaseManager {
     private void loadProduct(DataSnapshot postSnapshot, Class<?> productClass) {
         Product product = (Product) postSnapshot.getValue(productClass);
         mProducts.add(product);
+        mShownProducts.add(product);
     }
 
     @Override

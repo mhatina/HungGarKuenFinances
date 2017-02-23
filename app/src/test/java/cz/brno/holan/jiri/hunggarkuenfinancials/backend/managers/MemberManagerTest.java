@@ -41,11 +41,11 @@ public class MemberManagerTest {
 
     @Test
     public void getMembersFilter() throws Exception {
-        assertNotNull(manager.getMembers("name", null));
-        assertTrue(manager.getMembers("name", null).size() > 0);
+        assertNotNull(manager.getMembers("name"));
+        assertTrue(manager.getMembers("name").size() > 0);
 
-        assertNotNull(manager.getMembers("surname", null));
-        assertTrue(manager.getMembers("surname", null).size() > 0);
+        assertNotNull(manager.getMembers("surname"));
+        assertTrue(manager.getMembers("surname").size() > 0);
 
         assertNotNull(manager.getMembers("name", "surname"));
         assertTrue(manager.getMembers("name", "surname").size() > 0);

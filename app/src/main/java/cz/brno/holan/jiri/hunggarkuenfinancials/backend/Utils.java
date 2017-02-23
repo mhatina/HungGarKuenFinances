@@ -19,9 +19,12 @@
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Adult;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Child;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Junior;
@@ -37,17 +40,22 @@ import static cz.brno.holan.jiri.hunggarkuenfinancials.Constant.YOUNGSTER_GROUP;
 
 public class Utils {
 
-    public static int mapMemberClassToCode(Class<?> _class) {
-        if (_class.equals(Adult.class))
+    public static int mapMemberClassToCode(Member member) {
+        if (member instanceof Adult)
             return ADULT_GROUP;
-        if (_class.equals(Youngster.class))
+        if (member instanceof Youngster)
             return YOUNGSTER_GROUP;
-        if (_class.equals(Junior.class))
+        if (member instanceof Junior)
             return JUNIOR_GROUP;
-        if (_class.equals(Child.class))
+        if (member instanceof Child)
             return CHILD_GROUP;
 
         return 0;
+    }
+
+    public static <T extends BaseEntity> void copyContent(Collection<T> destination, Collection<T> source) {
+        destination.clear();
+        destination.addAll(source);
     }
 
     public static List<Long> getMemberIdsFromString(String members, List<Long> memberIds) {
@@ -64,7 +72,7 @@ public class Utils {
                 if (memberSplit.length == 0)
                     continue;
 
-                List<Member> list = MemberManager.getInstance().getMembers(memberSplit[0], memberSplit.length > 1 ? memberSplit[1] : null);
+                List<Member> list = MemberManager.getInstance().getMembers(memberSplit);
                 if (list.isEmpty())
                     continue;
                 Member member = list.get(0);
@@ -77,7 +85,7 @@ public class Utils {
         int groups = 0;
         for (long id : memberIds) {
             Member member = MemberManager.getInstance().findMember(id);
-            groups |= Utils.mapMemberClassToCode(member.getClass());
+            groups |= Utils.mapMemberClassToCode(member);
             String toReplace = member.getName() + " " + member.getSurname();
             members = members.replace(toReplace, "");
         }
@@ -89,11 +97,11 @@ public class Utils {
                 if (memberSplit.length == 0)
                     continue;
 
-                List<Member> list = MemberManager.getInstance().getMembers(memberSplit[0], memberSplit.length > 1 ? memberSplit[1] : null);
+                List<Member> list = MemberManager.getInstance().getMembers(memberSplit);
                 if (list.isEmpty())
                     continue;
                 Member member = list.get(0);
-                groups |= Utils.mapMemberClassToCode(member.getClass());
+                groups |= Utils.mapMemberClassToCode(member);
             }
         return groups;
     }

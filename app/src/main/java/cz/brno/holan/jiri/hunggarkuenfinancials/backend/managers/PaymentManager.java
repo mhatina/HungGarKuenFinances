@@ -40,6 +40,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.EntityTabManag
 
 public class PaymentManager extends BaseManager {
     private ArrayList<Payment> mPayments;
+    private ArrayList<Payment> mShownPayments;
     private long newPaymentId;
 
     private static PaymentManager ourInstance = new PaymentManager();
@@ -50,30 +51,29 @@ public class PaymentManager extends BaseManager {
 
     private PaymentManager() {
         mPayments = new ArrayList<>();
+        mShownPayments = new ArrayList<>();
         getDatabaseReference().keepSynced(true);
     }
 
-    public List<Payment> getPayments() {
-        return mPayments;
-    }
-
-    public List<Payment> getPayments(String filter) {
-        String[] split = filter.split(" ");
-        ArrayList<Payment> list = new ArrayList<>();
+    public List<Payment> getPayments(String... filter) {
+        mShownPayments.clear();
 
         for (Payment payment : mPayments) {
-            List<Member> members = MemberManager.getInstance().getMembers(split[0], split.length > 1 ? split[1] : null);
-            for (Member member : members) {
+            for (Member member : MemberManager.getInstance().getMembers(filter)) {
                 if (payment.getMemberIds().indexOf(member.getId()) != -1)
-                    list.add(payment);
+                    mShownPayments.add(payment);
             }
 
-            if (list.indexOf(payment) == -1
+            if (mShownPayments.indexOf(payment) == -1
                     && ProductManager.getInstance().getProducts(filter).indexOf(payment.getProductId()) != -1) {
-                list.add(payment);
+                mShownPayments.add(payment);
             }
         }
-        return list;
+        return mShownPayments;
+    }
+
+    public boolean isShownPaymentsEmpty() {
+        return mShownPayments.isEmpty();
     }
 
     public void addPayment(Payment payment) {
@@ -109,6 +109,7 @@ public class PaymentManager extends BaseManager {
     @Override
     public void load() {
         mPayments.clear();
+        mShownPayments.clear();
 
         getDatabaseReference().addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -120,6 +121,7 @@ public class PaymentManager extends BaseManager {
                             for (DataSnapshot postSnapshot : dataSnapshot.child(Payment.class.getSimpleName()).getChildren()) {
                                 Payment payment = postSnapshot.getValue(Payment.class);
                                 mPayments.add(payment);
+                                mShownPayments.add(payment);
                             }
 
                         ListView paymentList = EntityTabManager.getInstance().getPaymentList();

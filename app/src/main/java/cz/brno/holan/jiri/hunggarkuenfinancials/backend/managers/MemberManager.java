@@ -60,6 +60,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.EntityTabManag
 
 public class MemberManager extends BaseManager {
     private ArrayList<Member> mMembers;
+    private ArrayList<Member> mShownMembers;
     private long newMemberId;
 
     private static MemberManager ourInstance = null;
@@ -72,86 +73,76 @@ public class MemberManager extends BaseManager {
 
     protected MemberManager() {
         mMembers = new ArrayList<>();
+        mShownMembers = new ArrayList<>();
         getDatabaseReference().keepSynced(true);
     }
 
-    /**
-     * Get all members
-     *
-     * @return list of all members
-     */
-    public List<Member> getMembers() {
-        return getMembers(null, null);
-    }
+    public List<Member> getMembers(String... filters) {
+        Utils.copyContent(mShownMembers, mMembers);
 
-    /**
-     * Get all/filtered members
-     *
-     * @param filter1 first name/surname filter
-     * @param filter2 second name/surname filter, aplied after the filter1 was aplied
-     * @return all or filtered members
-     */
-    public List<Member> getMembers(String filter1, String filter2) {
-        if (filter1 != null) {
-            ArrayList<Member> filteredList = new ArrayList<>();
-            if (filter1.isEmpty())
-                return filteredList;
+        for (int i = mMembers.size() - 1; i >= 0; i--) {
+            Member member = mShownMembers.get(i);
+            if (isMemberGroupFilteredOut(member)) {
+                mShownMembers.remove(member);
+                continue;
+            } else if (filters == null || filters.length == 0)
+                continue;
 
-            for (Member member : mMembers) {
-                if (groupFilter != 0
-                        && ((groupFilter & Utils.mapMemberClassToCode(member.getClass())) == 0
-                        || Boolean.compare(member.isBeginner(), false) != (groupFilter & Constant.BEGINNER_GROUP)))
-                    continue;
-
-                if (member.getSurname().toUpperCase().startsWith(filter1.toUpperCase()))
-                    filteredList.add(member);
-                else if (member.getName().toUpperCase().startsWith(filter1.toUpperCase()))
-                    filteredList.add(member);
+            for (String filter : filters) {
+                if (filter.isEmpty())
+                    mShownMembers.remove(member);
+                else if (!member.getSurname().toUpperCase().startsWith(filter.toUpperCase())
+                        && !member.getName().toUpperCase().startsWith(filter.toUpperCase()))
+                    mShownMembers.remove(member);
             }
-
-            if (filter2 != null) {
-                if (filter2.isEmpty())
-                    return filteredList;
-                for (int i = filteredList.size() - 1; i >= 0; i--) {
-                    if (!filteredList.get(i).getSurname().toUpperCase().startsWith(filter2.toUpperCase())
-                            && !filteredList.get(i).getName().toUpperCase().startsWith(filter2.toUpperCase()))
-                        filteredList.remove(i);
-                }
-            }
-
-            Collections.sort(filteredList, new FilterComparator());
-
-            return filteredList;
-        } else {
-            Collections.sort(mMembers, new MemberComparator());
-            return mMembers;
         }
+
+        Collections.sort(mShownMembers, new FilterComparator());
+        return mShownMembers;
     }
 
-    /**
-     * Create member
-     *
-     * @param type       type of member
-     * @param name       first name of member
-     * @param surname    surname of member
-     * @param birth_date date of birth of member
-     * @return newly created member
-     */
-    public Member createMember(int type, String name, String surname, Date birth_date) {
+    private boolean isMemberGroupFilteredOut(Member member) {
+        if (groupFilter == 0) {
+            return false;
+        } else if (isMemberInDesiredGroup(member)) {
+            return isBeginnerFilterOn() && !member.isBeginner();
+        } else if (isBeginnerFilterOn() && member.isBeginner())
+            return false;
+
+        return true;
+    }
+
+    private boolean isBeginnerFilterOn() {
+        return ((groupFilter & Constant.BEGINNER_GROUP) != 0);
+    }
+
+    private boolean isMemberInDesiredGroup(Member member) {
+        return (filterStrippedOfBeginnerGroup() & Utils.mapMemberClassToCode(member)) != 0;
+    }
+
+    private int filterStrippedOfBeginnerGroup() {
+        return groupFilter & (Constant.BEGINNER_GROUP - 1);
+    }
+
+    public boolean isShownMembersEmpty() {
+        return mShownMembers.isEmpty();
+    }
+
+    public Member createMember(int type, String name, String surname, Date birthDate) {
         newMemberId++;
         getDatabaseReference().child("id").setValue(newMemberId);
 
         switch (type) {
             case Adult.ICON_PATH:
-                return new Adult(newMemberId, name, surname, birth_date);
+                return new Adult(newMemberId, name, surname, birthDate);
             case Youngster.ICON_PATH:
-                return new Youngster(newMemberId, name, surname, birth_date);
+                return new Youngster(newMemberId, name, surname, birthDate);
             case Junior.ICON_PATH:
-                return new Junior(newMemberId, name, surname, birth_date);
+                return new Junior(newMemberId, name, surname, birthDate);
             case Child.ICON_PATH:
-                return new Child(newMemberId, name, surname, birth_date);
+                return new Child(newMemberId, name, surname, birthDate);
             default:
-                return new Member(newMemberId, name, surname, birth_date);
+                return new Member(newMemberId, name, surname, birthDate);
         }
     }
 
@@ -228,6 +219,7 @@ public class MemberManager extends BaseManager {
     @Override
     public void load() {
         mMembers.clear();
+        mShownMembers.clear();
 
         getDatabaseReference().addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -270,6 +262,7 @@ public class MemberManager extends BaseManager {
 
         member.updateStatus();
         mMembers.add(member);
+        mShownMembers.add(member);
     }
 
     @Override
