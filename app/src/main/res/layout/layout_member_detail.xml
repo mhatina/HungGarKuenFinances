@@ -55,6 +55,14 @@
                 android:text="Joined on:"
                 android:textSize="20sp" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:text="Paid until:"
+                android:textSize="20sp" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -78,6 +86,13 @@
                 android:text="Unknown"
                 android:textSize="20sp" />
 
+            <TextView
+                android:id="@+id/member_detail_paid_until"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Unknown"
+                android:textSize="20sp" />
 
         </LinearLayout>
 

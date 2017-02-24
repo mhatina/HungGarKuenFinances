@@ -75,6 +75,7 @@ public class MemberDetailDialog extends DialogFragment implements MenuItem.OnMen
         TextView surname = (TextView) view.findViewById(R.id.member_layout_surname);
         TextView birthDate = (TextView) view.findViewById(R.id.member_detail_date_of_birth);
         TextView joinDate = (TextView) view.findViewById(R.id.member_detail_date_of_joining);
+        TextView paidUntil = (TextView) view.findViewById(R.id.member_detail_paid_until);
         TextView note = (TextView) view.findViewById(R.id.member_detail_note);
 
         contactList.setAdapter(
@@ -95,6 +96,8 @@ public class MemberDetailDialog extends DialogFragment implements MenuItem.OnMen
         if (member.getBirthDate() != null)
             birthDate.setText(formatter.format(member.getBirthDate()));
         joinDate.setText(formatter.format(member.getJoinedDate()));
+        if (member.getPaidUntil() != null)
+            paidUntil.setText(formatter.format(member.getPaidUntil()));
         note.setText(member.getNote());
 
         registerForContextMenu(contactList);
@@ -123,7 +126,6 @@ public class MemberDetailDialog extends DialogFragment implements MenuItem.OnMen
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         AdapterView.AdapterContextMenuInfo adapterMenuInfo = (AdapterView.AdapterContextMenuInfo) menuInfo;
         ListView contactList = (ListView) view.findViewById(R.id.member_detail_contact_list);
-        ;
 
         contextContact = (Contact) contactList.getItemAtPosition(adapterMenuInfo.position);
         menu.setHeaderTitle(contextContact.getNote());
