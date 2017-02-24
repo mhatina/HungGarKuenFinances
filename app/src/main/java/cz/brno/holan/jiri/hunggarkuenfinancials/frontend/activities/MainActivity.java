@@ -427,7 +427,8 @@ public class MainActivity extends AppCompatActivity
         } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
             Payment payment;
             mContextEntity = payment = (Payment) getPaymentListView().getItemAtPosition(adapterMenuInfo.position);
-            String header = ProductManager.getInstance().findProduct(payment.getProductId()).getName();
+            Product product = ProductManager.getInstance().findProduct(payment.getProductId());
+            String header = product != null ? product.getName() : getResources().getString(R.string.payment_id_deleted);
             menu.setHeaderTitle(header);
         } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
             Product product;
@@ -494,17 +495,14 @@ public class MainActivity extends AppCompatActivity
 
                         if (mContextEntity instanceof Member) {
                             MemberManager.getInstance().deleteMember((Member) mContextEntity);
-                            ((MembersAdapter) getMemberListView().getAdapter()).notifyDataSetChanged();
-                            mContextEntity = null;
                         } else if (mContextEntity instanceof Product) {
                             ProductManager.getInstance().deleteProduct((Product) mContextEntity);
-                            ((ProductsAdapter) getProductListView().getAdapter()).notifyDataSetChanged();
-                            mContextEntity = null;
                         } else if (mContextEntity instanceof Payment) {
                             PaymentManager.getInstance().deletePayment((Payment) mContextEntity);
-                            ((PaymentsAdapter) getPaymentListView().getAdapter()).notifyDataSetChanged();
-                            mContextEntity = null;
                         }
+
+                        refreshEntities(false);
+                        mContextEntity = null;
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -525,6 +523,24 @@ public class MainActivity extends AppCompatActivity
 
     public ListView getProductListView() {
         return EntityTabManager.getInstance().getProductList();
+    }
+
+    private void refreshEntities(boolean refreshAll) {
+        if (!refreshAll) {
+            refreshIndividually(mContextEntity);
+        } else
+            filterEntities(null);
+    }
+
+    private void refreshIndividually(BaseEntity entity) {
+        if (entity instanceof Member)
+            filterMemberList(null);
+        else if (entity instanceof Product)
+            filterProductList(null);
+        else if (entity instanceof Payment)
+            filterPaymentList(null);
+
+        moveFloatingButton();
     }
 
     private void filterEntities(String newText) {

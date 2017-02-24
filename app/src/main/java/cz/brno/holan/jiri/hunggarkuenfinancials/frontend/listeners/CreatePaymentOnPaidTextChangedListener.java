@@ -23,11 +23,16 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
+import java.util.Locale;
+
+import cz.brno.holan.jiri.hunggarkuenfinancials.R;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
+
 public class CreatePaymentOnPaidTextChangedListener implements TextWatcher {
-    private EditText owns;
+    private TextInputLayout owns;
     private EditText price;
 
-    public CreatePaymentOnPaidTextChangedListener(EditText owns, EditText price) {
+    public CreatePaymentOnPaidTextChangedListener(TextInputLayout owns, EditText price) {
         this.owns = owns;
         this.price = price;
     }
@@ -44,8 +49,14 @@ public class CreatePaymentOnPaidTextChangedListener implements TextWatcher {
 
         float payed = Float.valueOf(charSequence.toString());
         float price = Float.valueOf(this.price.getText().toString());
+        float result = price - payed;
 
-        owns.setText(String.format("%.2f", price - payed));
+        if (result < 0) {
+            owns.setHint(owns.getContext().getResources().getString(R.string.payment_change));
+            result *= -1;
+        } else
+            owns.setHint(owns.getContext().getResources().getString(R.string.payment_owns));
+        owns.getEditText().setText(String.format(Locale.getDefault(), "%.2f", result));
     }
 
     @Override

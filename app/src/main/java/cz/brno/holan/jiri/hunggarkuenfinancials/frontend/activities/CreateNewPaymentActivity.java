@@ -162,7 +162,7 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
         discountLayout.getEditText().addTextChangedListener(discountListener);
         priceLayout.getEditText().addTextChangedListener(priceListener);
         payedLayout.getEditText().addTextChangedListener(
-                new CreatePaymentOnPaidTextChangedListener(ownsLayout.getEditText(), priceLayout.getEditText()));
+                new CreatePaymentOnPaidTextChangedListener(ownsLayout, priceLayout.getEditText()));
 
         memberButton.setOnClickListener(this);
         productButton.setOnClickListener(this);
@@ -211,7 +211,7 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
             payment = PaymentManager.getInstance().createPayment(memberIds, product.getId());
 
         payment.setPrice(price);
-        payment.setPaid(paid);
+        payment.setPaid(paid > price ? price : paid);
         payment.setDiscount(discount);
         payment.setNote(note);
         payment.setCreated(new Date(System.currentTimeMillis()));

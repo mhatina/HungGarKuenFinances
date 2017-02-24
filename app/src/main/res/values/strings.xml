@@ -100,6 +100,8 @@
     <string name="sure_to_delete_payment">Are you sure you want to delete payment?</string>
     <string name="payment_fully_paid_for">Fully paid for</string>
     <string name="payment_still_owns">Still owns</string>
+    <string name="payment_owns">Owns</string>
+    <string name="payment_change">Change</string>
 
     <!-- tab titles -->
     <string name="members_title">Members</string>
