@@ -110,13 +110,13 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
         }
 
         if (members.isEmpty())
-            members = getResources().getString(R.string.payment_id_deleted);
+            members = getResources().getString(R.string.deleted);
 
         setTitle("Edit payment");
 
         membersLayout.getEditText().setText(members);
         productLayout.getEditText().setText(product == null
-                ? getResources().getString(R.string.payment_id_deleted)
+                ? getResources().getString(R.string.deleted)
                 : product.getName());
         priceLayout.getEditText().setText(String.valueOf(product.getPrice()));
 

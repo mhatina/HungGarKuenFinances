@@ -17,7 +17,6 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -55,9 +54,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.security.InvalidParameterException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.Log;
@@ -73,7 +70,6 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ProductManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.PaymentsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ProductsAdapter;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.MemberDetailDialog;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.EntityTabsFragment;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.EntityTabManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.provider.SearchProvider;
@@ -428,7 +424,7 @@ public class MainActivity extends AppCompatActivity
             Payment payment;
             mContextEntity = payment = (Payment) getPaymentListView().getItemAtPosition(adapterMenuInfo.position);
             Product product = ProductManager.getInstance().findProduct(payment.getProductId());
-            String header = product != null ? product.getName() : getResources().getString(R.string.payment_id_deleted);
+            String header = product != null ? product.getName() : getResources().getString(R.string.deleted);
             menu.setHeaderTitle(header);
         } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
             Product product;

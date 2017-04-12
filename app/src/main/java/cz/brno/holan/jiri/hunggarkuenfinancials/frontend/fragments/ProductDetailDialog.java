@@ -69,13 +69,13 @@ public class ProductDetailDialog extends DialogFragment {
         TextView detail = (TextView) view.findViewById(R.id.product_layout_detail);
         TextView price = (TextView) view.findViewById(R.id.product_layout_price);
         TextView note = (TextView) view.findViewById(R.id.product_detail_note);
-        TextView valid_for = (TextView) view.findViewById(R.id.product_detail_valid_for);
+        TextView validFor = (TextView) view.findViewById(R.id.product_detail_valid_for);
         LinearLayout groups = (LinearLayout) view.findViewById(R.id.product_detail_groups);
 
         name.setText(product.getName());
         if (product instanceof Periodic) {
             String perWeek = String.valueOf(((Periodic) product).getPerWeek());
-            perWeek += view.getContext().getString(R.string.week);
+            perWeek += "/" + view.getContext().getString(R.string.week);
             detail.setText(perWeek);
         } else {
             String stock = view.getContext().getString(R.string.in_stock, String.valueOf(((OneTimeOnly) product).getStock()));
@@ -84,8 +84,8 @@ public class ProductDetailDialog extends DialogFragment {
         price.setText(view.getContext().getString(R.string.currency, String.valueOf(product.getPrice())));
         note.setText(product.getNote());
 
-        String[] validity_periods = getResources().getStringArray(R.array.validity_periods);
-        valid_for.setText(product.getValidTime() + " " + validity_periods[product.getValidGroup()]);
+        String[] validityPeriods = getResources().getStringArray(R.array.validity_periods);
+        validFor.setText(product.getValidTime() + " " + validityPeriods[product.getValidGroup()]);
 
         int group = Constant.ADULT_GROUP;
         for (int i = 0; i < Constant.NUMBER_OF_GROUPS; i++) {

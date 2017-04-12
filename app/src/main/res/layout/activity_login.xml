@@ -20,34 +20,34 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/colorPrimaryDark"
+              android:gravity="center_horizontal"
               android:orientation="vertical"
-              android:weightSum="4"
-              android:gravity="center_horizontal">
+              android:weightSum="4">
 
-        <TextView
-            android:id="@+id/title_text"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="100dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/welcome_message"
-            android:gravity="center"
-            android:textColor="@android:color/white"
-            android:textSize="36sp" />
+    <TextView
+        android:id="@+id/title_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="100dp"
+        android:gravity="center"
+        android:text="@string/welcome_message"
+        android:textColor="@android:color/white"
+        android:textSize="36sp"/>
 
-        <com.google.android.gms.common.SignInButton
-            android:layout_marginTop="100dp"
-            android:id="@+id/sign_in_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="visible" />
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:visibility="visible"/>
 
-        <Button
-            android:layout_marginTop="100dp"
-            android:id="@+id/disconnect_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/disconnect"
-            android:theme="@style/ThemeOverlay.MyDarkButton" />
+    <Button
+        android:id="@+id/disconnect_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="@string/disconnect"
+        android:theme="@style/ThemeOverlay.MyDarkButton"/>
 
 </LinearLayout>

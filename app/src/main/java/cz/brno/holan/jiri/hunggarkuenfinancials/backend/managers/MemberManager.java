@@ -77,6 +77,28 @@ public class MemberManager extends BaseManager {
         getDatabaseReference().keepSynced(true);
     }
 
+    public String getMemberNamesByIds(List<Long> memberIds) throws Exception {
+        String members = "";
+        for (long id : memberIds) {
+            MemberManager manager = MemberManager.getInstance();
+            Member member = manager.findMember(id);
+
+            if (member == null)
+                continue;
+
+            members += member.getName() + " " + member.getSurname();
+
+            if (id != memberIds.get(memberIds.size() - 1))
+                members += ", ";
+        }
+
+        if (members.isEmpty())
+            // TODO own exception
+            throw new Exception();
+
+        return members;
+    }
+
     public List<Member> getMembers(String... filters) {
         Utils.copyContent(mShownMembers, mMembers);
 

@@ -40,7 +40,7 @@
     <string name="signed_in">Signed in</string>
     <string name="signing_in">Signing in…</string>
     <string name="signed_out">Signed out</string>
-    <string name="signed_in_err">"Error: please check logs."</string>
+    <string name="signed_in_err">Error: please check logs.</string>
     <string name="sing_in">Sign in</string>
     <string name="sign_out">Sign out</string>
     <string name="disconnect">Disconnect</string>
@@ -85,7 +85,7 @@
     <string name="pay">Pay</string>
 
     <!-- product related -->
-    <string name="week">/week</string>
+    <string name="week">week</string>
     <string name="in_stock">%s in stock</string>
     <string name="new_product_name_hint">Product name</string>
     <string name="new_product_price_hint">Price</string>
@@ -102,6 +102,7 @@
     <string name="payment_still_owns">Still owns</string>
     <string name="payment_owns">Owns</string>
     <string name="payment_change">Change</string>
+    <string name="payment_details_title">Payment details</string>
 
     <!-- tab titles -->
     <string name="members_title">Members</string>
@@ -118,10 +119,6 @@
     <string name="save">Save</string>
     <string name="currency">%s CZK</string>
     <string name="dismiss">Dismiss</string>
-
-
-    <string name="firebase_status_fmt">Firebase User: %s</string>
-    <string name="google_status_fmt">Google User: %s</string>
     <string name="filter">Filter</string>
-    <string name="payment_id_deleted">Deleted</string>
+    <string name="deleted">Deleted</string>
 </resources>

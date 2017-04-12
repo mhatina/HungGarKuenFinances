@@ -18,6 +18,7 @@
 package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +27,10 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.Payment;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Product;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ProductManager;
@@ -43,8 +44,9 @@ public class PaymentsAdapter extends ArrayAdapter<Payment> {
         super(context, resource, items);
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         ViewHolder viewHolder;
 
         if (convertView == null) {
@@ -62,39 +64,23 @@ public class PaymentsAdapter extends ArrayAdapter<Payment> {
         Payment payment = getItem(position);
 
         if (payment != null) {
-            String members = "";
-            List<Long> memberIds = payment.getMemberIds();
+            String members = null;
             String owns = convertView.getResources().getString(R.string.payment_fully_paid_for);
-            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy HH:mm");
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault());
             Product product = ProductManager.getInstance().findProduct(payment.getProductId());
 
-            for (long id : memberIds) {
-                MemberManager manager = MemberManager.getInstance();
-                Member member = manager.findMember(id);
-
-                if (member == null)
-                    continue;
-
-                members += member.getName() + " " + member.getSurname();
-
-                if (id != memberIds.get(memberIds.size() - 1))
-                    members += ", ";
+            try {
+                members = MemberManager.getInstance().getMemberNamesByIds(payment.getMemberIds());
+            } catch (Exception e) {
+                members = convertView.getResources().getString(R.string.deleted);
             }
-
-            if (members.isEmpty())
-                members = convertView.getResources().getString(R.string.payment_id_deleted);
-
             if (payment.getPrice() != payment.getPaid()) {
-                owns = convertView.getResources().getString(R.string.payment_still_owns)
-                        + " "
-                        + convertView.getResources().getString(R.string.currency, String.valueOf(payment.getPrice() - payment.getPaid()));
+                owns = convertView.getResources().getString(R.string.payment_still_owns) + " " + convertView.getResources().getString(R.string.currency, String.valueOf(payment.getPrice() - payment.getPaid()));
             }
 
             viewHolder.members.setText(members);
             viewHolder.paidPrice.setText(convertView.getResources().getString(R.string.currency, String.valueOf(payment.getPaid())));
-            viewHolder.product.setText(product == null
-                    ? convertView.getResources().getString(R.string.payment_id_deleted)
-                    : product.getName());
+            viewHolder.product.setText(product == null ? convertView.getResources().getString(R.string.deleted) : product.getName());
             viewHolder.owns.setText(owns);
             viewHolder.created.setText(format.format(payment.getCreated()));
         }
@@ -102,7 +88,7 @@ public class PaymentsAdapter extends ArrayAdapter<Payment> {
         return convertView;
     }
 
-    public class ViewHolder {
+    private class ViewHolder {
         public TextView members;
         public TextView paidPrice;
         public TextView product;

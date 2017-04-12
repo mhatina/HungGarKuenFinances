@@ -36,6 +36,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.PaymentsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ProductsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.MemberListOnItemClickListener;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.PaymentListOnItemClickListener;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.ProductListOnItemClickListener;
 
 public class EntityTabManager {
@@ -92,6 +93,7 @@ public class EntityTabManager {
         }
         if (mPaymentList == null) {
             mPaymentList = prepareTabObject(context, container, new PaymentsAdapter(context, R.layout.layout_payment, PaymentManager.getInstance().getPayments()));
+            mPaymentList.setOnItemClickListener(new PaymentListOnItemClickListener(mPaymentList, context.getFragmentManager()));
 
             final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) mPaymentList.getParent();
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

@@ -71,7 +71,7 @@ public class ProductsAdapter extends ArrayAdapter<Product> {
             viewHolder.price.setText(getContext().getString(R.string.currency, String.valueOf(product.getPrice())));
             if (product instanceof Periodic) {
                 String perWeek = String.valueOf(((Periodic) product).getPerWeek());
-                perWeek += getContext().getString(R.string.week);
+                perWeek += "/" + getContext().getString(R.string.week);
                 viewHolder.detail.setText(perWeek);
             } else {
                 String stock = getContext().getString(R.string.in_stock, String.valueOf(((OneTimeOnly) product).getStock()));
