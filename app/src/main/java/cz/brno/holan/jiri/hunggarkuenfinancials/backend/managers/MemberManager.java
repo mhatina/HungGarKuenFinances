@@ -40,9 +40,11 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.Log;
+import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.Utils;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Address;
@@ -168,34 +170,16 @@ public class MemberManager extends BaseManager {
         }
     }
 
-    /**
-     * Add new member
-     *
-     * @param member new member
-     */
     public void addMember(Member member) {
         mMembers.add(member);
         upload(member);
     }
 
-
-    /**
-     * Delete member
-     *
-     * @param member member to remove
-     */
     public void deleteMember(Member member) {
         mMembers.remove(member);
         delete(member);
     }
 
-
-    /**
-     * Replace oldMember with newMember, copying ID and contact manager of old
-     *
-     * @param oldMember member who is about to be deleted
-     * @param newMember new member
-     */
     public void replaceMember(Member oldMember, Member newMember) {
         newMember.setId(oldMember.getId());
         newMember.setContactManager(oldMember.getContactManager());
@@ -204,12 +188,6 @@ public class MemberManager extends BaseManager {
         addMember(newMember);
     }
 
-    /**
-     * Find member by id
-     *
-     * @param id member's id
-     * @return member with given id
-     */
     public Member findMember(long id) {
         if (id < 0)
             return null;
@@ -359,8 +337,8 @@ public class MemberManager extends BaseManager {
     }
 
     @Override
-    public String importDescription() {
-        return "Import members";
+    public int importDescription() {
+        return R.string.import_members;
     }
 
     @Override
@@ -369,7 +347,7 @@ public class MemberManager extends BaseManager {
         String mimeType = context.getContentResolver().getType(uri);
 
         if (mimeType == null || !mimeType.contains("text")) {
-            Log.warning(context, new InvalidParameterException("File should be a csv or txt."));
+            Log.warning(context, new InvalidParameterException(context.getString(R.string.csv_txt_error)));
             return;
         }
 
@@ -379,7 +357,7 @@ public class MemberManager extends BaseManager {
             if (inputStream != null) {
                 reader = new BufferedReader(new InputStreamReader(inputStream));
             } else {
-                throw new NullPointerException("Cannot open file: " + uri.getPath());
+                throw new NullPointerException(context.getString(R.string.cannot_open_file, uri.getPath()));
             }
 
             SimpleDateFormat dateFormat;
@@ -398,7 +376,7 @@ public class MemberManager extends BaseManager {
                 else if (line.contains("\t"))
                     split = line.split("\t");
                 else
-                    Log.warning(context, new InvalidParameterException("No tabulator or ';' found in file."));
+                    Log.warning(context, new InvalidParameterException(context.getString(R.string.no_delimeter_found)));
 
                 if (split.length == 0)
                     continue;
@@ -491,7 +469,7 @@ public class MemberManager extends BaseManager {
         s = addYearToDate(s);
         s = extendYearToFullLength(s);
         for (String format : formats) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+            SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault());
 
             try {
                 return dateFormat.parse(s);

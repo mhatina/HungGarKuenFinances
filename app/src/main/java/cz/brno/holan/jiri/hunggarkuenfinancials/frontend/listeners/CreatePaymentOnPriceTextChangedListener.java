@@ -22,6 +22,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 
 public class CreatePaymentOnPriceTextChangedListener implements TextWatcher {
@@ -58,7 +59,7 @@ public class CreatePaymentOnPriceTextChangedListener implements TextWatcher {
             try {
                 price = Float.valueOf(charSequence.toString());
             } catch (NumberFormatException ex) {
-                this.price.setError("Incorrect price");
+                this.price.setError(this.price.getResources().getString(R.string.incorrect_price));
             }
             discount = (1 - (price / defaultPrice)) * 100;
         }

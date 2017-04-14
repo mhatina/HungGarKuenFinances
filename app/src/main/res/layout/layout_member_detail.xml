@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                android:text="Joined on:"
+                android:text="@string/joined_on"
                 android:textSize="20sp" />
 
             <TextView
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                android:text="Paid until:"
+                android:text="@string/paid_until"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -75,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Unknown"
+                android:text="@string/unknown"
                 android:textSize="20sp" />
 
             <TextView
@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Unknown"
+                android:text="@string/unknown"
                 android:textSize="20sp" />
 
             <TextView
@@ -91,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Unknown"
+                android:text="@string/unknown"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -106,7 +106,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Note"
+        android:text="@string/note"
         android:textSize="20sp" />
 
     <TextView

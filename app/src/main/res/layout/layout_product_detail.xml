@@ -41,7 +41,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Valid for"
+            android:text="@string/valid_for"
             android:textSize="20sp" />
 
         <TextView
@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:text="Indefinite"
+            android:text="@string/indefinite"
             android:textSize="20sp" />
 
     </LinearLayout>
@@ -71,7 +71,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Note"
+        android:text="@string/note"
         android:textSize="20sp" />
 
     <TextView

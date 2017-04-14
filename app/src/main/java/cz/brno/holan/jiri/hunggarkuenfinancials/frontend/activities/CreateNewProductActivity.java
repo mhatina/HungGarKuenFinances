@@ -38,7 +38,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Produc
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ProductManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 
-public class CreateNewProductActivity extends CreateNewEntityActivity implements ImageButton.OnClickListener {
+public class  CreateNewProductActivity extends CreateNewEntityActivity implements ImageButton.OnClickListener {
 
     public CreateNewProductActivity() {
         super(R.layout.layout_product_new);
@@ -243,7 +243,7 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
 
         if (toggle) {
             if (button.getId() == R.id.create_new_product_periodic) {
-                textView.setText("Times a week");
+                textView.setText(R.string.times_week);
                 numberPicker.setMinValue(1);
                 numberPicker.setMaxValue(7);
             }
@@ -251,7 +251,7 @@ public class CreateNewProductActivity extends CreateNewEntityActivity implements
             button.setColorFilter(null);
         } else {
             if (button.getId() == R.id.create_new_product_periodic) {
-                textView.setText("In stock");
+                textView.setText(R.string.stock);
                 numberPicker.setMinValue(0);
                 numberPicker.setMaxValue(1000);
             }

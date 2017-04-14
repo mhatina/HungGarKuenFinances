@@ -17,9 +17,6 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities;
 
-/**
- * Created by mhatina on 04/10/16.
- */
 public class BaseEntity {
     private long id;
 

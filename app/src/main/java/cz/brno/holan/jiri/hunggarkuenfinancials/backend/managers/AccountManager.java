@@ -21,13 +21,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-/**
- * Created by mhatina on 25/08/16.
- */
 public class AccountManager {
-    static final String PREFERENCES_USERNAME = "username";
+    private static final String PREFERENCES_USERNAME = "username";
 
-    static SharedPreferences getAccountManager(Context ctx) {
+    private static SharedPreferences getAccountManager(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx);
     }
 

@@ -19,7 +19,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
               android:orientation="vertical"
               android:padding="10dp"
               android:background="?android:attr/activatedBackgroundIndicator"
@@ -29,14 +29,14 @@
         android:id="@+id/create_new_payment_list_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Name"
+        android:hint="@string/name"
         android:textSize="25sp"/>
 
     <TextView
         android:id="@+id/create_new_payment_list_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Detail"
+        android:hint="@string/detail"
         android:textColor="@color/blue_grey_600"
         android:textSize="15sp"/>
 

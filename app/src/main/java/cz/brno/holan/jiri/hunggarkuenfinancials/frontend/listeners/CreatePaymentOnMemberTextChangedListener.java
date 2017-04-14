@@ -23,6 +23,7 @@ import android.text.TextWatcher;
 
 import java.util.List;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
@@ -73,7 +74,7 @@ public class CreatePaymentOnMemberTextChangedListener implements TextWatcher {
             member = members.get(0);
             inputLayout.setError(null);
         } else
-            inputLayout.setError("No such member");
+            inputLayout.setError(inputLayout.getResources().getString(R.string.no_member));
 
         if (member != null) {
             String textToSet = "";

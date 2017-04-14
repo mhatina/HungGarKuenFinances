@@ -21,9 +21,6 @@ import java.util.Date;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 
-/**
- * Created by mhatina on 3/9/16.
- */
 public class Junior extends Member {
 
     public static final int ICON_PATH = R.drawable.junior_icon;

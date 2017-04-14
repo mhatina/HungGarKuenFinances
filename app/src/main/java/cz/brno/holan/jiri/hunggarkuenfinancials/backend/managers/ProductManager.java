@@ -239,7 +239,7 @@ public class ProductManager extends BaseManager {
     }
 
     @Override
-    public String importDescription() {
-        return null;
+    public int importDescription() {
+        return 0;
     }
 }

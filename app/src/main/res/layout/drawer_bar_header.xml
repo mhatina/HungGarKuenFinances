@@ -38,7 +38,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hung Gar Kuen"
+        android:text="@string/app_name"
         android:textSize="30sp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
@@ -46,7 +46,7 @@
         android:id="@+id/drawer_sign_in_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="signed_in_as"
+        android:text=""
         android:paddingBottom="5dp"
         android:textSize="14sp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />

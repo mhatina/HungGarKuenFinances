@@ -58,11 +58,6 @@ public abstract class CreateNewEntityActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.create_new, menu);
         return true;

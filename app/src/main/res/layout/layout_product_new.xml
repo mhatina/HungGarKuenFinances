@@ -65,7 +65,7 @@
                 android:id="@+id/create_new_product_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Times a week"
+                android:text="@string/times_week"
                 android:gravity="center"/>
 
             <NumberPicker
@@ -144,7 +144,7 @@
                 android:id="@+id/create_new_product_valid_time_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Valid for"
+                android:hint="@string/valid_for"
                 android:inputType="number"
                 android:nextFocusDown="@+id/create_new_product_price_text"/>
         </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
@@ -190,7 +190,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="top"
-            android:hint="Note"
+            android:hint="@string/note"
             android:lines="5"
             android:maxLength="512"/>
     </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>

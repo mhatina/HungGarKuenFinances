@@ -17,9 +17,6 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.enums;
 
-/**
- * Created by mhatina on 26/08/16.
- */
 public enum MemberStatus {
     DUE_WITH_PAYMENT(0),
     PAYMENT_IMMINENT(1),

@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
+import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Product;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ProductManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
@@ -85,7 +86,7 @@ public class CreatePaymentOnProductTextChangedListener implements TextWatcher {
             product = products.get(0);
             inputLayout.setError(null);
         } else
-            inputLayout.setError("No such product");
+            inputLayout.setError(inputLayout.getResources().getString(R.string.no_product));
 
         if (product != null) {
             String textToSet = product.getName();
@@ -112,7 +113,7 @@ public class CreatePaymentOnProductTextChangedListener implements TextWatcher {
 
     private String getValidUntilStr(int time, int group) {
         if (time == -1)
-            return "Not specified";
+            return inputLayout.getResources().getString(R.string.date_not_specified);
 
         Calendar calendar = Calendar.getInstance();
 

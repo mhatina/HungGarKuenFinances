@@ -22,6 +22,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 
 public class CreatePaymentOnDiscountChangedListener implements TextWatcher {
@@ -56,7 +57,7 @@ public class CreatePaymentOnDiscountChangedListener implements TextWatcher {
         try {
             percent = (Float.valueOf(str) / 100f);
         } catch (NumberFormatException ex) {
-            discount.setError("Incorrect discount");
+            discount.setError(discount.getResources().getString(R.string.discount_error));
         }
         if (percent > 1.0f) {
             percent = 1.0f;

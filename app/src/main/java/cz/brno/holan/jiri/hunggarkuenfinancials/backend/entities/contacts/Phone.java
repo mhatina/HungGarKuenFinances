@@ -17,9 +17,12 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 
@@ -52,6 +55,9 @@ public class Phone extends Contact {
     public void run(Context context) {
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:" + getContent()));
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         context.startActivity(callIntent);
     }
 }

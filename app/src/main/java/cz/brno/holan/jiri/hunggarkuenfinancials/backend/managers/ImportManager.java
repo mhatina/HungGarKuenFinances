@@ -8,5 +8,5 @@ import java.io.IOException;
 public interface ImportManager {
 
     void importFromFile(Context context, Uri uri) throws IOException;
-    String importDescription();
+    int importDescription();
 }

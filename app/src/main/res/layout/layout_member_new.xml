@@ -109,7 +109,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:paddingTop="8dp"
-                android:text="Joined on:" />
+                android:text="@string/joined_on" />
 
         </LinearLayout>
 
@@ -247,7 +247,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="top"
-            android:hint="Note"
+            android:hint="@string/note"
             android:lines="4"
             android:maxLength="512" />
     </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
@@ -276,7 +276,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0"
             android:layout_gravity="center"
-            android:text="New" />
+            android:text="@string/new_button" />
 
     </LinearLayout>
 

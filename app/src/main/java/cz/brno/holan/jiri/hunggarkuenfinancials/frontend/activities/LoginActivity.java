@@ -127,7 +127,7 @@ public class LoginActivity extends AppCompatActivity implements
             } else {
                 // Google Sign In failed, update UI appropriately
                 updateUI(null);
-                cz.brno.holan.jiri.hunggarkuenfinancials.Log.error(this, "Failed to log in",
+                cz.brno.holan.jiri.hunggarkuenfinancials.Log.error(this, getString(R.string.failed_login),
                         new GoogleAuthException("Log in error: " + result.getStatus().getStatusCode()));
             }
         } else if (requestCode == Constant.SIGN_IN_CODE) {
@@ -152,7 +152,7 @@ public class LoginActivity extends AppCompatActivity implements
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            Toast.makeText(LoginActivity.this, R.string.failed_auth,
                                     Toast.LENGTH_SHORT).show();
                         }
                         hideProgressDialog();
@@ -195,7 +195,7 @@ public class LoginActivity extends AppCompatActivity implements
         // An unresolvable error has occurred and Google APIs (including Sign-In) will not
         // be available.
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
-        Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.gplay_service_error, Toast.LENGTH_SHORT).show();
     }
 
     @Override

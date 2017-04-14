@@ -21,9 +21,6 @@ import java.util.Date;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 
-/**
- * Created by mhatina on 05/10/16.
- */
 public class Youngster extends Member {
 
     public static final int ICON_PATH = R.drawable.youngster_icon;

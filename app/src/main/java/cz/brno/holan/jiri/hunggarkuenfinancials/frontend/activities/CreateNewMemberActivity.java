@@ -42,6 +42,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.Log;
@@ -215,9 +216,7 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
             field.setAccessible(true);
             MenuPopupHelper popupHelper = (MenuPopupHelper) field.get(popup);
             popupHelper.setForceShowIcon(true);
-        } catch (IllegalAccessException e) {
-            return;
-        } catch (NoSuchFieldException e) {
+        } catch (IllegalAccessException | NoSuchFieldException e) {
             return;
         }
 
@@ -280,7 +279,7 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
     }
 
     private Date verifyDate(int dayResource, int monthResource, int yearResource, boolean required) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         TextInputLayout dayText = (TextInputLayout) findViewById(dayResource);
         TextInputLayout monthText = (TextInputLayout) findViewById(monthResource);
         TextInputLayout yearText = (TextInputLayout) findViewById(yearResource);
@@ -349,7 +348,6 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
         setEditTextContent(yearLayout, String.format("%tY", date));
     }
 
-    @NonNull
     private void setEditTextContent(TextInputLayout layout, String content) {
         getEditText(layout).setText(content);
     }

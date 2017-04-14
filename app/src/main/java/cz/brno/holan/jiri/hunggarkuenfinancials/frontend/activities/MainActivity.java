@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity
                     startActivityForResult(new Intent(v.getContext(), activity), Constant.NEW_ENTITY_CODE);
                 } else {
                     Log.warning(getBaseContext(),
-                            new InvalidParameterException("Cannot open activity for creation of new entity."));
+                            new InvalidParameterException(getString(R.string.activity_error)));
                 }
             }
         });
@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity
                         ProductManager.getInstance().importFromFile(this, uri);
                     }
                 } catch (IOException e) {
-                    throw new NullPointerException("Cannot open file: " + uri.getPath());
+                    throw new NullPointerException(getResources().getString(R.string.cannot_open_file, uri.getPath()));
                 }
             case Constant.EDIT_ENTITY_CODE:
             case Constant.NEW_ENTITY_CODE:
@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity
                     getProductListView().setAdapter(new ProductsAdapter(this, R.layout.layout_product, ProductManager.getInstance().getProducts()));
                 } else {
                     // todo create own exception
-                    Log.warning(getBaseContext(), new Exception("Cannot refresh list."));
+                    Log.warning(getBaseContext(), new Exception(getString(R.string.refresh_list_error)));
                 }
                 break;
             case Constant.SIGN_IN_CODE:
@@ -301,7 +301,7 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.action_import:
-                FileUtils.showFileChooser(this, MemberManager.getInstance().importDescription());
+                FileUtils.showFileChooser(this, getResources().getString(MemberManager.getInstance().importDescription()));
                 return true;
             case R.id.action_export:
                 return true;

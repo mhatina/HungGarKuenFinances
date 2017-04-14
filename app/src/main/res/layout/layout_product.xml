@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:text="Product name"
+            android:text="@string/product_name"
             android:textSize="30sp" />
 
         <LinearLayout
@@ -55,7 +55,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="detail"
+            android:text="@string/detail"
             android:textSize="20sp" />
 
         <TextView
@@ -64,7 +64,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Product price"
+            android:text="@string/new_product_price_hint"
             android:textSize="20sp"
             />
 

@@ -46,7 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:hint="Address"
+                android:hint="@string/address"
                 android:textSize="20sp" />
         </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
 
@@ -61,7 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:hint="Note"
+                android:hint="@string/note"
                 android:textSize="15sp" />
         </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
 

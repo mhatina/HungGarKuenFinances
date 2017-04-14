@@ -32,9 +32,6 @@ import java.util.List;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 
-/**
- * Created by mhatina on 24/08/16.
- */
 public class MembersAdapter extends ArrayAdapter<Member> {
 
     public MembersAdapter(Context context, int resource, List<Member> items) {

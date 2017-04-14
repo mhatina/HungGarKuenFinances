@@ -39,7 +39,7 @@
                 android:id="@+id/create_new_payment_member_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Member name"
+                android:hint="@string/member_name"
                 android:inputType="textPersonName"
                 android:nextFocusDown="@+id/create_new_payment_product_text"/>
         </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
@@ -69,7 +69,7 @@
                 android:id="@+id/create_new_payment_product_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Product name"
+                android:hint="@string/product_name"
                 android:inputType="textPersonName"
                 android:nextFocusDown="@+id/create_new_payment_price_text"/>
         </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
@@ -95,14 +95,14 @@
             android:layout_height="match_parent"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:text="Valid until"
+            android:text="@string/valid_until"
             android:gravity="center"/>
 
         <Button
             android:id="@+id/create_new_payment_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Not specified"
+            android:text="@string/date_not_specified"
             android:gravity="top|center_horizontal"
             style="?android:attr/borderlessButtonStyle"
             android:minHeight="0dip"
@@ -130,7 +130,7 @@
                 android:id="@+id/create_new_payment_price_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Price"
+                android:hint="@string/new_product_price_hint"
                 android:inputType="numberDecimal"
                 android:nextFocusDown="@+id/create_new_member_surname_text"/>
         </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
@@ -147,7 +147,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="end"
-                android:hint="Discount"
+                android:hint="@string/discount"
                 android:inputType="numberDecimal"
                 android:nextFocusDown="@+id/create_new_member_surname_text"/>
         </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
@@ -168,7 +168,7 @@
                 android:id="@+id/create_new_payment_paid_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Paid"
+                android:hint="@string/paid_capital"
                 android:inputType="numberDecimal"/>
         </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
 
@@ -182,7 +182,7 @@
                 android:id="@+id/create_new_payment_owns_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Owns"
+                android:hint="@string/payment_owns"
                 android:clickable="false"
                 android:cursorVisible="false"
                 android:focusable="false"
@@ -209,7 +209,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="top"
-            android:hint="Note"
+            android:hint="@string/note"
             android:lines="6"
             android:maxLength="512"/>
     </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>

@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.SparseBooleanArray;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -54,6 +55,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.CreatePayment
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.CreatePaymentOnPaidTextChangedListener;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.CreatePaymentOnPriceTextChangedListener;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.CreatePaymentOnProductTextChangedListener;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.EntitySelectionView;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 
 public class CreateNewPaymentActivity extends CreateNewEntityActivity implements View.OnClickListener {
@@ -71,7 +73,7 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
         TextInputLayout discountLayout = (TextInputLayout) findViewById(R.id.create_new_payment_discount);
         discountLayout.getEditText().setText(String.valueOf(0 + "%"));
 
-        setTitle("New payment");
+        setTitle(getString(R.string.new_payment_title));
 
         Member member;
         if (getIntent().hasExtra(Constant.PREFILLED_ENTITY)) {
@@ -112,7 +114,7 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
         if (members.isEmpty())
             members = getResources().getString(R.string.deleted);
 
-        setTitle("Edit payment");
+        setTitle(getString(R.string.edit_payment_title));
 
         membersLayout.getEditText().setText(members);
         productLayout.getEditText().setText(product == null
@@ -258,7 +260,7 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
         try {
             f = Float.valueOf(str);
         } catch (NumberFormatException ex) {
-            layout.setError("Incorrect format");
+            layout.setError(getString(R.string.incorrect_format));
             return -1;
         }
         return f;
@@ -267,92 +269,106 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
     @Override
     public void onClick(View view) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final EntitySelectionView selection = new EntitySelectionView(builder.getContext());
+
         switch (view.getId()) {
-            case R.id.create_new_payment_member_list:
+            case R.id.create_new_payment_member_list: {
                 List<Member> members = MemberManager.getInstance().getMembers();
                 Collections.sort(members, new MemberAlphabeticComparator());
                 CreatePaymentMembersAdapter adapter = new CreatePaymentMembersAdapter(this,
                         R.layout.layout_payment_new_list_item,
                         members);
 
+                selection.setAdapter(adapter);
 
-                final ListView memberList = new ListView(this);
-                memberList.setAdapter(adapter);
-                memberList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+                builder.setMessage(R.string.member_details_title).setView(selection.getView());
 
-                builder.setMessage(R.string.member_details_title)
-                        .setView(memberList)
-                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
+                final AlertDialog dialog = builder.create();
+                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+                selection.setOnPositiveButtonClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        TextInputLayout memberLayout = (TextInputLayout) findViewById(R.id.create_new_payment_member);
+                        SparseBooleanArray checked = selection.getListView().getCheckedItemPositions();
+                        String text = "";
+
+                        memberIds.clear();
+                        for (int index = 0; index < checked.size(); index++)
+                            if (checked.valueAt(index)) {
+                                if (!text.isEmpty())
+                                    text += ", ";
+
+                                Member member = (Member) selection.getListView().getItemAtPosition(checked.keyAt(index));
+                                text += member.getName() + " " + member.getSurname();
+                                memberIds.add(member.getId());
                             }
-                        })
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                TextInputLayout memberLayout = (TextInputLayout) findViewById(R.id.create_new_payment_member);
-                                SparseBooleanArray checked = memberList.getCheckedItemPositions();
-                                String text = "";
+                        memberLayout.getEditText().setText(text);
+                        memberLayout.getEditText().setSelection(0);
+                        dialog.dismiss();
+                    }
+                });
+                selection.setOnNegativeButtonClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
 
-                                memberIds.clear();
-                                for (int index = 0; index < checked.size(); index++)
-                                    if (checked.valueAt(index)) {
-                                        if (!text.isEmpty())
-                                            text += ", ";
-
-                                        Member member = (Member) memberList.getItemAtPosition(checked.keyAt(index));
-                                        text += member.getName() + " " + member.getSurname();
-                                        memberIds.add(member.getId());
-                                    }
-                                memberLayout.getEditText().setText(text);
-                                memberLayout.getEditText().setSelection(0);
-                            }
-                        });
-                builder.show();
+                dialog.show();
                 break;
-            case R.id.create_new_payment_product_list:
+            }
+            case R.id.create_new_payment_product_list: {
                 TextInputLayout memberLayout = (TextInputLayout) findViewById(R.id.create_new_payment_member);
                 int groups = Utils.getGroupsFromMemberString(memberLayout.getEditText().getText().toString(), memberIds);
 
-                final CreatePaymentProductsAdapter productsAdapter = new CreatePaymentProductsAdapter(this,
+                final CreatePaymentProductsAdapter adapter = new CreatePaymentProductsAdapter(this,
                         R.layout.layout_payment_new_list_item,
                         ProductManager.getInstance().getProducts(groups));
 
-                final ListView productList = new ListView(this);
-                productList.setAdapter(productsAdapter);
-                productList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+                selection.setAdapter(adapter);
+                selection.getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
-                builder.setMessage(R.string.product_details_title)
-                        .setView(productList)
-                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                TextInputLayout productLayout = (TextInputLayout) findViewById(R.id.create_new_payment_product);
-                                Product product = (Product) productList.getItemAtPosition(productList.getCheckedItemPosition());
-                                if (product == null) {
-                                    dialogInterface.dismiss();
-                                    return;
-                                }
-                                productId = product.getId();
+                builder.setMessage(R.string.member_details_title).setView(selection.getView());
 
-                                productLayout.getEditText().setText(product.getName());
-                                productLayout.getEditText().setSelection(0);
-                            }
-                        });
-                builder.show();
+                final AlertDialog dialog = builder.create();
+                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+                builder.setMessage(R.string.product_details_title).setView(selection.getView());
+
+                selection.setOnNegativeButtonClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+                selection.setOnPositiveButtonClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        TextInputLayout productLayout = (TextInputLayout) findViewById(R.id.create_new_payment_product);
+                        Product product = (Product) selection.getListView()
+                                .getItemAtPosition(selection.getListView().getCheckedItemPosition());
+                        if (product == null) {
+                            dialog.dismiss();
+                            return;
+                        }
+                        productId = product.getId();
+
+                        productLayout.getEditText().setText(product.getName());
+                        productLayout.getEditText().setSelection(0);
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
                 break;
+            }
             case R.id.create_new_payment_date:
                 final View datePicker = View.inflate(this, R.layout.date_picker, null);
                 final MaterialCalendarView calendarView = (MaterialCalendarView) datePicker.findViewById(R.id.calendar_view);
                 if (validUntil != null)
                     calendarView.setSelectedDate(validUntil);
 
-                builder.setMessage("Choose a date")
+                builder.setMessage(R.string.choose_date)
                         .setView(datePicker)
                         .setNegativeButton(R.string.hide, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
