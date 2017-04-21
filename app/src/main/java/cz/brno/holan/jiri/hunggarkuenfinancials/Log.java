@@ -26,6 +26,14 @@ import android.widget.Toast;
 import com.google.firebase.crash.FirebaseCrash;
 
 public class Log {
+    public static void info(Context context, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+    }
+
+    public static void info(Context context, int stringResource) {
+        Toast.makeText(context, context.getString(stringResource), Toast.LENGTH_LONG).show();
+    }
+
     public static void warning(Context context, Throwable exception) {
         Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
         FirebaseCrash.report(exception);
@@ -34,8 +42,8 @@ public class Log {
     public static void error(Context context, String title, Throwable exception) {
         new AlertDialog.Builder(context)
                 .setTitle(title)
-                .setMessage(exception.getMessage() + "\n" + context.getString(R.string.report))
-                .setNegativeButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+                .setMessage(exception.getMessage() + "\n" + context.getString(R.string.report_by_connecting))
+                .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }

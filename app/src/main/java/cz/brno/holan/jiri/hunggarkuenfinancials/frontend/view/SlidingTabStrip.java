@@ -21,7 +21,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -43,24 +42,21 @@ class SlidingTabStrip extends LinearLayout {
     private final int mSelectedIndicatorThickness;
     private final Paint mSelectedIndicatorPaint;
 
-    private final int mDefaultBottomBorderColor;
-
     private final Paint mDividerPaint;
     private final float mDividerHeight;
 
-    private int mSelectedPosition;
-    private float mSelectionOffset;
+    private final int mSelectedPosition;
+    private final float mSelectionOffset;
 
-    private SlidingTabLayout.TabColorizer mCustomTabColorizer;
+    private final SlidingTabLayout.TabColorizer mCustomTabColorizer;
     private final SimpleTabColorizer mDefaultTabColorizer;
 
     SlidingTabStrip(Context context) {
-        this(context, null);
-    }
-
-    SlidingTabStrip(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        super(context, null);
         setWillNotDraw(false);
+
+        mSelectedPosition = 0;
+        mSelectionOffset = 0;
 
         final float density = getResources().getDisplayMetrics().density;
 
@@ -68,17 +64,18 @@ class SlidingTabStrip extends LinearLayout {
         context.getTheme().resolveAttribute(android.R.attr.colorForeground, outValue, true);
         final int themeForegroundColor =  outValue.data;
 
-        mDefaultBottomBorderColor = setColorAlpha(themeForegroundColor,
+        int defaultBottomBorderColor = setColorAlpha(themeForegroundColor,
                 DEFAULT_BOTTOM_BORDER_COLOR_ALPHA);
 
         mDefaultTabColorizer = new SimpleTabColorizer();
-        mDefaultTabColorizer.setIndicatorColors(DEFAULT_SELECTED_INDICATOR_COLOR);
+        mDefaultTabColorizer.setIndicatorColors();
         mDefaultTabColorizer.setDividerColors(setColorAlpha(themeForegroundColor,
                 DEFAULT_DIVIDER_COLOR_ALPHA));
+        mCustomTabColorizer = mDefaultTabColorizer;
 
-        mBottomBorderThickness = (int) (DEFAULT_BOTTOM_BORDER_THICKNESS_DIPS * density);
+                mBottomBorderThickness = (int) (DEFAULT_BOTTOM_BORDER_THICKNESS_DIPS * density);
         mBottomBorderPaint = new Paint();
-        mBottomBorderPaint.setColor(mDefaultBottomBorderColor);
+        mBottomBorderPaint.setColor(defaultBottomBorderColor);
 
         mSelectedIndicatorThickness = (int) (SELECTED_INDICATOR_THICKNESS_DIPS * density);
         mSelectedIndicatorPaint = new Paint();
@@ -86,31 +83,6 @@ class SlidingTabStrip extends LinearLayout {
         mDividerHeight = DEFAULT_DIVIDER_HEIGHT;
         mDividerPaint = new Paint();
         mDividerPaint.setStrokeWidth((int) (DEFAULT_DIVIDER_THICKNESS_DIPS * density));
-    }
-
-    void setCustomTabColorizer(SlidingTabLayout.TabColorizer customTabColorizer) {
-        mCustomTabColorizer = customTabColorizer;
-        invalidate();
-    }
-
-    void setSelectedIndicatorColors(int... colors) {
-        // Make sure that the custom colorizer is removed
-        mCustomTabColorizer = null;
-        mDefaultTabColorizer.setIndicatorColors(colors);
-        invalidate();
-    }
-
-    void setDividerColors(int... colors) {
-        // Make sure that the custom colorizer is removed
-        mCustomTabColorizer = null;
-        mDefaultTabColorizer.setDividerColors(colors);
-        invalidate();
-    }
-
-    void onViewPagerPageChanged(int position, float positionOffset) {
-        mSelectedPosition = position;
-        mSelectionOffset = positionOffset;
-        invalidate();
     }
 
     @Override
@@ -188,8 +160,8 @@ class SlidingTabStrip extends LinearLayout {
             return mDividerColors[position % mDividerColors.length];
         }
 
-        void setIndicatorColors(int... colors) {
-            mIndicatorColors = colors;
+        void setIndicatorColors() {
+            mIndicatorColors = new int[] {SlidingTabStrip.DEFAULT_SELECTED_INDICATOR_COLOR};
         }
 
         void setDividerColors(int... colors) {

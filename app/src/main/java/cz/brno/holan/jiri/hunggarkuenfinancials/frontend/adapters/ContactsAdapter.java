@@ -18,6 +18,7 @@
 package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,20 +32,15 @@ import java.util.List;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Contact;
 
-/**
- * Created by mhatina on 06/09/16.
- */
 public class ContactsAdapter  extends ArrayAdapter<Contact> {
-    public ContactsAdapter(Context context, int resource) {
-        super(context, resource);
-    }
 
     public ContactsAdapter(Context context, int resource, List<Contact> objects) {
         super(context, resource, objects);
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         ViewHolder viewHolder;
 
         if (convertView == null) {
@@ -71,14 +67,14 @@ public class ContactsAdapter  extends ArrayAdapter<Contact> {
     }
 
     @Override
-    public void sort(Comparator<? super Contact> comparator) {
+    public void sort(@NonNull Comparator<? super Contact> comparator) {
         super.sort(comparator);
     }
 
     public class ViewHolder {
-        public TextView contact;
-        public TextView note;
-        public ImageView type;
+        public final TextView contact;
+        public final TextView note;
+        public final ImageView type;
 
         ViewHolder(View view) {
             contact = (TextView) view.findViewById(R.id.contact_content);

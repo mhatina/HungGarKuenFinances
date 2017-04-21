@@ -27,8 +27,8 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.MemberDetailD
 
 public class MemberListOnItemClickListener implements AdapterView.OnItemClickListener {
 
-    ListView memberList;
-    FragmentManager fragmentManager;
+    private final ListView memberList;
+    private final FragmentManager fragmentManager;
 
     public MemberListOnItemClickListener(ListView memberList, FragmentManager fragmentManager) {
         this.memberList = memberList;

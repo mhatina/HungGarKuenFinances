@@ -17,13 +17,9 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities;
 
-import android.annotation.TargetApi;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.PopupMenu;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
@@ -32,20 +28,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
-import cz.brno.holan.jiri.hunggarkuenfinancials.Log;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Contact;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Adult;
@@ -59,9 +51,9 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ContactsAdapte
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.NewContactFragment;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 
-public class CreateNewMemberActivity extends CreateNewEntityActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
+import static cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity.setForceShowIcon;
 
-    public static final String TAG = "CreateNewMemberActivity";
+public class CreateNewMemberActivity extends CreateNewEntityActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private ContactManager contactManager;
     private Contact contextContact;
@@ -98,7 +90,8 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
 
         contactManager = member.getContactManager();
         setImageButtonResource(type, member.getIconPath());
-        beginner.setVisibility(member.isBeginner() ? View.VISIBLE : View.GONE);
+        this.beginner = member.isBeginner();
+        beginner.setVisibility(this.beginner ? View.VISIBLE : View.GONE);
         setEditTextContent(name, member.getName());
         setEditTextContent(surname, member.getSurname());
         if (member.getBirthDate() != null)
@@ -145,9 +138,11 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
                     .setMessage(R.string.sure_to_delete_contact)
                     .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            ArrayAdapter<Contact> arrayAdapter = (ArrayAdapter<Contact>) contact_list.getAdapter();
-                            arrayAdapter.remove(contextContact);
-                            contextContact = null;
+                            if (contact_list.getAdapter() instanceof ArrayAdapter) {
+                                @SuppressWarnings("unchecked") ArrayAdapter<Contact> arrayAdapter = (ArrayAdapter<Contact>) contact_list.getAdapter();
+                                arrayAdapter.remove(contextContact);
+                                contextContact = null;
+                            }
                         }
                     })
                     .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -204,21 +199,14 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
         }
     }
 
-    public void showMemberTypePopup(View v) {
+    private void showMemberTypePopup(View v) {
         PopupMenu popup = new PopupMenu(this, v);
         MenuInflater inflater = popup.getMenuInflater();
 
         popup.setOnMenuItemClickListener(this);
         inflater.inflate(R.menu.member_type, popup.getMenu());
 
-        try {
-            Field field = popup.getClass().getDeclaredField("mPopup");
-            field.setAccessible(true);
-            MenuPopupHelper popupHelper = (MenuPopupHelper) field.get(popup);
-            popupHelper.setForceShowIcon(true);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            return;
-        }
+        setForceShowIcon(popup);
 
         MenuItem item = popup.getMenu().findItem(R.id.type_beginner);
         item.setChecked(beginner);
@@ -343,26 +331,8 @@ public class CreateNewMemberActivity extends CreateNewEntityActivity implements 
         TextInputLayout monthLayout = (TextInputLayout) findViewById(month);
         TextInputLayout yearLayout = (TextInputLayout) findViewById(year);
 
-        setEditTextContent(dayLayout, String.format("%td", date));
-        setEditTextContent(monthLayout, String.format("%tm", date));
-        setEditTextContent(yearLayout, String.format("%tY", date));
-    }
-
-    private void setEditTextContent(TextInputLayout layout, String content) {
-        getEditText(layout).setText(content);
-    }
-
-    @NonNull
-    private String getEditTextContent(TextInputLayout layout) {
-        return getEditText(layout).getText().toString();
-    }
-
-    @NonNull
-    private EditText getEditText(TextInputLayout layout) {
-        EditText editText = layout.getEditText();
-        if (editText == null) {
-            throw new NullPointerException(layout.toString());
-        }
-        return editText;
+        setEditTextContent(dayLayout, String.format(Locale.getDefault(), "%td", date));
+        setEditTextContent(monthLayout, String.format(Locale.getDefault(), "%tm", date));
+        setEditTextContent(yearLayout, String.format(Locale.getDefault(), "%tY", date));
     }
 }

@@ -18,12 +18,9 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Adult;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Child;
@@ -31,7 +28,6 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Junior;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Youngster;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 
 import static cz.brno.holan.jiri.hunggarkuenfinancials.Constant.ADULT_GROUP;
 import static cz.brno.holan.jiri.hunggarkuenfinancials.Constant.CHILD_GROUP;

@@ -18,6 +18,7 @@
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.widget.ListView;
@@ -31,19 +32,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.BuildConfig;
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.Payment;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.PaymentsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.EntityTabManager;
 
 public class PaymentManager extends BaseManager {
-    private ArrayList<Payment> mPayments;
-    private ArrayList<Payment> mShownPayments;
+    private final ArrayList<Payment> mPayments;
+    private final ArrayList<Payment> mShownPayments;
     private long newPaymentId;
 
-    private static PaymentManager ourInstance = new PaymentManager();
+    private static final PaymentManager ourInstance = new PaymentManager();
 
     public static PaymentManager getInstance() {
         return ourInstance;
@@ -60,12 +63,14 @@ public class PaymentManager extends BaseManager {
 
         for (Payment payment : mPayments) {
             for (Member member : MemberManager.getInstance().getMembers(filter)) {
-                if (payment.getMemberIds().indexOf(member.getId()) != -1)
+                if (payment.getMemberIds().indexOf(member.getId()) != -1) {
                     mShownPayments.add(payment);
+                    break;
+                }
             }
 
             if (mShownPayments.indexOf(payment) == -1
-                    && ProductManager.getInstance().getProducts(filter).indexOf(payment.getProductId()) != -1) {
+                    && ProductManager.getInstance().getProduct(payment.getProductId(), filter) != null) {
                 mShownPayments.add(payment);
             }
         }
@@ -107,7 +112,7 @@ public class PaymentManager extends BaseManager {
     }
 
     @Override
-    public void load() {
+    public void load(final Activity activity) {
         mPayments.clear();
         mShownPayments.clear();
 
@@ -118,18 +123,22 @@ public class PaymentManager extends BaseManager {
 
                         newPaymentId = dataSnapshot.child("id").getValue(long.class);
 
-                            for (DataSnapshot postSnapshot : dataSnapshot.child(Payment.class.getSimpleName()).getChildren()) {
-                                Payment payment = postSnapshot.getValue(Payment.class);
-                                mPayments.add(payment);
-                                mShownPayments.add(payment);
-                            }
+                        for (DataSnapshot postSnapshot : dataSnapshot.child(Payment.class.getSimpleName()).getChildren()) {
+                            Payment payment = postSnapshot.getValue(Payment.class);
+                            mPayments.add(payment);
+                            mShownPayments.add(payment);
+                        }
 
-                        ListView paymentList = EntityTabManager.getInstance().getPaymentList();
+                        ListView paymentList = EntityTabManager.getInstance().getPaymentList(activity);
                         if (paymentList != null) {
                             PaymentsAdapter adapter = (PaymentsAdapter) paymentList.getAdapter();
                             if (adapter != null) {
                                 adapter.notifyDataSetChanged();
                             }
+                        }
+
+                        if (activity instanceof MainActivity) {
+                            ((MainActivity) activity).endEntityLoading();
                         }
                     }
 
@@ -185,6 +194,8 @@ public class PaymentManager extends BaseManager {
 
     @Override
     public DatabaseReference getDatabaseReference() {
+        if (BuildConfig.DEBUG)
+            return mDatabase.child("debug").child("payments");
         return mDatabase.child("payments");
     }
 

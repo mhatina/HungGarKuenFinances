@@ -18,17 +18,21 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners;
 
+import android.annotation.SuppressLint;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
+import java.util.Locale;
+
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 
+import static cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.CreateNewEntityActivity.setEditTextContent;
+
 public class CreatePaymentOnDiscountChangedListener implements TextWatcher {
-    private EditText price;
-    private TextInputLayout discount;
-    private boolean watcherOn = true;
+    private final EditText price;
+    private final TextInputLayout discount;
     private float defaultPrice = -1;
 
     public CreatePaymentOnDiscountChangedListener(EditText price, TextInputLayout discount) {
@@ -36,7 +40,7 @@ public class CreatePaymentOnDiscountChangedListener implements TextWatcher {
         this.discount = discount;
     }
 
-    public void setDefaultPrice(float defaultPrice) {
+    void setDefaultPrice(float defaultPrice) {
         this.defaultPrice = defaultPrice;
     }
 
@@ -45,10 +49,11 @@ public class CreatePaymentOnDiscountChangedListener implements TextWatcher {
 
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
         discount.setError(null);
-        if (!CreatePaymentOnPriceTextChangedListener.WatcherLock.getInstance().isWatcherOn()
+        if (CreatePaymentOnPriceTextChangedListener.WatcherLock.getInstance().isWatcherOff()
                 || charSequence.length() == 0)
             return;
 
@@ -61,16 +66,16 @@ public class CreatePaymentOnDiscountChangedListener implements TextWatcher {
         }
         if (percent > 1.0f) {
             percent = 1.0f;
-            CreatePaymentOnPriceTextChangedListener.WatcherLock.getInstance().setWatcherOn(false);
-            discount.getEditText().setText("100.0%");
-            CreatePaymentOnPriceTextChangedListener.WatcherLock.getInstance().setWatcherOn(true);
+            CreatePaymentOnPriceTextChangedListener.WatcherLock.getInstance().setWatcherOff(true);
+            setEditTextContent(discount, "100.0%");
+            CreatePaymentOnPriceTextChangedListener.WatcherLock.getInstance().setWatcherOff(false);
         }
         float discount = 1 - percent;
 
-        CreatePaymentOnPriceTextChangedListener.WatcherLock.getInstance().setWatcherOn(false);
+        CreatePaymentOnPriceTextChangedListener.WatcherLock.getInstance().setWatcherOff(true);
         if (defaultPrice != -1)
-            price.setText(String.format("%.2f", defaultPrice * discount));
-        CreatePaymentOnPriceTextChangedListener.WatcherLock.getInstance().setWatcherOn(true);
+            price.setText(String.format(Locale.getDefault(), "%.2f", defaultPrice * discount));
+        CreatePaymentOnPriceTextChangedListener.WatcherLock.getInstance().setWatcherOff(false);
     }
 
     @Override

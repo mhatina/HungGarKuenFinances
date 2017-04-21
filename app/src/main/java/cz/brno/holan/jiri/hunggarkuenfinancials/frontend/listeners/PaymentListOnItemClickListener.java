@@ -24,13 +24,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.Payment;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Product;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.PaymentDetailDialog;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.ProductDetailDialog;
 
 public class PaymentListOnItemClickListener implements AdapterView.OnItemClickListener {
-    ListView paymentList;
-    FragmentManager fragmentManager;
+    private final ListView paymentList;
+    private final FragmentManager fragmentManager;
 
     public PaymentListOnItemClickListener(ListView paymentList, FragmentManager fragmentManager) {
         this.paymentList = paymentList;

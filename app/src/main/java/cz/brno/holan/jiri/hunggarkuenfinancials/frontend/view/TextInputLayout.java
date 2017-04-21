@@ -26,7 +26,7 @@ import android.widget.EditText;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 
 public class TextInputLayout extends android.support.design.widget.TextInputLayout {
-    CharSequence mError;
+    private CharSequence mError;
 
     public TextInputLayout(Context context) {
         super(context);
@@ -52,7 +52,7 @@ public class TextInputLayout extends android.support.design.widget.TextInputLayo
             }
 
             mError = error;
-            Drawable icon = getResources().getDrawable(R.drawable.indicator_input_error);
+            Drawable icon = getResources().getDrawable(R.drawable.indicator_input_error, null);
             icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
             text.setError(error, icon);
             text.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);

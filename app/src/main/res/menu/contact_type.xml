@@ -18,12 +18,12 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/type_address"
-        android:title="Address"
+        android:title="@string/address"
         android:icon="@drawable/home_black"/>
     <item android:id="@+id/type_mail"
-        android:title="Mail"
+        android:title="@string/mail"
         android:icon="@drawable/mail_black"/>
     <item android:id="@+id/type_phone"
-        android:title="Phone"
+        android:title="@string/phone"
         android:icon="@drawable/phone_black"/>
 </menu>

@@ -18,7 +18,6 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners;
 
-import android.renderscript.Float2;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
@@ -28,9 +27,11 @@ import java.util.Locale;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 
+import static cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.CreateNewEntityActivity.setEditTextContent;
+
 public class CreatePaymentOnPaidTextChangedListener implements TextWatcher {
-    private TextInputLayout owns;
-    private EditText price;
+    private final TextInputLayout owns;
+    private final EditText price;
 
     public CreatePaymentOnPaidTextChangedListener(TextInputLayout owns, EditText price) {
         this.owns = owns;
@@ -56,7 +57,7 @@ public class CreatePaymentOnPaidTextChangedListener implements TextWatcher {
             result *= -1;
         } else
             owns.setHint(owns.getContext().getResources().getString(R.string.payment_owns));
-        owns.getEditText().setText(String.format(Locale.getDefault(), "%.2f", result));
+        setEditTextContent(owns, String.format(Locale.getDefault(), "%.2f", result));
     }
 
     @Override

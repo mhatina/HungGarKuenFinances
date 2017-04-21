@@ -61,7 +61,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 public class CreateNewPaymentActivity extends CreateNewEntityActivity implements View.OnClickListener {
 
     private Date validUntil;
-    private ArrayList<Long> memberIds = new ArrayList<>();
+    private final ArrayList<Long> memberIds = new ArrayList<>();
     private long productId = -1;
 
     public CreateNewPaymentActivity() {
@@ -71,7 +71,7 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
     @Override
     public void init() {
         TextInputLayout discountLayout = (TextInputLayout) findViewById(R.id.create_new_payment_discount);
-        discountLayout.getEditText().setText(String.valueOf(0 + "%"));
+        setEditTextContent(discountLayout, String.valueOf(0 + "%"));
 
         setTitle(getString(R.string.new_payment_title));
 
@@ -81,7 +81,7 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
 
             member = MemberManager.getInstance().findMember(getIntent().getLongExtra(Constant.PREFILLED_ENTITY, 0));
             memberIds.add(member.getId());
-            membersLayout.getEditText().setText(member.getName() + " " + member.getSurname());
+            setEditTextContent(membersLayout, member.getName() + " " + member.getSurname());
         }
     }
 
@@ -116,21 +116,21 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
 
         setTitle(getString(R.string.edit_payment_title));
 
-        membersLayout.getEditText().setText(members);
-        productLayout.getEditText().setText(product == null
-                ? getResources().getString(R.string.deleted)
-                : product.getName());
-        priceLayout.getEditText().setText(String.valueOf(product.getPrice()));
+        setEditTextContent(membersLayout, members);
+        setEditTextContent(productLayout, product == null ? getResources().getString(R.string.deleted) : product.getName());
 
-        float discount = (1 - (payment.getPrice() / product.getPrice())) * 100;
-        discountLayout.getEditText().setText(String.valueOf(discount + "%"));
+        float productPrice = product != null ? product.getPrice() : 1;
+        setEditTextContent(priceLayout, String.valueOf(productPrice));
+
+        float discount = (1 - (payment.getPrice() / productPrice)) * 100;
+        setEditTextContent(discountLayout, String.valueOf(discount + "%"));
 
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         dateButton.setText(format.format(payment.getValidUntil()));
 
-        paidLayout.getEditText().setText(String.valueOf(payment.getPaid()));
-        ownsLayout.getEditText().setText(String.valueOf(payment.getPrice() - payment.getPaid()));
-        noteLayout.getEditText().setText(payment.getNote());
+        setEditTextContent(paidLayout, String.valueOf(payment.getPaid()));
+        setEditTextContent(ownsLayout, String.valueOf(payment.getPrice() - payment.getPaid()));
+        setEditTextContent(noteLayout, payment.getNote());
     }
 
     @Override
@@ -152,18 +152,18 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
         CreatePaymentOnDiscountChangedListener discountListener =
                 new CreatePaymentOnDiscountChangedListener(priceLayout.getEditText(), discountLayout);
 
-        membersLayout.getEditText().addTextChangedListener(
+        getEditText(membersLayout).addTextChangedListener(
                 new CreatePaymentOnMemberTextChangedListener(membersLayout));
-        productLayout.getEditText().addTextChangedListener(
+        getEditText(productLayout).addTextChangedListener(
                 new CreatePaymentOnProductTextChangedListener(
                         productLayout,
                         priceLayout.getEditText(),
                         dateButton,
                         priceListener,
                         discountListener));
-        discountLayout.getEditText().addTextChangedListener(discountListener);
-        priceLayout.getEditText().addTextChangedListener(priceListener);
-        payedLayout.getEditText().addTextChangedListener(
+        getEditText(discountLayout).addTextChangedListener(discountListener);
+        getEditText(priceLayout).addTextChangedListener(priceListener);
+        getEditText(payedLayout).addTextChangedListener(
                 new CreatePaymentOnPaidTextChangedListener(ownsLayout, priceLayout.getEditText()));
 
         memberButton.setOnClickListener(this);
@@ -178,14 +178,14 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
         TextInputLayout noteLayout = (TextInputLayout) findViewById(R.id.create_new_note);
         Button dateButton = (Button) findViewById(R.id.create_new_payment_date);
 
-        List<Long> memberIds = Utils.getMemberIdsFromString(membersLayout.getEditText().getText().toString(), this.memberIds);
+        List<Long> memberIds = Utils.getMemberIdsFromString(getEditTextContent(membersLayout), this.memberIds);
         if (memberIds.isEmpty()) {
             membersLayout.setError(getString(R.string.required_error));
             return false;
         }
 
         Product product = ProductManager.getInstance().findProduct(productId);
-        String productStr = productLayout.getEditText().getText().toString();
+        String productStr = getEditTextContent(productLayout);
         if (product == null || !productStr.equals(product.getName())) {
             List<Product> list = ProductManager.getInstance().getProducts(productStr);
             if (list.isEmpty()) {
@@ -198,13 +198,13 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
         float price = verifyFloat(R.id.create_new_payment_price);
         float paid = verifyFloat(R.id.create_new_payment_paid);
         float discount = verifyFloat(R.id.create_new_payment_discount);
-        String note = noteLayout.getEditText().getText().toString();
+        String note = getEditTextContent(noteLayout);
         Date valid = null;
 
-        if (price == -1 || paid == -1)
+        if (price == -1 || paid == -1 || discount == -1)
             return false;
 
-        Payment payment = null;
+        Payment payment;
         if (getIntent().hasExtra(Constant.EDIT_ENTITY)) {
             payment = PaymentManager.getInstance().findPayment(getIntent().getLongExtra(Constant.EDIT_ENTITY, 0));
             payment.setMemberIds(memberIds);
@@ -246,7 +246,7 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
     private float verifyFloat(int resource) {
         float f;
         TextInputLayout layout = (TextInputLayout) findViewById(resource);
-        String str = layout.getEditText().getText().toString();
+        String str = getEditTextContent(layout);
 
         layout.setError(null);
 
@@ -275,16 +275,15 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
             case R.id.create_new_payment_member_list: {
                 List<Member> members = MemberManager.getInstance().getMembers();
                 Collections.sort(members, new MemberAlphabeticComparator());
-                CreatePaymentMembersAdapter adapter = new CreatePaymentMembersAdapter(this,
-                        R.layout.layout_payment_new_list_item,
-                        members);
+                CreatePaymentMembersAdapter adapter = new CreatePaymentMembersAdapter(this, members);
 
                 selection.setAdapter(adapter);
 
                 builder.setMessage(R.string.member_details_title).setView(selection.getView());
 
                 final AlertDialog dialog = builder.create();
-                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+                if (dialog.getWindow() != null)
+                    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
                 selection.setOnPositiveButtonClickListener(new View.OnClickListener() {
                     @Override
@@ -303,8 +302,8 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
                                 text += member.getName() + " " + member.getSurname();
                                 memberIds.add(member.getId());
                             }
-                        memberLayout.getEditText().setText(text);
-                        memberLayout.getEditText().setSelection(0);
+                        setEditTextContent(memberLayout, text);
+                        getEditText(memberLayout).setSelection(0);
                         dialog.dismiss();
                     }
                 });
@@ -320,10 +319,9 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
             }
             case R.id.create_new_payment_product_list: {
                 TextInputLayout memberLayout = (TextInputLayout) findViewById(R.id.create_new_payment_member);
-                int groups = Utils.getGroupsFromMemberString(memberLayout.getEditText().getText().toString(), memberIds);
+                int groups = Utils.getGroupsFromMemberString(getEditTextContent(memberLayout), memberIds);
 
                 final CreatePaymentProductsAdapter adapter = new CreatePaymentProductsAdapter(this,
-                        R.layout.layout_payment_new_list_item,
                         ProductManager.getInstance().getProducts(groups));
 
                 selection.setAdapter(adapter);
@@ -332,7 +330,8 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
                 builder.setMessage(R.string.member_details_title).setView(selection.getView());
 
                 final AlertDialog dialog = builder.create();
-                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+                if (dialog.getWindow() != null)
+                    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
                 builder.setMessage(R.string.product_details_title).setView(selection.getView());
 
@@ -354,8 +353,8 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
                         }
                         productId = product.getId();
 
-                        productLayout.getEditText().setText(product.getName());
-                        productLayout.getEditText().setSelection(0);
+                        setEditTextContent(productLayout, product.getName());
+                        getEditText(productLayout).setSelection(0);
                         dialog.dismiss();
                     }
                 });

@@ -17,15 +17,16 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
+import android.app.Activity;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity;
 
-public interface DatabaseManager {
+interface DatabaseManager {
     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-    void load();
+    void load(Activity activity);
     void upload(BaseEntity entity);
     void update(BaseEntity entity);
     void delete(BaseEntity entity);

@@ -22,17 +22,40 @@
         <menu>
             <item
                 android:id="@+id/nav_stats_members"
-                android:title="@string/members_title"
-                android:icon="@drawable/account_circle_black"/>
+                android:icon="@drawable/account_circle_black"
+                android:title="@string/members_title"/>
             <item
                 android:id="@+id/nav_stats_payments"
-                android:title="@string/payments_title"
-                android:icon="@drawable/payment_black"/>
+                android:icon="@drawable/payment_black"
+                android:title="@string/payments_title"/>
             <item
                 android:id="@+id/nav_stats_products"
-                android:title="@string/products_title"
-                android:icon="@drawable/shopping_cart_black"/>
+                android:icon="@drawable/shopping_cart_black"
+                android:title="@string/products_title"/>
         </menu>
     </item>
+
+    <item android:title="@string/bug_reporting">
+        <menu>
+            <item
+                android:id="@+id/nav_bug_report"
+                android:icon="@drawable/bug_report_black"
+                android:title="@string/report_to_github"/>
+            <item
+                android:id="@+id/nav_bug_report_mail"
+                android:icon="@drawable/mail_black"
+                android:title="@string/report_to_mail"/>
+        </menu>
+    </item>
+
+    <item android:title="@string/update">
+        <menu>
+            <item
+                android:id="@+id/nav_update"
+                android:icon="@drawable/update_black"
+                android:title="@string/check_for_update"/>
+        </menu>
+    </item>
+
 
 </menu>

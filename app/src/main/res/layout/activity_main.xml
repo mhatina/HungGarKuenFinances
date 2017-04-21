@@ -25,7 +25,8 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
-    android:background="@drawable/lam_ga_hung_kuen_watermark">
+    android:background="@drawable/lam_ga_hung_kuen_watermark"
+    tools:ignore="Overdraw">
 
 
     <RelativeLayout

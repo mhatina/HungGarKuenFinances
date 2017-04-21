@@ -16,13 +16,15 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:id="@+id/main_layout"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/colorPrimaryDark"
               android:gravity="center_horizontal"
               android:orientation="vertical"
-              android:weightSum="4">
+              android:weightSum="4"
+              tools:ignore="Overdraw">
 
     <TextView
         android:id="@+id/title_text"
@@ -47,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
-        android:text="@string/disconnect"
+        android:text="@string/sign_out"
         android:theme="@style/ThemeOverlay.MyDarkButton"/>
 
 </LinearLayout>

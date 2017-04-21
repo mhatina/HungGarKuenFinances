@@ -33,17 +33,13 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Produc
 
 public class CreatePaymentProductsAdapter extends ArrayAdapter<Product> {
 
-    public CreatePaymentProductsAdapter(Context context, int resource, List<Product> objects) {
-        super(context, resource, objects);
-    }
-
-    public CreatePaymentProductsAdapter(Context context, int resource, int textViewResourceId, List<Product> objects) {
-        super(context, resource, textViewResourceId, objects);
+    public CreatePaymentProductsAdapter(Context context, List<Product> objects) {
+        super(context, R.layout.layout_payment_new_list_item, objects);
     }
 
     @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         ViewHolder viewHolder;
 
         if (convertView == null) {
@@ -69,8 +65,8 @@ public class CreatePaymentProductsAdapter extends ArrayAdapter<Product> {
     }
 
     private class ViewHolder {
-        public TextView name;
-        public TextView price;
+        public final TextView name;
+        public final TextView price;
 
         ViewHolder(View view) {
             name = (TextView) view.findViewById(R.id.create_new_payment_list_name);

@@ -28,8 +28,8 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.ProductDetail
 
 public class ProductListOnItemClickListener implements AdapterView.OnItemClickListener {
 
-    ListView productList;
-    FragmentManager fragmentManager;
+    private final ListView productList;
+    private final FragmentManager fragmentManager;
 
     public ProductListOnItemClickListener(ListView productList, FragmentManager fragmentManager) {
         this.productList = productList;

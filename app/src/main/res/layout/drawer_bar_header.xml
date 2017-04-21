@@ -33,7 +33,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:src="@drawable/lam_ga_hung_kuen_logo"
-        android:id="@+id/imageView" />
+        android:id="@+id/imageView"
+        android:contentDescription="@string/app_name"/>
 
     <TextView
         android:layout_width="match_parent"

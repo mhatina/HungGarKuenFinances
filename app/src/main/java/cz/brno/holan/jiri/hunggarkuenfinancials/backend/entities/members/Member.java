@@ -31,8 +31,8 @@ public class Member extends BaseEntity {
     public static final int PAYMENT_OK = android.R.drawable.presence_online;
     public static final int PAYMENT_IMMINENT = android.R.drawable.presence_away;
     public static final int PAYMENT_INACTIVE = android.R.drawable.presence_offline;
-    public static final long BEFORE_END_OF_PAYMENT_PERIOD = 3 * 24 * 60 * 60 * 1000;
-    public static final long INACTIVATION_PERIOD = 14 * 24 * 60 * 60 * 1000;
+    private static final long BEFORE_END_OF_PAYMENT_PERIOD = 3 * 24 * 60 * 60 * 1000;
+    private static final long INACTIVATION_PERIOD = 14 * 24 * 60 * 60 * 1000;
 
     private String name;
     private String surname;
@@ -65,6 +65,7 @@ public class Member extends BaseEntity {
         updateStatus();
     }
 
+    @SuppressWarnings("SimplifiableIfStatement")
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -32,9 +32,6 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.EntityTabManag
 
 public class EntityTabsFragment extends Fragment {
 
-    public static final String TAG = "EntityTabsFragment";
-    ViewPager viewPager;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_sliding_section, container, false);
@@ -42,14 +39,14 @@ public class EntityTabsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        viewPager = (ViewPager) view.findViewById(R.id.viewpager);
+        ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         viewPager.setAdapter(new SwipeViewAdapter());
 
         ((TabLayout) view.findViewById(R.id.sliding_tabs)).setupWithViewPager(viewPager);
     }
 
-    public class SwipeViewAdapter extends PagerAdapter {
-        private EntityTabManager tabManager = EntityTabManager.getInstance();
+    private class SwipeViewAdapter extends PagerAdapter {
+        private final EntityTabManager tabManager = EntityTabManager.getInstance();
 
         @Override
         public int getCount() {
@@ -73,7 +70,7 @@ public class EntityTabsFragment extends Fragment {
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-//            tabManager.destroyView(container, position, object);
+            tabManager.destroyList(container, position, object);
         }
     }
 }

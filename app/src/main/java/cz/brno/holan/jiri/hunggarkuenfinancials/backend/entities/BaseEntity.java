@@ -20,10 +20,10 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities;
 public class BaseEntity {
     private long id;
 
-    public BaseEntity() {
+    protected BaseEntity() {
     }
 
-    public BaseEntity(long id) {
+    protected BaseEntity(long id) {
         this.id = id;
     }
 

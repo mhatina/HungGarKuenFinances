@@ -17,6 +17,7 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.v4.app.FragmentActivity;
@@ -25,12 +26,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
-import cz.brno.holan.jiri.hunggarkuenfinancials. backend.managers.PaymentManager;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.PaymentManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ProductManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.PaymentsAdapter;
@@ -40,11 +40,11 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.PaymentListOn
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.listeners.ProductListOnItemClickListener;
 
 public class EntityTabManager {
-    private ListView mMemberList = null;
-    private ListView mPaymentList = null;
-    private ListView mProductList = null;
+    private int memberListId;
+    private int productListId;
+    private int paymentListId;
 
-    private static EntityTabManager ourInstance = new EntityTabManager();
+    private static final EntityTabManager ourInstance = new EntityTabManager();
 
     public static EntityTabManager getInstance() {
         return ourInstance;
@@ -60,69 +60,63 @@ public class EntityTabManager {
             case Constant.PRODUCT_LIST_INDEX:
                 return resources.getString(R.string.products_title);
             default:
-                return resources.getString(R.string.unknown_title);
+                return resources.getString(R.string.unknown);
         }
     }
 
-    public Object createInstance(FragmentActivity context, ViewGroup container, int position) {
-        if (mMemberList == null) {
-            mMemberList = prepareTabObject(context, container, new MembersAdapter(context, R.layout.layout_member, MemberManager.getInstance().getMembers()));
-            mMemberList.setOnItemClickListener(new MemberListOnItemClickListener(mMemberList, context.getFragmentManager()));
-
-            final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) mMemberList.getParent();
-            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    MemberManager.getInstance().load();
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-            });
-        }
-        if (mProductList == null) {
-            mProductList = prepareTabObject(context, container, new ProductsAdapter(context, R.layout.layout_product, ProductManager.getInstance().getProducts()));
-            mProductList.setOnItemClickListener(new ProductListOnItemClickListener(mProductList, context.getFragmentManager()));
-
-            final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) mProductList.getParent();
-            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    ProductManager.getInstance().load();
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-            });
-        }
-        if (mPaymentList == null) {
-            mPaymentList = prepareTabObject(context, container, new PaymentsAdapter(context, R.layout.layout_payment, PaymentManager.getInstance().getPayments()));
-            mPaymentList.setOnItemClickListener(new PaymentListOnItemClickListener(mPaymentList, context.getFragmentManager()));
-
-            final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) mPaymentList.getParent();
-            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    PaymentManager.getInstance().load();
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-            });
-        }
-
+    public Object createInstance(final FragmentActivity context, ViewGroup container, int position) {
+        ListView list;
         switch (position) {
-            case Constant.MEMBER_LIST_INDEX:
-                return mMemberList.getParent();
-            case Constant.PAYMENT_LIST_INDEX:
-                return mPaymentList.getParent();
-            case Constant.PRODUCT_LIST_INDEX:
-                return mProductList.getParent();
-            default:
-                View view = context.getLayoutInflater().inflate(R.layout.pager_item,
-                        container, false);
+            case Constant.MEMBER_LIST_INDEX: {
+                list = prepareTabObject(context, container, new MembersAdapter(context, MemberManager.getInstance().getMembers()));
+                list.setOnItemClickListener(new MemberListOnItemClickListener(list, context.getFragmentManager()));
 
-                container.addView(view);
+                final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) list.getParent();
+                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        MemberManager.getInstance().load(context);
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+                memberListId = View.generateViewId();
+                list.setId(memberListId);
+                break;
+            } case Constant.PRODUCT_LIST_INDEX: {
+                list = prepareTabObject(context, container, new ProductsAdapter(context, ProductManager.getInstance().getProducts()));
+                list.setOnItemClickListener(new ProductListOnItemClickListener(list, context.getFragmentManager()));
 
-                TextView title = (TextView) view.findViewById(R.id.item_title);
-                title.setText(String.valueOf(position + 1));
+                final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) list.getParent();
+                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        ProductManager.getInstance().load(context);
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+                productListId = View.generateViewId();
+                list.setId(productListId);
+                break;
+            } case Constant.PAYMENT_LIST_INDEX: {
+                list = prepareTabObject(context, container, new PaymentsAdapter(context, PaymentManager.getInstance().getPayments()));
+                list.setOnItemClickListener(new PaymentListOnItemClickListener(list, context.getFragmentManager()));
 
-                return view;
+                final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) list.getParent();
+                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        PaymentManager.getInstance().load(context);
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+                paymentListId = View.generateViewId();
+                list.setId(paymentListId);
+                break;
+            } default:
+                return null;
         }
+
+        return list.getParent();
     }
 
     private ListView prepareTabObject(FragmentActivity context, ViewGroup container, ListAdapter adapter) {
@@ -142,23 +136,26 @@ public class EntityTabManager {
         container.removeView((View) object);
         switch (position) {
             case Constant.MEMBER_LIST_INDEX:
-                mMemberList = null;
+                memberListId = -1;
+                break;
             case Constant.PAYMENT_LIST_INDEX:
-                mPaymentList = null;
+                paymentListId = -1;
+                break;
             case Constant.PRODUCT_LIST_INDEX:
-                mProductList = null;
+                productListId = -1;
+                break;
         }
     }
 
-    public ListView getMemberList() {
-        return mMemberList;
+    public ListView getMemberList(Activity activity) {
+        return (ListView) activity.findViewById(memberListId);
     }
 
-    public ListView getPaymentList() {
-        return mPaymentList;
+    public ListView getPaymentList(Activity activity) {
+        return (ListView) activity.findViewById(paymentListId);
     }
 
-    public ListView getProductList() {
-        return mProductList;
+    public ListView getProductList(Activity activity) {
+        return (ListView) activity.findViewById(productListId);
     }
 }

@@ -24,14 +24,11 @@ public class Periodic extends Product {
 
     public Periodic(long id, String name, float value, int perWeek) {
         super(id, name, value);
+        detail = perWeek;
     }
 
     public int getPerWeek() {
         return detail;
-    }
-
-    public void setPerWeek(int perWeek) {
-        this.detail = perWeek;
     }
 
     @Override

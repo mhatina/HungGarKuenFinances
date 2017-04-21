@@ -23,20 +23,15 @@ import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Product;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
 
 public class EntitySelectionView implements SearchView.OnQueryTextListener {
 
-    private View view;
+    private final View view;
 
     public EntitySelectionView(Context context) {
         view = View.inflate(context, R.layout.layout_payment_choose_list, null);
@@ -77,7 +72,6 @@ public class EntitySelectionView implements SearchView.OnQueryTextListener {
     @Override
     public boolean onQueryTextChange(String s) {
         ListView listView = getListView();
-        ArrayList<View> out = new ArrayList<>();
 
         int position = getMatchPosition(s);
         if (position != -1) {

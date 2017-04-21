@@ -20,25 +20,25 @@
     <item
         android:id="@+id/type_adult"
         android:icon="@drawable/adult_icon"
-        android:title="Adult"/>
+        android:title="@string/adult"/>
     <item
         android:id="@+id/type_youngster"
         android:icon="@drawable/youngster_icon"
-        android:title="Youngster"/>
+        android:title="@string/youngster"/>
     <item
         android:id="@+id/type_junior"
         android:icon="@drawable/junior_icon"
-        android:title="Junior"/>
+        android:title="@string/junior"/>
     <item
         android:id="@+id/type_child"
         android:icon="@drawable/child_icon"
-        android:title="Child"/>
+        android:title="@string/child"/>
     <group
         android:id="@+id/beginner_group"
         android:checkableBehavior="all">
         <item
             android:id="@+id/type_beginner"
             android:checked="true"
-            android:title="Beginner"/>
+            android:title="@string/beginner"/>
     </group>
 </menu>

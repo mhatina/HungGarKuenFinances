@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
@@ -34,14 +35,17 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Produc
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ProductManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 
+import static cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.CreateNewEntityActivity.getEditText;
+import static cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.CreateNewEntityActivity.setEditTextContent;
+
 public class CreatePaymentOnProductTextChangedListener implements TextWatcher {
-    private TextInputLayout inputLayout;
-    private EditText price;
-    private Button dateButton;
+    private final TextInputLayout inputLayout;
+    private final EditText price;
+    private final Button dateButton;
     private boolean watcherOn = true;
     private CharSequence oldSequence = "";
-    private CreatePaymentOnPriceTextChangedListener priceListener;
-    private CreatePaymentOnDiscountChangedListener  discountListener;
+    private final CreatePaymentOnPriceTextChangedListener priceListener;
+    private final CreatePaymentOnDiscountChangedListener  discountListener;
 
     public CreatePaymentOnProductTextChangedListener(TextInputLayout inputLayout,
                                                      EditText price,
@@ -92,16 +96,16 @@ public class CreatePaymentOnProductTextChangedListener implements TextWatcher {
             String textToSet = product.getName();
 
             watcherOn = false;
-            inputLayout.getEditText().setText(textToSet);
+            setEditTextContent(inputLayout, textToSet);
             dateButton.setText(getValidUntilStr((int) product.getValidTime(), product.getValidGroup()));
             priceListener.setDefaultPrice(product.getPrice());
             discountListener.setDefaultPrice(product.getPrice());
             price.setText(String.valueOf(product.getPrice()));
 
             if (start + 1 < textToSet.length())
-                inputLayout.getEditText().setSelection(start + 1, textToSet.length());
+                getEditText(inputLayout).setSelection(start + 1, textToSet.length());
             else
-                inputLayout.getEditText().setSelection(textToSet.length());
+                getEditText(inputLayout).setSelection(textToSet.length());
             watcherOn = true;
         }
     }
@@ -138,7 +142,7 @@ public class CreatePaymentOnProductTextChangedListener implements TextWatcher {
                 calendar.add(Calendar.DATE, -1);
         }
 
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         return format.format(calendar.getTime());
     }
 }

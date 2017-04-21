@@ -19,9 +19,9 @@
 
 <resources>
     <string-array name="validity_periods">
-        <item>day(s)</item>
-        <item>week(s)</item>
-        <item>month(s)</item>
-        <item>year(s)</item>
+        <item>@string/new_member_day_hint</item>
+        <item>@string/week</item>
+        <item>@string/new_member_month_hint</item>
+        <item>@string/new_member_year_hint</item>
     </string-array>
 </resources>

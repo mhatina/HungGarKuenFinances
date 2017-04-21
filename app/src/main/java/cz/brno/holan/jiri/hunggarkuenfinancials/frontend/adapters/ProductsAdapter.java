@@ -43,13 +43,13 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Produc
 
 public class ProductsAdapter extends ArrayAdapter<Product> {
 
-    public ProductsAdapter(Context context, int resource, List<Product> objects) {
-        super(context, resource, objects);
+    public ProductsAdapter(Context context, List<Product> objects) {
+        super(context, R.layout.layout_product, objects);
     }
 
     @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         ViewHolder viewHolder;
 
         if (convertView == null) {
@@ -71,7 +71,7 @@ public class ProductsAdapter extends ArrayAdapter<Product> {
             viewHolder.price.setText(getContext().getString(R.string.currency, String.valueOf(product.getPrice())));
             if (product instanceof Periodic) {
                 String perWeek = String.valueOf(((Periodic) product).getPerWeek());
-                perWeek += "/" + getContext().getString(R.string.week);
+                perWeek += "/" + getContext().getString(R.string.week).toLowerCase();
                 viewHolder.detail.setText(perWeek);
             } else {
                 String stock = getContext().getString(R.string.in_stock, String.valueOf(((OneTimeOnly) product).getStock()));
@@ -117,15 +117,15 @@ public class ProductsAdapter extends ArrayAdapter<Product> {
     }
 
     @Override
-    public void sort(Comparator<? super Product> comparator) {
+    public void sort(@NonNull Comparator<? super Product> comparator) {
         super.sort(comparator);
     }
 
     public class ViewHolder {
-        public TextView name;
-        public TextView price;
-        public TextView detail;
-        public LinearLayout groups;
+        public final TextView name;
+        public final TextView price;
+        public final TextView detail;
+        public final LinearLayout groups;
 
         ViewHolder(View view) {
             name = (TextView) view.findViewById(R.id.product_layout_name);

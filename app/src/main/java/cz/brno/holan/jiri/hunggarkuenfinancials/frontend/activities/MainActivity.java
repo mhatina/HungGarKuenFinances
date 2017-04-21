@@ -17,6 +17,7 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,7 +35,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -44,22 +44,31 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.BuildConfig;
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.Log;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.FileUtils;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.UpdateChecker;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.Payment;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
@@ -72,18 +81,35 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.PaymentsAdapte
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ProductsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments.EntityTabsFragment;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.EntityTabManager;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.provider.SearchProvider;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static boolean calledFirebasePersistence = false;
+    private static boolean calledFirebasePersistence = false;
 
+    private UpdateChecker updateChecker;
+    private ProgressDialog mProgressDialog;
     private BaseEntity mContextEntity;
     private boolean init = false;
 
     public MainActivity() {
         mContextEntity = null;
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
     }
 
     private void initNavigationView() {
@@ -119,7 +145,33 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private void moveFloatingButton() {
+    private void initFirebaseConfig() {
+        final FirebaseRemoteConfig firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setDeveloperModeEnabled(BuildConfig.DEBUG)
+                .build();
+        firebaseRemoteConfig.setConfigSettings(configSettings);
+
+        Map<String, Object> remoteConfigDefaults = new HashMap<>();
+        remoteConfigDefaults.put(Constant.KEY_FIREBASE_CONFIG_FORCE_UPDATE, false);
+        remoteConfigDefaults.put(Constant.KEY_FIREBASE_CONFIG_CURRENT_VERSION, "1");
+        remoteConfigDefaults.put(Constant.KEY_FIREBASE_CONFIG_UPDATE_URL,
+                String.format(Constant.FIREBASE_CONFIG_UPDATE_URL, BuildConfig.VERSION_NAME, BuildConfig.VERSION_NAME));
+
+        firebaseRemoteConfig.setDefaults(remoteConfigDefaults);
+        firebaseRemoteConfig.fetch(60).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    firebaseRemoteConfig.activateFetched();
+                    updateChecker.check();
+                }
+            }
+        });
+    }
+
+    public void moveFloatingButton() {
         boolean empty = false;
         final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 
@@ -155,6 +207,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (!calledFirebasePersistence) {
+            updateChecker = new UpdateChecker(MainActivity.this);
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
             calledFirebasePersistence = true;
         }
@@ -174,6 +227,7 @@ public class MainActivity extends AppCompatActivity
         initFloatingActionButton();
         initDrawer(toolbar);
         initNavigationView();
+        initFirebaseConfig();
     }
 
     @Override
@@ -190,7 +244,8 @@ public class MainActivity extends AppCompatActivity
             final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
             viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                }
 
                 @Override
                 public void onPageSelected(int position) {
@@ -198,7 +253,8 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 @Override
-                public void onPageScrollStateChanged(int state) {}
+                public void onPageScrollStateChanged(int state) {
+                }
             });
             init = true;
         }
@@ -215,11 +271,9 @@ public class MainActivity extends AppCompatActivity
                 Uri uri = data.getData();
                 try {
                     if (viewPager.getCurrentItem() == Constant.MEMBER_LIST_INDEX) {
+                        showProgressDialog();
                         MemberManager.getInstance().importFromFile(this, uri);
-                    } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
-                        PaymentManager.getInstance().importFromFile(this, uri);
-                    } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
-                        ProductManager.getInstance().importFromFile(this, uri);
+                        hideProgressDialog();
                     }
                 } catch (IOException e) {
                     throw new NullPointerException(getResources().getString(R.string.cannot_open_file, uri.getPath()));
@@ -227,12 +281,12 @@ public class MainActivity extends AppCompatActivity
             case Constant.EDIT_ENTITY_CODE:
             case Constant.NEW_ENTITY_CODE:
                 if (viewPager.getCurrentItem() == Constant.MEMBER_LIST_INDEX) {
-                    getMemberListView().setAdapter(new MembersAdapter(this, R.layout.layout_member, MemberManager.getInstance().getMembers()));
+                    refreshMembers();
                 } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
-                    getPaymentListView().setAdapter(new PaymentsAdapter(this, R.layout.layout_product, PaymentManager.getInstance().getPayments()));
-                    getMemberListView().setAdapter(new MembersAdapter(this, R.layout.layout_member, MemberManager.getInstance().getMembers()));
+                    refreshMembers();
+                    refreshPayments();
                 } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
-                    getProductListView().setAdapter(new ProductsAdapter(this, R.layout.layout_product, ProductManager.getInstance().getProducts()));
+                    refreshProducts();
                 } else {
                     // todo create own exception
                     Log.warning(getBaseContext(), new Exception(getString(R.string.refresh_list_error)));
@@ -240,24 +294,37 @@ public class MainActivity extends AppCompatActivity
                 break;
             case Constant.SIGN_IN_CODE:
                 setSignedInAs(data);
-                MemberManager.getInstance().load();
-                ProductManager.getInstance().load();
-                PaymentManager.getInstance().load();
-                moveFloatingButton();
+                startEntityLoading();
 
-                SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean("AdultFilter",     false);
-                editor.putBoolean("YoungsterFilter", false);
-                editor.putBoolean("JuniorFilter",    false);
-                editor.putBoolean("ChildFilter",     false);
-                editor.putBoolean("BeginnerFilter",  false);
-                editor.apply();
+                initGroupFilters();
                 break;
             default:
 
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void initGroupFilters() {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("AdultFilter", false);
+        editor.putBoolean("YoungsterFilter", false);
+        editor.putBoolean("JuniorFilter", false);
+        editor.putBoolean("ChildFilter", false);
+        editor.putBoolean("BeginnerFilter", false);
+        editor.apply();
+    }
+
+    public void endEntityLoading() {
+        hideProgressDialog();
+        moveFloatingButton();
+    }
+
+    private void startEntityLoading() {
+        showProgressDialog();
+        MemberManager.getInstance().load(this);
+        ProductManager.getInstance().load(this);
+        PaymentManager.getInstance().load(this);
     }
 
     private void setSignedInAs(Intent data) {
@@ -305,7 +372,17 @@ public class MainActivity extends AppCompatActivity
                 return true;
             case R.id.action_export:
                 return true;
-            case R.id.action_settings:
+            case R.id.action_about:
+                new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.app_name))
+                        .setMessage(getString(R.string.version, BuildConfig.VERSION_NAME) + "\n" +
+                                getString(R.string.author, Constant.AUTHOR))
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
                 return true;
             case R.id.action_filter:
                 View menuItem = findViewById(R.id.action_filter);
@@ -313,17 +390,7 @@ public class MainActivity extends AppCompatActivity
                 MenuInflater inflater = popup.getMenuInflater();
 
                 inflater.inflate(R.menu.filter, popup.getMenu());
-
-                try {
-                    Field field = popup.getClass().getDeclaredField("mPopup");
-                    field.setAccessible(true);
-                    MenuPopupHelper popupHelper = (MenuPopupHelper) field.get(popup);
-                    popupHelper.setForceShowIcon(true);
-                } catch (IllegalAccessException e) {
-                    return false;
-                } catch (NoSuchFieldException e) {
-                    return false;
-                }
+                setForceShowIcon(popup);
 
                 final MenuItem adult = popup.getMenu().findItem(R.id.type_adult);
                 final MenuItem youngster = popup.getMenu().findItem(R.id.type_youngster);
@@ -355,11 +422,11 @@ public class MainActivity extends AppCompatActivity
                     public void onDismiss(PopupMenu menu) {
                         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putBoolean("AdultFilter",     adult.isChecked());
+                        editor.putBoolean("AdultFilter", adult.isChecked());
                         editor.putBoolean("YoungsterFilter", youngster.isChecked());
-                        editor.putBoolean("JuniorFilter",    junior.isChecked());
-                        editor.putBoolean("ChildFilter",     child.isChecked());
-                        editor.putBoolean("BeginnerFilter",  beginner.isChecked());
+                        editor.putBoolean("JuniorFilter", junior.isChecked());
+                        editor.putBoolean("ChildFilter", child.isChecked());
+                        editor.putBoolean("BeginnerFilter", beginner.isChecked());
                         editor.apply();
 
                         filterEntities(null);
@@ -372,14 +439,51 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
+    public static void setForceShowIcon(PopupMenu popupMenu) {
+        Field[] fields = popupMenu.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            if ("mPopup".equals(field.getName())) {
+                field.setAccessible(true);
+                try {
+                    Object menuPopupHelper = field.get(popupMenu);
+                    Class<?> classPopupHelper = Class.forName(menuPopupHelper
+                            .getClass().getName());
+                    Method setForceIcons = classPopupHelper.getMethod(
+                            "setForceShowIcon", boolean.class);
+                    setForceIcons.invoke(menuPopupHelper, true);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
+                    return;
+                }
+                break;
+            }
+        }
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_stats_members) {
-
+        switch (item.getItemId()) {
+            default:
+            case R.id.nav_stats_members:
+            case R.id.nav_stats_payments:
+            case R.id.nav_stats_products:
+                Log.info(this, R.string.not_implemented);
+                break;
+            case R.id.nav_bug_report:
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constant.BUG_REPORT_URL));
+                startActivity(browserIntent);
+                break;
+            case R.id.nav_bug_report_mail:
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                Uri data = Uri.parse("mailto:" + Constant.BUG_REPORT_MAIL);
+                intent.setData(data);
+                intent.putExtra(Intent.EXTRA_SUBJECT, Constant.BUG_REPORT_MAIL_SUBJECT);
+                intent.putExtra(Intent.EXTRA_TEXT, String.format(Constant.BUG_REPORT_MAIL_BODY, BuildConfig.VERSION_NAME));
+                startActivity(intent);
+                break;
+            case R.id.nav_update:
+                if (updateChecker != null && !updateChecker.check())
+                    Log.info(this, R.string.no_update);
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -388,48 +492,35 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        if (SearchProvider.ON_SEARCH_SUGGESTION_CLICK.equals(intent.getAction())) {
-            Uri detailUri = intent.getData();
-            String suggestion = detailUri.getLastPathSegment();
-
-            SearchView searchView = (SearchView) findViewById(R.id.search);
-            String query = searchView.getQuery().toString();
-
-            if (query.lastIndexOf(' ') == -1)
-                query = suggestion;
-            else {
-                query = query.subSequence(0, query.lastIndexOf(' ') + 1) + suggestion;
-            }
-
-            searchView.setQuery(query + " ", false);
-
-            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).
-                    toggleSoftInput(InputMethodManager.SHOW_FORCED,
-                            InputMethodManager.HIDE_IMPLICIT_ONLY);
-        }
-    }
-
-    @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         AdapterView.AdapterContextMenuInfo adapterMenuInfo = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        ListView list;
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         if (viewPager.getCurrentItem() == Constant.MEMBER_LIST_INDEX) {
             Member member;
-            mContextEntity = member = (Member) getMemberListView().getItemAtPosition(adapterMenuInfo.position);
-            menu.setHeaderTitle(member.getName() + " " + member.getSurname());
+            list = getMemberListView();
+            if (list != null) {
+                mContextEntity = member = (Member) list.getItemAtPosition(adapterMenuInfo.position);
+                menu.setHeaderTitle(member.getName() + " " + member.getSurname());
+            }
         } else if (viewPager.getCurrentItem() == Constant.PAYMENT_LIST_INDEX) {
             Payment payment;
-            mContextEntity = payment = (Payment) getPaymentListView().getItemAtPosition(adapterMenuInfo.position);
-            Product product = ProductManager.getInstance().findProduct(payment.getProductId());
-            String header = product != null ? product.getName() : getResources().getString(R.string.deleted);
-            menu.setHeaderTitle(header);
+            list = getPaymentListView();
+            if (list != null) {
+                mContextEntity = payment = (Payment) list.getItemAtPosition(adapterMenuInfo.position);
+                Product product = ProductManager.getInstance().findProduct(payment.getProductId());
+                String header = product != null ? product.getName() : getResources().getString(R.string.deleted);
+                menu.setHeaderTitle(header);
+            }
         } else if (viewPager.getCurrentItem() == Constant.PRODUCT_LIST_INDEX) {
             Product product;
-            mContextEntity = product = (Product) getProductListView().getItemAtPosition(adapterMenuInfo.position);
-            menu.setHeaderTitle(product.getName());
+            list = getProductListView();
+            if (list != null) {
+                mContextEntity = product = (Product) list.getItemAtPosition(adapterMenuInfo.position);
+                menu.setHeaderTitle(product.getName());
+            }
         }
 
         menu.removeGroup(Constant.MEMBER_DETAIL_CONTEXT_GROUP_ID);
@@ -459,11 +550,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         return true;
-    }
-
-    @Override
-    public void onContextMenuClosed(Menu menu) {
-        super.onContextMenuClosed(menu);
     }
 
     private Class<?> getCreateNewActivityClass() {
@@ -497,7 +583,7 @@ public class MainActivity extends AppCompatActivity
                             PaymentManager.getInstance().deletePayment((Payment) mContextEntity);
                         }
 
-                        refreshEntities(false);
+                        refreshEntities();
                         mContextEntity = null;
                     }
                 })
@@ -509,23 +595,35 @@ public class MainActivity extends AppCompatActivity
                 .show();
     }
 
-    public ListView getMemberListView() {
-        return EntityTabManager.getInstance().getMemberList();
+    private ListView getMemberListView() {
+        return EntityTabManager.getInstance().getMemberList(this);
     }
 
-    public ListView getPaymentListView() {
-        return EntityTabManager.getInstance().getPaymentList();
+    private ListView getPaymentListView() {
+        return EntityTabManager.getInstance().getPaymentList(this);
     }
 
-    public ListView getProductListView() {
-        return EntityTabManager.getInstance().getProductList();
+    private ListView getProductListView() {
+        return EntityTabManager.getInstance().getProductList(this);
     }
 
-    private void refreshEntities(boolean refreshAll) {
-        if (!refreshAll) {
-            refreshIndividually(mContextEntity);
-        } else
-            filterEntities(null);
+    private void refreshEntities() {
+        refreshIndividually(mContextEntity);
+    }
+
+    private void refreshMembers() {
+        filterMemberList(null);
+        moveFloatingButton();
+    }
+
+    private void refreshProducts() {
+        filterProductList(null);
+        moveFloatingButton();
+    }
+
+    private void refreshPayments() {
+        filterPaymentList(null);
+        moveFloatingButton();
     }
 
     private void refreshIndividually(BaseEntity entity) {
@@ -566,7 +664,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void applyGroupFilterOnManager(String preference, int groupCode) {
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);;
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         if (sharedPref.getBoolean(preference, false)) {
             MemberManager.getInstance().toggleGroupFilter(groupCode);
             ProductManager.getInstance().toggleGroupFilter(groupCode);
@@ -575,11 +673,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void filterMemberList(String query) {
-        List<Member> members;
+        List<Member> members = null;
         if (query != null) {
             String[] split = query.split(" ");
             members = MemberManager.getInstance().getMembers(split);
-        } else {
+        }
+
+        if (query == null || (members != null && members.isEmpty())) {
             members = MemberManager.getInstance().getMembers();
         }
 
@@ -588,33 +688,33 @@ public class MainActivity extends AppCompatActivity
             listView.setAdapter(
                     new MembersAdapter(
                             this,
-                            R.layout.layout_member,
                             members));
     }
 
     private void filterProductList(String query) {
         ListView listView = getProductListView();
+        List<Product> products = ProductManager.getInstance().getProducts(query);
+        if (products.isEmpty())
+            products = ProductManager.getInstance().getProducts();
         if (listView != null)
             listView.setAdapter(
                     new ProductsAdapter(
                             this,
-                            R.layout.layout_product,
-                            ProductManager.getInstance().getProducts(query)));
+                            products));
     }
 
     private void filterPaymentList(String query) {
         ListView listView = getPaymentListView();
-        if (listView != null) {
-            List<Payment> payments;
-            if (query == null)
-                payments = PaymentManager.getInstance().getPayments();
-            else
-                payments = PaymentManager.getInstance().getPayments(query.split(" "));
+        List<Payment> payments;
+        if (query == null)
+            payments = PaymentManager.getInstance().getPayments();
+        else
+            payments = PaymentManager.getInstance().getPayments(query.split(" "));
 
+        if (listView != null) {
             listView.setAdapter(
                     new PaymentsAdapter(
                             this,
-                            R.layout.layout_payment,
                             payments
                     )
             );
@@ -643,7 +743,6 @@ public class MainActivity extends AppCompatActivity
             getMemberListView().setAdapter(
                     new MembersAdapter(
                             viewPager.getContext(),
-                            R.layout.layout_member,
                             MemberManager.getInstance().getMembers()));
 
             SearchView searchView = (SearchView) findViewById(R.id.search);

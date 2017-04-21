@@ -2,7 +2,6 @@ package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
 import com.google.firebase.database.DatabaseReference;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,7 +10,9 @@ import java.util.Date;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Adult;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class MemberManagerTest {
     private MemberManager manager;
@@ -21,11 +22,6 @@ public class MemberManagerTest {
         manager = new TestMemberManager();
         manager.addMember(new Adult(0, "Name", "Surname"));
         manager.getDatabaseReference().child("id").setValue(0);
-    }
-
-    @After
-    public void TearDown() throws Exception {
-
     }
 
     @Test
@@ -58,60 +54,7 @@ public class MemberManagerTest {
         assertEquals("TestName", member.getName());
     }
 
-    @Test
-    public void addMember() throws Exception {
 
-    }
-
-    @Test
-    public void deleteMember() throws Exception {
-
-    }
-
-    @Test
-    public void replaceMember() throws Exception {
-
-    }
-
-    @Test
-    public void findMember() throws Exception {
-
-    }
-
-    @Test
-    public void exportDescription() throws Exception {
-
-    }
-
-    @Test
-    public void load() throws Exception {
-
-    }
-
-    @Test
-    public void upload() throws Exception {
-
-    }
-
-    @Test
-    public void update() throws Exception {
-
-    }
-
-    @Test
-    public void delete() throws Exception {
-
-    }
-
-    @Test
-    public void importFromFile() throws Exception {
-
-    }
-
-    @Test
-    public void importDescription() throws Exception {
-
-    }
 
     private class TestMemberManager extends MemberManager {
 

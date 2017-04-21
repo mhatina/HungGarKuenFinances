@@ -5,7 +5,7 @@ import android.net.Uri;
 
 import java.io.IOException;
 
-public interface ImportManager {
+interface ImportManager {
 
     void importFromFile(Context context, Uri uri) throws IOException;
     int importDescription();

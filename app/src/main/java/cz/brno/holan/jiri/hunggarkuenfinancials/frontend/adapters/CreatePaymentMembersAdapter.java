@@ -24,28 +24,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 
 public class CreatePaymentMembersAdapter extends ArrayAdapter<Member> {
-    public CreatePaymentMembersAdapter(Context context, int resource, List<Member> objects) {
-        super(context, resource, objects);
-    }
-
-    public CreatePaymentMembersAdapter(Context context, int resource, int textViewResourceId, List<Member> objects) {
-        super(context, resource, textViewResourceId, objects);
+    public CreatePaymentMembersAdapter(Context context, List<Member> objects) {
+        super(context, R.layout.layout_payment_new_list_item, objects);
     }
 
     @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         ViewHolder viewHolder;
 
         if (convertView == null) {
@@ -65,7 +61,7 @@ public class CreatePaymentMembersAdapter extends ArrayAdapter<Member> {
         if (member != null) {
             viewHolder.name.setText(member.getName() + " " + member.getSurname());
 
-            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             Date birthDate = member.getBirthDate();
             if (birthDate != null) {
                 viewHolder.detail.setVisibility(View.VISIBLE);
@@ -78,8 +74,8 @@ public class CreatePaymentMembersAdapter extends ArrayAdapter<Member> {
     }
 
     public class ViewHolder {
-        public TextView name;
-        public TextView detail;
+        public final TextView name;
+        public final TextView detail;
 
         ViewHolder(View view) {
             name = (TextView) view.findViewById(R.id.create_new_payment_list_name);

@@ -140,6 +140,7 @@ public class Payment extends BaseEntity {
         }
     }
 
+    @SuppressWarnings("SimplifiableIfStatement")
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -148,8 +149,7 @@ public class Payment extends BaseEntity {
         Payment payment = (Payment) o;
 
         if (getId() != payment.getId()) return false;
-        if (memberIds != payment.memberIds) return false;
-        return productId == payment.productId;
+        return memberIds == payment.memberIds && productId == payment.productId;
 
     }
 

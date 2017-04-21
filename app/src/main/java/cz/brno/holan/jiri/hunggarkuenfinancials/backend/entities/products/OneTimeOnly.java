@@ -30,8 +30,4 @@ public class OneTimeOnly extends Product {
     public int getStock() {
         return detail;
     }
-
-    public void setStock(int stock) {
-        this.detail = stock;
-    }
 }

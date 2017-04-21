@@ -17,6 +17,7 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.widget.ListView;
@@ -28,23 +29,27 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.BuildConfig;
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.Utils;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.OneTimeOnly;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Periodic;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Product;
+import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.comparators.ProductComparator;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ProductsAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.EntityTabManager;
 
 public class ProductManager extends BaseManager {
-    private ArrayList<Product> mProducts;
-    private ArrayList<Product> mShownProducts;
+    private final ArrayList<Product> mProducts;
+    private final ArrayList<Product> mShownProducts;
     private long newProductId;
 
-    private static ProductManager ourInstance = new ProductManager();
+    private static final ProductManager ourInstance = new ProductManager();
 
     public static ProductManager getInstance() {
         return ourInstance;
@@ -56,22 +61,31 @@ public class ProductManager extends BaseManager {
         getDatabaseReference().keepSynced(true);
     }
 
+    public Product getProduct(long id, String... filter) {
+        for (Product product : getProducts(filter)) {
+            if (id == product.getId())
+                return product;
+        }
+
+        return null;
+    }
+
     public List<Product> getProducts(String... filter) {
         Utils.copyContent(mShownProducts, mProducts);
         groupFilter &= Constant.BEGINNER_GROUP - 1;
 
         String singleFilter = filter != null && filter.length != 0 ? filter[0] : null;
-        for (int i = mProducts.size() - 1; i >= 0; i--) {
-            Product product = mProducts.get(i);
-            if (groupFilter != 0 && (groupFilter & product.getGroup()) == 0)
-                mShownProducts.remove(product);
-            else if (singleFilter == null)
-                ;
-            else if (!product.getName().toUpperCase().startsWith(singleFilter.toUpperCase())
-                && !String.valueOf(product.getPrice()).startsWith(singleFilter))
-                mShownProducts.remove(product);
-        }
+        if (singleFilter != null)
+            for (int i = mProducts.size() - 1; i >= 0; i--) {
+                Product product = mProducts.get(i);
+                if (groupFilter != 0 && (groupFilter & product.getGroup()) == 0)
+                    mShownProducts.remove(product);
+                else if (!product.getName().toUpperCase().startsWith(singleFilter.toUpperCase())
+                        && !String.valueOf(product.getPrice()).startsWith(singleFilter))
+                    mShownProducts.remove(product);
+            }
 
+        Collections.sort(mShownProducts, new ProductComparator());
         return mShownProducts;
     }
 
@@ -83,6 +97,7 @@ public class ProductManager extends BaseManager {
                 mShownProducts.add(product);
         }
 
+        Collections.sort(mShownProducts, new ProductComparator());
         return mShownProducts;
     }
 
@@ -147,7 +162,7 @@ public class ProductManager extends BaseManager {
     }
 
     @Override
-    public void load() {
+    public void load(final Activity activity) {
         mProducts.clear();
         mShownProducts.clear();
 
@@ -166,12 +181,16 @@ public class ProductManager extends BaseManager {
                             }
                         }
 
-                        ListView productList = EntityTabManager.getInstance().getProductList();
+                        ListView productList = EntityTabManager.getInstance().getProductList(activity);
                         if (productList != null) {
                             ProductsAdapter adapter = (ProductsAdapter) productList.getAdapter();
                             if (adapter != null) {
                                 adapter.notifyDataSetChanged();
                             }
+                        }
+
+                        if (activity instanceof MainActivity) {
+                            ((MainActivity) activity).moveFloatingButton();
                         }
                     }
 
@@ -230,6 +249,8 @@ public class ProductManager extends BaseManager {
 
     @Override
     public DatabaseReference getDatabaseReference() {
+        if (BuildConfig.DEBUG)
+            return mDatabase.child("debug").child("products");
         return mDatabase.child("products");
     }
 

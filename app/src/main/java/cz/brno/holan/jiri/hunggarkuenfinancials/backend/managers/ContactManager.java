@@ -18,8 +18,6 @@
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.provider.ContactsContract;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -33,7 +31,7 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Mail;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Phone;
 
 public class ContactManager {
-    private ArrayList<Contact> contacts;
+    private final ArrayList<Contact> contacts;
 
     public ContactManager() {
         this.contacts = new ArrayList<>();

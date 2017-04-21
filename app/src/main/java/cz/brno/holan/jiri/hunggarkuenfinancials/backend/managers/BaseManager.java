@@ -27,14 +27,10 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 
 public abstract class BaseManager implements DatabaseManager, ExportManager, ImportManager {
 
-    protected int groupFilter;
+    int groupFilter;
 
-    public BaseManager() {
+    BaseManager() {
         resetGroupFilter();
-    }
-
-    public int getGroupFilter() {
-        return groupFilter;
     }
 
     public void toggleGroupFilter(int groupFilter) {
@@ -58,7 +54,7 @@ public abstract class BaseManager implements DatabaseManager, ExportManager, Imp
     }
 
     private void writeToFile(Context context, String filename, String data) {
-        OutputStreamWriter outputStreamWriter = null;
+        OutputStreamWriter outputStreamWriter;
         try {
             outputStreamWriter = new OutputStreamWriter(context.openFileOutput(filename, Context.MODE_PRIVATE));
         } catch (FileNotFoundException e) {
@@ -68,7 +64,7 @@ public abstract class BaseManager implements DatabaseManager, ExportManager, Imp
         try {
             outputStreamWriter.write(data);
             outputStreamWriter.close();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
     }
 }

@@ -26,7 +26,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="5dp">
+        android:paddingTop="5dp"
+        android:baselineAligned="false">
 
         <RelativeLayout
             android:layout_width="@dimen/icon_size"
@@ -38,7 +39,8 @@
                 android:layout_height="match_parent"
                 android:background="@null"
                 android:clickable="true"
-                android:src="@drawable/beginner_icon" />
+                android:src="@drawable/beginner_icon"
+                android:contentDescription="@string/member_type"/>
 
             <ImageView
                 android:id="@+id/create_new_member_beginner"
@@ -46,7 +48,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:src="@android:drawable/presence_online" />
+                android:src="@android:drawable/presence_online"
+                android:contentDescription="@string/is_beginner"/>
 
         </RelativeLayout>
 
@@ -61,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:hint="@string/new_member_name_hint"
+                android:hint="@string/name"
                 android:inputType="textPersonName"
                 android:nextFocusDown="@+id/create_new_member_surname_text" />
         </cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout>
@@ -77,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:hint="@string/new_member_surname_hint"
+                android:hint="@string/surname"
                 android:inputType="textPersonName"
                 android:nextFocusDown="@+id/create_new_day_of_birth_text" />
 
@@ -92,7 +95,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center|left"
+            android:gravity="center|start"
             android:orientation="vertical">
 
             <TextView
@@ -120,7 +123,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:baselineAligned="false">
 
                 <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout
                     android:id="@+id/create_new_day_of_birth"
@@ -178,7 +182,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:baselineAligned="false">
 
                 <cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout
                     android:id="@+id/create_new_day_of_joining"

@@ -36,12 +36,9 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ProductManager;
 
 public class PaymentsAdapter extends ArrayAdapter<Payment> {
-    public PaymentsAdapter(Context context, int textViewResourceId) {
-        super(context, textViewResourceId);
-    }
 
-    public PaymentsAdapter(Context context, int resource, List<Payment> items) {
-        super(context, resource, items);
+    public PaymentsAdapter(Context context, List<Payment> items) {
+        super(context, R.layout.layout_payment, items);
     }
 
     @NonNull
@@ -64,7 +61,7 @@ public class PaymentsAdapter extends ArrayAdapter<Payment> {
         Payment payment = getItem(position);
 
         if (payment != null) {
-            String members = null;
+            String members;
             String owns = convertView.getResources().getString(R.string.payment_fully_paid_for);
             SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault());
             Product product = ProductManager.getInstance().findProduct(payment.getProductId());
@@ -89,11 +86,11 @@ public class PaymentsAdapter extends ArrayAdapter<Payment> {
     }
 
     private class ViewHolder {
-        public TextView members;
-        public TextView paidPrice;
-        public TextView product;
-        public TextView owns;
-        public TextView created;
+        public final TextView members;
+        public final TextView paidPrice;
+        public final TextView product;
+        public final TextView owns;
+        public final TextView created;
 
         ViewHolder(View view) {
             members = (TextView) view.findViewById(R.id.payment_layout_members);

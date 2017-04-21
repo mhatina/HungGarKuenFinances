@@ -34,13 +34,13 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 
 public class MembersAdapter extends ArrayAdapter<Member> {
 
-    public MembersAdapter(Context context, int resource, List<Member> items) {
-        super(context, resource, items);
+    public MembersAdapter(Context context, List<Member> items) {
+        super(context, R.layout.layout_member, items);
     }
 
     @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         ViewHolder viewHolder;
 
         if (convertView == null) {
@@ -94,17 +94,17 @@ public class MembersAdapter extends ArrayAdapter<Member> {
     }
 
     @Override
-    public void sort(Comparator<? super Member> comparator) {
+    public void sort(@NonNull Comparator<? super Member> comparator) {
         super.sort(comparator);
     }
 
     public class ViewHolder {
-        public TextView firstName;
-        public TextView surname;
-        public ImageView icon;
-        public ImageView paymentStatus;
-        public ImageView paymentWarning;
-        public ImageView beginner;
+        public final TextView firstName;
+        public final TextView surname;
+        public final ImageView icon;
+        public final ImageView paymentStatus;
+        public final ImageView paymentWarning;
+        public final ImageView beginner;
 
         ViewHolder(View view) {
             firstName = (TextView) view.findViewById(R.id.member_layout_first_name);

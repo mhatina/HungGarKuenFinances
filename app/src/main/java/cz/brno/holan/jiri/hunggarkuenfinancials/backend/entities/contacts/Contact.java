@@ -18,17 +18,17 @@
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts;
 
 import android.content.Context;
-import android.content.res.Resources;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.BaseEntity;
 
+@SuppressWarnings("SameParameterValue")
 public abstract class Contact extends BaseEntity {
-    public static final int ICON_PATH = R.drawable.home_black;
+    private static final int ICON_PATH = R.drawable.home_black;
     private String content;
     private String note;
 
-    public Contact() {
+    Contact() {
     }
 
     public Contact(long id, String contact, String note) {

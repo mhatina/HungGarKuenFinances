@@ -18,20 +18,23 @@
 package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 
 public abstract class CreateNewEntityActivity extends AppCompatActivity {
 
-    private int activityContentResourceId;
+    private final int activityContentResourceId;
 
     public CreateNewEntityActivity(int activityContentResourceId) {
         this.activityContentResourceId = activityContentResourceId;
@@ -50,7 +53,7 @@ public abstract class CreateNewEntityActivity extends AppCompatActivity {
         }
     }
 
-    protected void addViewToActivity(int layoutId) {
+    private void addViewToActivity(int layoutId) {
         View view = getLayoutInflater().inflate(layoutId, null);
         ScrollView parent = (ScrollView) findViewById(R.id.create_new_scroll_view);
         view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
@@ -74,7 +77,25 @@ public abstract class CreateNewEntityActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public abstract void init();
-    public abstract void initForEdit();
-    public abstract boolean save();
+    protected abstract void init();
+    protected abstract void initForEdit();
+    protected abstract boolean save();
+
+    public static void setEditTextContent(TextInputLayout layout, String content) {
+        getEditText(layout).setText(content);
+    }
+
+    @NonNull
+    public static String getEditTextContent(TextInputLayout layout) {
+        return getEditText(layout).getText().toString();
+    }
+
+    @NonNull
+    public static EditText getEditText(TextInputLayout layout) {
+        EditText editText = layout.getEditText();
+        if (editText == null) {
+            throw new NullPointerException(layout.toString());
+        }
+        return editText;
+    }
 }

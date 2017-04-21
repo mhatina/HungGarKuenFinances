@@ -17,85 +17,84 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/member_item_list_row"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+              android:id="@+id/member_item_list_row"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+    <RelativeLayout
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
+        android:layout_marginEnd="6dp">
 
-        <RelativeLayout
+        <ImageView
+            android:id="@+id/member_layout_icon"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
-            android:layout_marginRight="6dp">
+            android:contentDescription="@string/member_type"/>
 
-            <ImageView
-                android:id="@+id/member_layout_icon"
-                android:layout_width="@dimen/icon_size"
-                android:layout_height="@dimen/icon_size"/>
-
-            <ImageView
-                android:id="@+id/member_layout_beginner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:src="@android:drawable/presence_online" />
-
-        </RelativeLayout>
-
-        <LinearLayout
+        <ImageView
+            android:id="@+id/member_layout_beginner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:contentDescription="@string/is_beginner"
+            android:src="@android:drawable/presence_online"/>
 
-            <TextView
-                android:id="@+id/member_layout_surname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/surname"
-                android:textSize="30sp" />
+    </RelativeLayout>
 
-            <TextView
-                android:id="@+id/member_layout_first_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="marquee"
-                android:singleLine="true"
-                android:text="@string/name"
-                android:layout_marginTop="-10dp"
-                android:textSize="20sp" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        </LinearLayout>
+        <TextView
+            android:id="@+id/member_layout_surname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/surname"
+            android:textSize="30sp"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
-
-        <!-- only show when member is behind with his payment -->
-        <ImageView
-            android:id="@+id/member_layout_payment_warning"
-            android:layout_width="@dimen/status_warning_icon"
-            android:layout_height="@dimen/status_warning_icon"
-            android:layout_gravity="center_vertical|end"
-            android:src="@android:drawable/ic_dialog_alert"
-            android:tint="@color/warning_red"
-            android:visibility="invisible"/>
-
-        <!-- @android:drawable/presence_online => member has paid -->
-        <!-- @android:drawable/presence_away => member should pay -->
-        <!-- @android:drawable/presence_offline => inactive member -->
-        <ImageView
-            android:id="@+id/member_layout_payment_status"
-            android:layout_width="@dimen/status_icon"
-            android:layout_height="@dimen/status_icon"
-            android:layout_gravity="center_vertical|end"
-            android:paddingRight="5dp"
-            android:src="@android:drawable/presence_online" />
+        <TextView
+            android:id="@+id/member_layout_first_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-10dp"
+            android:ellipsize="marquee"
+            android:maxLines="1"
+            android:text="@string/name"
+            android:textSize="20sp"/>
 
     </LinearLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+
+    <!-- only show when member is behind with his payment -->
+    <ImageView
+        android:id="@+id/member_layout_payment_warning"
+        android:layout_width="@dimen/status_warning_icon"
+        android:layout_height="@dimen/status_warning_icon"
+        android:layout_gravity="center_vertical|end"
+        android:contentDescription="@string/should_pay"
+        android:src="@android:drawable/ic_dialog_alert"
+        android:tint="@color/warning_red"
+        android:visibility="invisible"/>
+
+    <!-- @android:drawable/presence_online => member has paid -->
+    <!-- @android:drawable/presence_away => member should pay -->
+    <!-- @android:drawable/presence_offline => inactive member -->
+    <ImageView
+        android:id="@+id/member_layout_payment_status"
+        android:layout_width="@dimen/status_icon"
+        android:layout_height="@dimen/status_icon"
+        android:layout_gravity="center_vertical|end"
+        android:contentDescription="@string/payment_status"
+        android:paddingEnd="5dp"
+        android:paddingStart="0dp"
+        android:src="@android:drawable/presence_online"/>
+
 </LinearLayout>

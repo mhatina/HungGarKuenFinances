@@ -17,6 +17,7 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -42,6 +43,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import cz.brno.holan.jiri.hunggarkuenfinancials.BuildConfig;
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.Log;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
@@ -55,14 +57,14 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Child;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Junior;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Youngster;
-import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.comparators.FilterComparator;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.comparators.MemberComparator;
+import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.MembersAdapter;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.managers.EntityTabManager;
 
 public class MemberManager extends BaseManager {
-    private ArrayList<Member> mMembers;
-    private ArrayList<Member> mShownMembers;
+    private final ArrayList<Member> mMembers;
+    private final ArrayList<Member> mShownMembers;
     private long newMemberId;
 
     private static MemberManager ourInstance = null;
@@ -73,7 +75,7 @@ public class MemberManager extends BaseManager {
         return ourInstance;
     }
 
-    protected MemberManager() {
+    MemberManager() {
         mMembers = new ArrayList<>();
         mShownMembers = new ArrayList<>();
         getDatabaseReference().keepSynced(true);
@@ -121,7 +123,7 @@ public class MemberManager extends BaseManager {
             }
         }
 
-        Collections.sort(mShownMembers, new FilterComparator());
+        Collections.sort(mShownMembers, new MemberComparator());
         return mShownMembers;
     }
 
@@ -217,7 +219,7 @@ public class MemberManager extends BaseManager {
     }
 
     @Override
-    public void load() {
+    public void load(final Activity activity) {
         mMembers.clear();
         mShownMembers.clear();
 
@@ -236,13 +238,17 @@ public class MemberManager extends BaseManager {
                             }
                         }
 
-                        ListView memberList = EntityTabManager.getInstance().getMemberList();
+                        ListView memberList = EntityTabManager.getInstance().getMemberList(activity);
                         if (memberList != null) {
                             MembersAdapter adapter = (MembersAdapter) memberList.getAdapter();
                             if (adapter != null) {
                                 adapter.notifyDataSetChanged();
                                 adapter.sort(new MemberComparator());
                             }
+                        }
+
+                        if (activity instanceof MainActivity) {
+                            ((MainActivity) activity).moveFloatingButton();
                         }
                     }
 
@@ -305,11 +311,15 @@ public class MemberManager extends BaseManager {
         if ((member.getUpdatePropertiesSwitch() & Constant.BEGINNER_SWITCH) > 0)
             reference.child("beginner").setValue(member.isBeginner());
 
+        member.getContactManager().uploadContacts(reference);
+
         member.clearUpdatePropertiesSwitch();
     }
 
     @Override
     public DatabaseReference getDatabaseReference() {
+        if (BuildConfig.DEBUG)
+            return mDatabase.child("debug").child("members");
         return mDatabase.child("members");
     }
 
@@ -360,7 +370,6 @@ public class MemberManager extends BaseManager {
                 throw new NullPointerException(context.getString(R.string.cannot_open_file, uri.getPath()));
             }
 
-            SimpleDateFormat dateFormat;
             String line;
             reader.readLine();
             while (true) {
@@ -378,8 +387,9 @@ public class MemberManager extends BaseManager {
                 else
                     Log.warning(context, new InvalidParameterException(context.getString(R.string.no_delimeter_found)));
 
-                if (split.length == 0)
+                if (split != null && split.length == 0) {
                     continue;
+                }
 
                 addMember(parseLine(context, split));
             }
@@ -392,6 +402,7 @@ public class MemberManager extends BaseManager {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     private Member parseLine(Context context, String[] lineSplit) {
         String name = "";
         String surname = "";
@@ -482,7 +493,7 @@ public class MemberManager extends BaseManager {
     }
 
     private String extendYearToFullLength(String s) {
-        int lastIndexOfDot = 0;
+        int lastIndexOfDot;
         if (s.contains("."))
             lastIndexOfDot = s.lastIndexOf('.');
         else if (s.contains("/"))

@@ -28,8 +28,11 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.MemberManager;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 
+import static cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.CreateNewEntityActivity.getEditText;
+import static cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.CreateNewEntityActivity.setEditTextContent;
+
 public class CreatePaymentOnMemberTextChangedListener implements TextWatcher {
-    private TextInputLayout inputLayout;
+    private final TextInputLayout inputLayout;
     private boolean watcherOn = true;
     private CharSequence oldSequence = "";
 
@@ -85,12 +88,12 @@ public class CreatePaymentOnMemberTextChangedListener implements TextWatcher {
             else
                 textToSet += member.getSurname() + " " + member.getName();
             watcherOn = false;
-            inputLayout.getEditText().setText(textToSet);
+            setEditTextContent(inputLayout, textToSet);
 
             if (start + 1 < textToSet.length())
-                inputLayout.getEditText().setSelection(start + 1, textToSet.length());
+                getEditText(inputLayout).setSelection(start + 1, textToSet.length());
             else
-                inputLayout.getEditText().setSelection(textToSet.length());
+                getEditText(inputLayout).setSelection(textToSet.length());
             watcherOn = true;
         }
     }

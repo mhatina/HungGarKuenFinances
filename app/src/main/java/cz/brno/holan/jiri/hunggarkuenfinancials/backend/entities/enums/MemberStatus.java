@@ -27,7 +27,7 @@ public enum MemberStatus {
         this.value = value;
     }
 
-    int value;
+    final int value;
 
     public int getValue() {
         return value;

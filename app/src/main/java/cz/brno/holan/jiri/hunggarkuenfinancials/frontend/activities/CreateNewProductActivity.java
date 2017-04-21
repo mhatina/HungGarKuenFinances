@@ -28,8 +28,6 @@ import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.OneTimeOnly;
@@ -70,11 +68,11 @@ public class  CreateNewProductActivity extends CreateNewEntityActivity implement
 
         setTitle(getString(R.string.edit_product_title));
 
-        name.getEditText().setText(product.getName());
+        setEditTextContent(name, product.getName());
         if (product.getValidTime() != -1)
-            validFor.getEditText().setText(String.valueOf(product.getValidTime()));
-        price.getEditText().setText(String.valueOf(product.getPrice()));
-        note.getEditText().setText(product.getNote());
+            setEditTextContent(validFor, String.valueOf(product.getValidTime()));
+        setEditTextContent(price, String.valueOf(product.getPrice()));
+        setEditTextContent(note, product.getNote());
         toggleButton(button, product.getClass().equals(Periodic.class));
 
         button = (ImageButton) findViewById(R.id.create_new_product_adult);
@@ -150,8 +148,8 @@ public class  CreateNewProductActivity extends CreateNewEntityActivity implement
                 product.setPrice(price);
             }
 
-            if (valid_for_layout.getEditText().getText().length() != 0) {
-                long valid_for = Long.valueOf(valid_for_layout.getEditText().getText().toString());
+            if (getEditTextContent(valid_for_layout).length() != 0) {
+                long valid_for = Long.valueOf(getEditTextContent(valid_for_layout));
                 product.setValidTime(valid_for);
             } else {
                 product.setValidTime(-1);
@@ -168,14 +166,14 @@ public class  CreateNewProductActivity extends CreateNewEntityActivity implement
 
             product.setValidGroup(validity_spinner.getSelectedItemPosition());
             product.setDetail(detail_picker.getValue());
-            product.setNote(note_layout.getEditText().getText().toString());
+            product.setNote(getEditTextContent(note_layout));
 
             manager.update(product);
         } else {
             product = manager.createProduct(classType, name, price, detail_picker.getValue());
 
-            if (valid_for_layout.getEditText().getText().length() != 0) {
-                long valid_for = Long.valueOf(valid_for_layout.getEditText().getText().toString());
+            if (getEditTextContent(valid_for_layout).length() != 0) {
+                long valid_for = Long.valueOf(getEditTextContent(valid_for_layout));
                 product.setValidTime(valid_for);
             } else {
                 product.setValidTime(-1);
@@ -192,7 +190,7 @@ public class  CreateNewProductActivity extends CreateNewEntityActivity implement
 
             product.setValidGroup(validity_spinner.getSelectedItemPosition());
             product.setDetail(detail_picker.getValue());
-            product.setNote(note_layout.getEditText().getText().toString());
+            product.setNote(getEditTextContent(note_layout));
 
             manager.addProduct(product);
         }
@@ -203,7 +201,7 @@ public class  CreateNewProductActivity extends CreateNewEntityActivity implement
         return false;
     }
 
-    public String verifyName(TextInputLayout layout) {
+    private String verifyName(TextInputLayout layout) {
         EditText text = layout.getEditText();
         if (text != null && text.getText().length() != 0)
             return capitalize(text.getText().toString());
@@ -212,7 +210,7 @@ public class  CreateNewProductActivity extends CreateNewEntityActivity implement
         return null;
     }
 
-    public float verifyPrice(TextInputLayout layout) {
+    private float verifyPrice(TextInputLayout layout) {
         EditText text = layout.getEditText();
         if (text != null && text.getText().length() != 0) {
             float price = Float.valueOf(text.getText().toString());
@@ -243,7 +241,7 @@ public class  CreateNewProductActivity extends CreateNewEntityActivity implement
 
         if (toggle) {
             if (button.getId() == R.id.create_new_product_periodic) {
-                textView.setText(R.string.times_week);
+                textView.setText(R.string.frequency);
                 numberPicker.setMinValue(1);
                 numberPicker.setMaxValue(7);
             }

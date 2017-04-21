@@ -21,6 +21,7 @@ import java.util.Date;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 
+@SuppressWarnings("SameParameterValue")
 public class Adult extends Member {
 
     public static final int ICON_PATH = R.drawable.adult_icon;

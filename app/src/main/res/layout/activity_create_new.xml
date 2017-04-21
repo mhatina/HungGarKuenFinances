@@ -16,16 +16,17 @@
   -->
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/create_new_scroll_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/lam_ga_hung_kuen_watermark"
-    android:descendantFocusability="beforeDescendants"
-    android:fillViewport="true"
-    android:focusableInTouchMode="true"
-    android:isScrollContainer="true"
-    tools:context=".frontend.activities.CreateNewMemberActivity">
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/create_new_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/lam_ga_hung_kuen_watermark"
+            android:descendantFocusability="beforeDescendants"
+            android:fillViewport="true"
+            android:focusableInTouchMode="true"
+            android:isScrollContainer="true"
+            tools:context=".frontend.activities.CreateNewMemberActivity"
+            tools:ignore="Overdraw">
 
 
 </ScrollView>

@@ -44,7 +44,6 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.products.Produc
 public class ProductDetailDialog extends DialogFragment {
 
     private Product product = null;
-    private View view;
 
     public ProductDetailDialog() {
     }
@@ -64,7 +63,7 @@ public class ProductDetailDialog extends DialogFragment {
             return null;
         }
 
-        view = inflater.inflate(R.layout.layout_product_detail, null);
+        View view = inflater.inflate(R.layout.layout_product_detail, null);
         TextView name = (TextView) view.findViewById(R.id.product_layout_name);
         TextView detail = (TextView) view.findViewById(R.id.product_layout_detail);
         TextView price = (TextView) view.findViewById(R.id.product_layout_price);
@@ -85,7 +84,8 @@ public class ProductDetailDialog extends DialogFragment {
         note.setText(product.getNote());
 
         String[] validityPeriods = getResources().getStringArray(R.array.validity_periods);
-        validFor.setText(product.getValidTime() + " " + validityPeriods[product.getValidGroup()]);
+        String validForText = product.getValidTime() + " " + validityPeriods[product.getValidGroup()];
+        validFor.setText(product.getValidTime() == -1 ? getResources().getString(R.string.indefinite) : validForText);
 
         int group = Constant.ADULT_GROUP;
         for (int i = 0; i < Constant.NUMBER_OF_GROUPS; i++) {

@@ -28,7 +28,7 @@ public class Product extends BaseEntity {
     private int validGroup;
     private float price;
     private int group;
-    protected int detail;
+    int detail;
 
     private int updatePropertiesSwitch = 0;
 
@@ -76,13 +76,6 @@ public class Product extends BaseEntity {
 
     public int getGroup() {
         return group;
-    }
-
-    public void setGroup(int group) {
-        if (this.group != group) {
-            this.group = group;
-            updatePropertiesSwitch |= Constant.GROUP_SWITCH;
-        }
     }
 
     public void toggleGroup(int group, boolean state) {
@@ -141,8 +134,7 @@ public class Product extends BaseEntity {
 
         Product product = (Product) o;
 
-        if (price != product.price) return false;
-        return !(name != null ? !name.equals(product.name) : product.name != null);
+        return price == product.price && !(name != null ? !name.equals(product.name) : product.name != null);
 
     }
 

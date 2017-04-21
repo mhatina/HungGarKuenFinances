@@ -2,6 +2,23 @@ package cz.brno.holan.jiri.hunggarkuenfinancials;
 
 
 public class Constant {
+    public static final String AUTHOR = "Martin Hatina";
+    public static final String BUG_REPORT_URL = "https://github.com/mhatina/HungGarKuenFinances/issues/new";
+    public static final String BUG_REPORT_MAIL = "hung.gar.devel@gmail.com";
+    public static final String BUG_REPORT_MAIL_SUBJECT = "Bug report for HungGarKuenFinances";
+    public static final String BUG_REPORT_MAIL_BODY = "Description of problem:\n\n\n" +
+                                                      "Version-Release number:\n%s\n\n" +
+                                                      "How reproducible:\nalways/often/sometimes/almost never\n\n" +
+                                                      "Steps to Reproduce:\n1.\n2.\n3.\n\n" +
+                                                      "Actual results:\n\n\n" +
+                                                      "Expected results:\n\n\n" +
+                                                      "Additional info:\n";
+
+    public static final String KEY_FIREBASE_CONFIG_FORCE_UPDATE = "force_update";
+    public static final String KEY_FIREBASE_CONFIG_CURRENT_VERSION = "update_current_version";
+    public static final String KEY_FIREBASE_CONFIG_UPDATE_URL = "update_url";
+    public static final String FIREBASE_CONFIG_UPDATE_URL = "https://github.com/mhatina/HungGarKuenFinances/releases/download/v%s/HungGarKuenFinances-%s.apk";
+
     public static final int SIGN_IN_CODE = 100;
     public static final int FILE_SELECT_CODE = 101;
     public static final int NEW_ENTITY_CODE = 102;

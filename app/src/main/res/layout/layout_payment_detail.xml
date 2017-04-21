@@ -43,13 +43,14 @@
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:gravity="center|start"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingStart="0dp"
+            android:paddingEnd="@dimen/activity_horizontal_margin">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:paddingEnd="@dimen/activity_horizontal_margin"
                 android:text="@string/valid_until"
                 android:textSize="20sp"/>
 
@@ -57,7 +58,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:paddingRight="@dimen/activity_horizontal_margin"
                 android:text="@string/discount"
                 android:textSize="20sp"/>
 

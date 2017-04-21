@@ -22,22 +22,23 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
+import java.util.Locale;
+
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.view.TextInputLayout;
 
 public class CreatePaymentOnPriceTextChangedListener implements TextWatcher {
 
-    TextInputLayout price;
-    private EditText discount;
+    private final TextInputLayout price;
+    private final EditText discount;
     private float defaultPrice = -1;
-    private boolean watcherOn = true;
 
     public CreatePaymentOnPriceTextChangedListener(TextInputLayout price, EditText discount) {
         this.price = price;
         this.discount = discount;
     }
 
-    public void setDefaultPrice(float defaultPrice) {
+    void setDefaultPrice(float defaultPrice) {
         this.defaultPrice = defaultPrice;
     }
 
@@ -49,7 +50,7 @@ public class CreatePaymentOnPriceTextChangedListener implements TextWatcher {
     @Override
     public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
         this.price.setError(null);
-        if (!WatcherLock.getInstance().isWatcherOn())
+        if (WatcherLock.getInstance().isWatcherOff())
             return;
 
         float price = 0;
@@ -64,10 +65,10 @@ public class CreatePaymentOnPriceTextChangedListener implements TextWatcher {
             discount = (1 - (price / defaultPrice)) * 100;
         }
 
-        WatcherLock.getInstance().setWatcherOn(false);
+        WatcherLock.getInstance().setWatcherOff(true);
         if (defaultPrice != -1)
-            this.discount.setText(String.format("%.2f%%", discount));
-        WatcherLock.getInstance().setWatcherOn(true);
+            this.discount.setText(String.format(Locale.getDefault(), "%.2f%%", discount));
+        WatcherLock.getInstance().setWatcherOff(false);
     }
 
     @Override
@@ -76,19 +77,19 @@ public class CreatePaymentOnPriceTextChangedListener implements TextWatcher {
     }
 
     public static class WatcherLock {
-        private static WatcherLock instance = new WatcherLock();
-        private boolean watcherOn = true;
+        private final static WatcherLock instance = new WatcherLock();
+        private boolean watcherOff = false;
 
         public static WatcherLock getInstance() {
             return instance;
         }
 
-        public boolean isWatcherOn() {
-            return watcherOn;
+        public boolean isWatcherOff() {
+            return watcherOff;
         }
 
-        public void setWatcherOn(boolean watcherOn) {
-            this.watcherOn = watcherOn;
+        public void setWatcherOff(boolean watcherOff) {
+            this.watcherOff = watcherOff;
         }
     }
 }

@@ -40,7 +40,6 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.contacts.Contact;
 import cz.brno.holan.jiri.hunggarkuenfinancials.backend.entities.members.Member;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.CreateNewPaymentActivity;
-import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities.MainActivity;
 import cz.brno.holan.jiri.hunggarkuenfinancials.frontend.adapters.ContactsAdapter;
 
 public class MemberDetailDialog extends DialogFragment implements MenuItem.OnMenuItemClickListener {

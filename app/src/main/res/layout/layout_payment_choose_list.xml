@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@android:string/cancel"
-            android:layout_toLeftOf="@+id/choose_list_positive_button"/>
+            android:layout_toStartOf="@+id/choose_list_positive_button"/>
 
     </RelativeLayout>
 

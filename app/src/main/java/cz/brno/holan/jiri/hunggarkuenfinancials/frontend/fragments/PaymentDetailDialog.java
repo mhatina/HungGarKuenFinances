@@ -18,6 +18,7 @@
 
 package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -39,7 +40,6 @@ import cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers.ProductManager;
 public class PaymentDetailDialog extends DialogFragment {
 
     private Payment payment = null;
-    private View view;
 
     public PaymentDetailDialog() {
     }
@@ -48,6 +48,7 @@ public class PaymentDetailDialog extends DialogFragment {
         this.payment = payment;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -58,7 +59,7 @@ public class PaymentDetailDialog extends DialogFragment {
             return null;
         }
 
-        view = inflater.inflate(R.layout.layout_payment_detail, null);
+        View view = inflater.inflate(R.layout.layout_payment_detail, null);
         TextView members = (TextView) view.findViewById(R.id.payment_layout_members);
         TextView paidPrice = (TextView) view.findViewById(R.id.payment_layout_paid);
         TextView productView = (TextView) view.findViewById(R.id.payment_layout_product);

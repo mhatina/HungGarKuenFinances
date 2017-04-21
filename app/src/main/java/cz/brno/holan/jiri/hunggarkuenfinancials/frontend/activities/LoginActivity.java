@@ -6,10 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.api.Auth;
@@ -21,19 +18,19 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.FirebaseDatabase;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
+import cz.brno.holan.jiri.hunggarkuenfinancials.Log;
 import cz.brno.holan.jiri.hunggarkuenfinancials.R;
 
-/**
- * Demonstrate Firebase Authentication using a Google ID Token.
- */
 public class LoginActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
@@ -41,7 +38,6 @@ public class LoginActivity extends AppCompatActivity implements
     public static boolean isSignedIn = false;
     public static boolean autoFinish = false;
 
-    private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
 
     private ProgressDialog mProgressDialog;
@@ -50,10 +46,8 @@ public class LoginActivity extends AppCompatActivity implements
     private FirebaseAuth.AuthStateListener mAuthListener;
 
     private GoogleApiClient mGoogleApiClient;
-    private TextView mStatusTextView;
-    private TextView mDetailTextView;
 
-    private Activity mActivityToFinish = this;
+    private final Activity mActivityToFinish = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,16 +76,25 @@ public class LoginActivity extends AppCompatActivity implements
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     isSignedIn = true;
-                    if (autoFinish) {
-                        mActivityToFinish.setResult(Constant.SIGN_IN_CODE);
-                        mActivityToFinish.finish();
-                    }
+                    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    database.getReference("hasPermission").setValue("test").addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            database.getReference("hasPermission").removeValue();
+                            if (autoFinish) {
+                                mActivityToFinish.setResult(Constant.SIGN_IN_CODE);
+                                mActivityToFinish.finish();
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.info(LoginActivity.this, getString(R.string.not_authorized));
+                            LoginActivity.this.revokeAccess();
+                        }
+                    });
                 } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
                     isSignedIn = false;
                 }
                 updateUI(user);
@@ -127,8 +130,7 @@ public class LoginActivity extends AppCompatActivity implements
             } else {
                 // Google Sign In failed, update UI appropriately
                 updateUI(null);
-                cz.brno.holan.jiri.hunggarkuenfinancials.Log.error(this, getString(R.string.failed_login),
-                        new GoogleAuthException("Log in error: " + result.getStatus().getStatusCode()));
+                Log.error(this, getString(R.string.failed_login), new GoogleAuthException("Log in error: " + result.getStatus().getStatusCode()));
             }
         } else if (requestCode == Constant.SIGN_IN_CODE) {
             setResult(Constant.SIGN_IN_CODE);
@@ -137,7 +139,6 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         showProgressDialog();
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -145,15 +146,8 @@ public class LoginActivity extends AppCompatActivity implements
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
-
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(LoginActivity.this, R.string.failed_auth,
-                                    Toast.LENGTH_SHORT).show();
+                            Log.info(LoginActivity.this, R.string.failed_auth);
                         }
                         hideProgressDialog();
                     }
@@ -194,8 +188,7 @@ public class LoginActivity extends AppCompatActivity implements
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         // An unresolvable error has occurred and Google APIs (including Sign-In) will not
         // be available.
-        Log.d(TAG, "onConnectionFailed:" + connectionResult);
-        Toast.makeText(this, R.string.gplay_service_error, Toast.LENGTH_SHORT).show();
+        Log.info(this, R.string.google_play_service_error);
     }
 
     @Override
@@ -209,7 +202,7 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
-    public void showProgressDialog() {
+    private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage(getString(R.string.loading));
@@ -219,7 +212,7 @@ public class LoginActivity extends AppCompatActivity implements
         mProgressDialog.show();
     }
 
-    public void hideProgressDialog() {
+    private void hideProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }

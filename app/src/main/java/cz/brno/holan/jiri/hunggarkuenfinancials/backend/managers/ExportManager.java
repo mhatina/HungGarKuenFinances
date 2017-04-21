@@ -18,15 +18,11 @@
 package cz.brno.holan.jiri.hunggarkuenfinancials.backend.managers;
 
 import android.content.Context;
-import android.util.Log;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-
-public interface ExportManager {
+interface ExportManager {
 
     String toString();
     void export(Context context, String filename);
+    @SuppressWarnings("SameReturnValue")
     String exportDescription();
 }
