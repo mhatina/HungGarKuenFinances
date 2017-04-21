@@ -132,9 +132,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Class<?> activity = getCreateNewActivityClass();
-                SearchView searchView = (SearchView) findViewById(R.id.search);
 
                 if (activity != null) {
+                    SearchView searchView = (SearchView) MainActivity.this.findViewById(R.id.search);
                     searchView.setIconified(true);
                     startActivityForResult(new Intent(v.getContext(), activity), Constant.NEW_ENTITY_CODE);
                 } else {
@@ -675,10 +675,8 @@ public class MainActivity extends AppCompatActivity
     private void filterMemberList(String query) {
         List<Member> members = null;
         if (query != null) {
-            String[] split = query.split(" ");
-            members = MemberManager.getInstance().getMembers(split);
+            members = MemberManager.getInstance().getMembers(query.split(" "));
         }
-
         if (query == null || (members != null && members.isEmpty())) {
             members = MemberManager.getInstance().getMembers();
         }

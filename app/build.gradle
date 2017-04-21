@@ -4,9 +4,9 @@ android {
     signingConfigs {
         config {
             keyAlias 'AndroidKey'
-            keyPassword
+            keyPassword 'android'
             storeFile file('/Users/mhatina/Projects/keystores/android.jks')
-            storePassword 
+            storePassword 'android'
         }
     }
     compileSdkVersion 25
@@ -22,9 +22,6 @@ android {
     }
     buildTypes {
         release {
-            shrinkResources true
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
             applicationVariants.all { variant ->
                 variant.outputs.each { output ->

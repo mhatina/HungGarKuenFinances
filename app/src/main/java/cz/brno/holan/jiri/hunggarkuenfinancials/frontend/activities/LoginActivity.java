@@ -1,6 +1,5 @@
 package cz.brno.holan.jiri.hunggarkuenfinancials.frontend.activities;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -47,8 +46,6 @@ public class LoginActivity extends AppCompatActivity implements
 
     private GoogleApiClient mGoogleApiClient;
 
-    private final Activity mActivityToFinish = this;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,9 +79,10 @@ public class LoginActivity extends AppCompatActivity implements
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             database.getReference("hasPermission").removeValue();
+                            android.util.Log.e("Login", String.valueOf(autoFinish));
                             if (autoFinish) {
-                                mActivityToFinish.setResult(Constant.SIGN_IN_CODE);
-                                mActivityToFinish.finish();
+                                LoginActivity.this.setResult(Constant.SIGN_IN_CODE);
+                                LoginActivity.this.finish();
                             }
                         }
                     }).addOnFailureListener(new OnFailureListener() {

@@ -15,11 +15,19 @@
       },
       "oauth_client": [
         {
+          "client_id": "126168175263-6vg6ncpe8mojhobh1ellmqi3elkng5pl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cz.brno.holan.jiri.hunggarkuenfinancials",
+            "certificate_hash": "b734f3311d7f26fb91106e59a099bc4039317e60"
+          }
+        },
+        {
           "client_id": "126168175263-v6bao2ssfb55mbtmeudqluod82u16s8n.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "cz.brno.holan.jiri.hunggarkuenfinancials",
-            "certificate_hash": "D90EA3819142465A116FC64238504C119DE9C372"
+            "certificate_hash": "d90ea3819142465a116fc64238504c119de9c372"
           }
         },
         {
@@ -27,7 +35,7 @@
           "client_type": 1,
           "android_info": {
             "package_name": "cz.brno.holan.jiri.hunggarkuenfinancials",
-            "certificate_hash": "97910E8FB53C42B638DF8C853FE855D6EB0380FD"
+            "certificate_hash": "97910e8fb53c42b638df8c853fe855d6eb0380fd"
           }
         },
         {
