@@ -12,19 +12,18 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.FirebaseDatabase;
 
 import cz.brno.holan.jiri.hunggarkuenfinancials.Constant;
 import cz.brno.holan.jiri.hunggarkuenfinancials.Log;
@@ -71,27 +70,13 @@ public class LoginActivity extends AppCompatActivity implements
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                final FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     isSignedIn = true;
-                    final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    database.getReference("hasPermission").setValue("test").addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            database.getReference("hasPermission").removeValue();
-                            android.util.Log.e("Login", String.valueOf(autoFinish));
-                            if (autoFinish) {
-                                LoginActivity.this.setResult(Constant.SIGN_IN_CODE);
-                                LoginActivity.this.finish();
-                            }
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.info(LoginActivity.this, getString(R.string.not_authorized));
-                            LoginActivity.this.revokeAccess();
-                        }
-                    });
+                    if (autoFinish) {
+                        LoginActivity.this.setResult(Constant.SIGN_IN_CODE);
+                        LoginActivity.this.finish();
+                    }
                 } else {
                     isSignedIn = false;
                 }
@@ -128,7 +113,8 @@ public class LoginActivity extends AppCompatActivity implements
             } else {
                 // Google Sign In failed, update UI appropriately
                 updateUI(null);
-                Log.error(this, getString(R.string.failed_login), new GoogleAuthException("Log in error: " + result.getStatus().getStatusCode()));
+                Log.error(this, getString(R.string.failed_login), new GoogleAuthException("Log in error: " +
+                        GoogleSignInStatusCodes.getStatusCodeString(result.getStatus().getStatusCode())));
             }
         } else if (requestCode == Constant.SIGN_IN_CODE) {
             setResult(Constant.SIGN_IN_CODE);
