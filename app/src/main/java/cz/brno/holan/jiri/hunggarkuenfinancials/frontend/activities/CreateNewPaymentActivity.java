@@ -252,6 +252,7 @@ public class CreateNewPaymentActivity extends CreateNewEntityActivity implements
 
         // in case of discount, which contains '%'
         str = str.replace("%", "");
+        str = str.replace(",", ".");
         if (str.isEmpty()) {
             layout.setError(getString(R.string.required_error));
             return -1;
