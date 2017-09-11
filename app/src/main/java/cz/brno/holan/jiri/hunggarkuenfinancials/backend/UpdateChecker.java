@@ -29,6 +29,7 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
@@ -109,8 +110,15 @@ public class UpdateChecker {
                 }
 
                 File file = new File(String.format("%s/%s", externalDirs.getAbsolutePath(), apkName));
-                Intent install = new Intent(Intent.ACTION_VIEW);
-                install.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+                Intent install = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    Uri uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID, file);
+                    install = new Intent(Intent.ACTION_VIEW, uri);
+                    install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                } else {
+                    install = new Intent(Intent.ACTION_VIEW);
+                    install.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+                }
                 activity.startActivity(install);
             }
         }, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));

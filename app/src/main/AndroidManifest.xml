@@ -68,6 +68,18 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".frontend.activities.MainActivity" />
         </activity>
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="cz.brno.holan.jiri.hunggarkuenfinancials"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.v4.content.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>
