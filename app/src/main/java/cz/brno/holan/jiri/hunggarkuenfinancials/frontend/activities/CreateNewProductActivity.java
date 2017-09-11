@@ -213,7 +213,9 @@ public class  CreateNewProductActivity extends CreateNewEntityActivity implement
     private float verifyPrice(TextInputLayout layout) {
         EditText text = layout.getEditText();
         if (text != null && text.getText().length() != 0) {
-            float price = Float.valueOf(text.getText().toString());
+            String priceStr = text.getText().toString();
+            priceStr = priceStr.replace(",", ".");
+            float price = Float.valueOf(priceStr);
             if (price >= 0)
                 return price;
         } else
